@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>FREECHAT v2 목업 01 · 매칭 필터 바텀시트</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --p1:#9B72FF;--p2:#7C4DFF;--coral:#FF6D6D;
+  --teal:#00C896;--yellow:#FEE500;
+  --bg:#0C0C18;--bg2:#111120;--bg3:#161625;
+  --border:#1a1a2a;--t2:#6e6e90;--t3:#38384e
+}
+body{
+  font-family:-apple-system,'Segoe UI','Noto Sans KR',sans-serif;
+  background:#0a0a14;color:#fff;padding:48px 32px;
+}
+h1{font-size:22px;font-weight:800;margin-bottom:4px}
+.subtitle{font-size:12px;color:var(--t2);margin-bottom:8px}
+.v2-badge{
+  display:inline-block;
+  background:rgba(155,114,255,.15);color:var(--p1);
+  border:1px solid rgba(155,114,255,.3);
+  font-size:11px;font-weight:800;padding:3px 12px;border-radius:20px;
+  margin-bottom:28px;
+}
+.row{display:flex;gap:28px;margin-bottom:48px;flex-wrap:wrap}
+.col{display:flex;flex-direction:column;align-items:center;gap:12px}
+.screen-label{font-size:11px;font-weight:700;color:var(--t2);letter-spacing:1px;text-align:center}
+.screen-sub{font-size:10px;color:var(--t3);text-align:center;margin-top:2px}
+.row-label{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--t3);margin-bottom:8px}
+
+/* 폰 프레임 */
+.phone{
+  width:375px;height:812px;background:var(--bg);
+  border-radius:44px;border:2px solid var(--border);
+  overflow:hidden;position:relative;flex-shrink:0;
+  box-shadow:0 20px 60px rgba(0,0,0,.6)
+}
+.phone::before{
+  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:120px;height:30px;background:var(--bg);
+  border-radius:0 0 18px 18px;z-index:20;
+}
+.screen{width:100%;height:100%;overflow:hidden;position:relative}
+
+/* 상태바 */
+.statusbar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 22px 0;font-size:11px;font-weight:600;
+}
+.sb-time{font-size:13px;font-weight:700}
+.sb-icons{display:flex;gap:5px;align-items:center;font-size:10px}
+
+/* 버튼 */
+.btn-main{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,var(--p1),var(--p2));
+  border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:700;cursor:pointer
+}
+.btn-gray{
+  width:100%;padding:15px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:14px;color:var(--t2);font-size:15px;font-weight:600;cursor:pointer
+}
+.btn-teal{
+  width:100%;padding:15px;
+  background:rgba(0,200,150,.12);border:1.5px solid rgba(0,200,150,.3);
+  border-radius:14px;color:var(--teal);font-size:15px;font-weight:700;cursor:pointer
+}
+
+/* 매칭 탭 배경 */
+.matching-bg{
+  display:flex;flex-direction:column;align-items:center;
+  padding:24px 24px 0;
+}
+.match-icon-area{
+  width:120px;height:120px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(155,114,255,.15),rgba(124,77,255,.08));
+  border:2px solid rgba(155,114,255,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:48px;margin-bottom:20px;
+}
+.match-title{font-size:20px;font-weight:800;margin-bottom:6px}
+.match-sub{font-size:13px;color:var(--t2);margin-bottom:28px}
+.btn-match-main{
+  width:100%;padding:17px;
+  background:linear-gradient(135deg,var(--p1),var(--p2));
+  border:none;border-radius:16px;color:#fff;font-size:16px;font-weight:800;
+  cursor:pointer;margin-bottom:10px;
+}
+.btn-match-sub{
+  width:100%;padding:14px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:14px;color:var(--t2);font-size:14px;font-weight:600;cursor:pointer
+}
+
+/* 매칭권 표시 */
+.ticket-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(155,114,255,.12);border:1px solid rgba(155,114,255,.2);
+  border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;color:var(--p1);
+  margin-bottom:20px;
+}
+
+/* 팝업 오버레이 */
+.popup-overlay{
+  position:absolute;inset:0;
+  background:rgba(12,12,24,.82);
+  display:flex;align-items:flex-end;
+  z-index:30;
+}
+.popup-sheet{
+  background:#16162a;
+  border-top:1px solid rgba(155,114,255,.2);
+  border-radius:24px 24px 0 0;
+  padding:20px 24px 32px;
+  width:100%;
+  max-height:88%;
+  overflow-y:auto;
+}
+.sheet-handle{
+  width:40px;height:4px;border-radius:2px;
+  background:var(--bg3);margin:0 auto 16px;
+}
+.sheet-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:20px;
+}
+.sheet-title{font-size:17px;font-weight:800}
+.sheet-close{
+  width:30px;height:30px;border-radius:50%;
+  background:var(--bg3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:var(--t2);cursor:pointer;
+}
+
+/* 필터 섹션 */
+.filter-section{margin-bottom:20px}
+.filter-label{
+  font-size:12px;font-weight:700;color:var(--t2);
+  margin-bottom:10px;letter-spacing:.5px;
+}
+.filter-chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  padding:8px 16px;border-radius:20px;
+  background:var(--bg3);border:1px solid var(--border);
+  font-size:13px;font-weight:600;color:var(--t2);
+  cursor:pointer;
+}
+.chip.selected{
+  background:rgba(155,114,255,.15);
+  border-color:rgba(155,114,255,.45);
+  color:var(--p1);
+}
+.chip.disabled{
+  opacity:.35;cursor:not-allowed;
+}
+
+/* 필터 카운터 */
+.filter-counter{
+  display:flex;align-items:center;gap:6px;
+  margin-bottom:16px;
+}
+.counter-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--p1);
+}
+.counter-dot.empty{background:var(--bg3);border:1px solid var(--t3)}
+.counter-text{font-size:12px;color:var(--t2)}
+.counter-text span{color:var(--p1);font-weight:700}
+
+/* 매칭권 소모 미리보기 */
+.cost-preview{
+  background:rgba(155,114,255,.06);
+  border:1px solid rgba(155,114,255,.15);
+  border-radius:12px;padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;font-size:13px;
+}
+.cost-label{color:var(--t2)}
+.cost-val{font-weight:800;color:var(--p1)}
+
+/* Alert 팝업 (매칭권 부족) */
+.alert-box{
+  background:#16162a;
+  border:1px solid rgba(255,109,109,.25);
+  border-radius:20px;padding:24px;
+  width:calc(100% - 48px);margin:0 24px;
+  position:absolute;top:50%;left:0;transform:translateY(-50%);
+  z-index:40;
+}
+.alert-overlay{
+  position:absolute;inset:0;
+  background:rgba(12,12,24,.85);
+  z-index:35;
+}
+
+/* 매칭 실패 화면 */
+.fail-screen{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;height:100%;padding:0 28px;text-align:center;
+}
+
+/* 하단 탭바 */
+.home-tab-bar{
+  position:absolute;bottom:0;left:0;right:0;
+  background:var(--bg2);border-top:1px solid var(--border);
+  display:flex;justify-content:space-around;align-items:center;
+  padding:10px 0 14px;z-index:10;
+}
+.tab-item{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;color:var(--t3)}
+.tab-item.active{color:var(--p1)}
+.tab-icon{font-size:18px}
+
+/* 구분선 */
+.divider{height:1px;background:var(--border);margin:16px 0}
+</style>
+</head>
+<body>
+
+<h1>📋 FREECHAT v2 목업 01 · 매칭 필터 바텀시트</h1>
+<div class="subtitle">필터 매칭 추가 · 나이 / 지역 / 나의 이상형 / MBTI · 최대 3개 선택</div>
+<div class="v2-badge">🔮 v2 개발</div>
+
+<!-- ══════════════════════════
+     ROW 1 : 남자 회원 기준 / 여자 회원 기준
+══════════════════════════ -->
+<div class="row-label">ROW 1 · 바텀시트 기본 — 남자 회원 기준 (여성 이상형 태그) / 여자 회원 기준 (남성 이상형 태그)</div>
+<div class="row">
+
+  <!-- Screen 1A : 남자 회원 기준 -->
+  <div class="col">
+    <div class="screen-label">Screen 1A · 남자 회원 기준</div>
+    <div class="screen-sub">나의 이상형 → 여성 스타일 태그 8개 노출</div>
+    <div class="phone">
+      <div class="screen" style="background:var(--bg)">
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <div class="sb-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+        <div class="matching-bg">
+          <div style="display:flex;justify-content:space-between;width:100%;align-items:center;margin-bottom:20px">
+            <div style="font-size:19px;font-weight:800">매칭</div>
+            <div class="ticket-badge" style="margin-bottom:0">🎫 매칭권 5개</div>
+          </div>
+          <div class="match-icon-area">💘</div>
+          <div class="match-title">새로운 인연을 만나보세요</div>
+        </div>
+
+        <div class="popup-overlay">
+          <div class="popup-sheet">
+            <div class="sheet-handle"></div>
+            <div class="sheet-header">
+              <div class="sheet-title">매칭 조건 설정</div>
+              <div class="sheet-close">✕</div>
+            </div>
+            <div class="filter-counter">
+              <div class="counter-dot empty"></div>
+              <div class="counter-dot empty"></div>
+              <div class="counter-dot empty"></div>
+              <div class="counter-text">필터 <span>0</span> / 3개 선택</div>
+            </div>
+            <div class="filter-section">
+              <div class="filter-label">나이</div>
+              <div class="filter-chips">
+                <div class="chip">20대</div><div class="chip">30대</div><div class="chip">40대</div><div class="chip">50대</div><div class="chip">60대 이상</div>
+              </div>
+            </div>
+            <div class="filter-section">
+              <div class="filter-label">지역</div>
+              <div class="filter-chips">
+                <div class="chip">서울</div><div class="chip">경기</div><div class="chip">부산</div><div class="chip">인천</div><div class="chip">대구</div><div class="chip">더보기 ›</div>
+              </div>
+            </div>
+            <!-- 여성 태그 8개 -->
+            <div class="filter-section">
+              <div class="filter-label">나의 이상형 <span style="color:var(--t3);font-size:10px;font-weight:400">· 상대방 스타일</span></div>
+              <div class="filter-chips">
+                <div class="chip">사랑스러운</div><div class="chip">털털한</div><div class="chip">지적인</div><div class="chip">발랄한</div>
+                <div class="chip">차분한</div><div class="chip">엉뚱한</div><div class="chip">도도한</div><div class="chip">다정한</div>
+              </div>
+            </div>
+            <div class="filter-section">
+              <div class="filter-label">MBTI</div>
+              <div class="filter-chips">
+                <div class="chip">ENFP</div><div class="chip">INFJ</div><div class="chip">ENTP</div><div class="chip">ISFJ</div><div class="chip">더보기 ›</div>
+              </div>
+            </div>
+            <div class="cost-preview">
+              <div class="cost-label">소모 매칭권</div>
+              <div class="cost-val">1개 (기본)</div>
+            </div>
+            <button class="btn-main">바로 매칭하기 (매칭권 1개)</button>
+          </div>
+        </div>
+
+        <div class="home-tab-bar">
+          <div class="tab-item active"><div class="tab-icon">💘</div>매칭</div>
+          <div class="tab-item"><div class="tab-icon">💬</div>채팅</div>
+          <div class="tab-item"><div class="tab-icon">🤍</div>즐겨찾기</div>
+          <div class="tab-item"><div class="tab-icon">⚙️</div>설정</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 1B : 여자 회원 기준 -->
+  <div class="col">
+    <div class="screen-label">Screen 1B · 여자 회원 기준</div>
+    <div class="screen-sub">나의 이상형 → 남성 스타일 태그 8개 노출</div>
+    <div class="phone">
+      <div class="screen" style="background:var(--bg)">
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <div class="sb-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+        <div class="matching-bg">
+          <div style="display:flex;justify-content:space-between;width:100%;align-items:center;margin-bottom:20px">
+            <div style="font-size:19px;font-weight:800">매칭</div>
+            <div class="ticket-badge" style="margin-bottom:0">🎫 매칭권 5개</div>
+          </div>
+          <div class="match-icon-area">💘</div>
+          <div class="match-title">새로운 인연을 만나보세요</div>
+        </div>
+
+        <div class="popup-overlay">
+          <div class="popup-sheet">
+            <div class="sheet-handle"></div>
+            <div class="sheet-header">
+              <div class="sheet-title">매칭 조건 설정</div>
+              <div class="sheet-close">✕</div>
+            </div>
+            <div class="filter-counter">
+              <div class="counter-dot empty"></div>
+              <div class="counter-dot empty"></div>
+              <div class="counter-dot empty"></div>
+              <div class="counter-text">필터 <span>0</span> / 3개 선택</div>
+            </div>
+            <div class="filter-section">
+              <div class="filter-label">나이</div>
+              <div class="filter-chips">
+                <div class="chip">20대</div><div class="chip">30대</div><div class="chip">40대</div><div class="chip">50대</div><div class="chip">60대 이상</div>
+              </div>
+            </div>
+            <div class="filter-section">
+              <div class="filter-label">지역</div>
+              <div class="filter-chips">
+                <div class="chip">서울</div><div class="chip">경기</div><div class="chip">부산</div><div class="chip">인천</div><div class="chip">대구</div><div class="chip">더보기 ›</div>
+              </div>
+            </div>
+            <!-- 남성 태그 8개 -->
+            <div class="filter-section">
+              <div class="filter-label">나의 이상형 <span style="color:var(--t3);font-size:10px;font-weight:400">· 상대방 스타일</span></div>
+              <div class="filter-chips">
+                <div class="chip">유머있는</div><div class="chip">다정한</div><div class="chip">듬직한</div><div class="chip">활발한</div>
+                <div class="chip">차분한</div><div class="chip">솔직한</div><div class="chip">엉뚱한</div><div class="chip">진지한</div>
+              </div>
+            </div>
+            <div class="filter-section">
+              <div class="filter-label">MBTI</div>
+              <div class="filter-chips">
+                <div class="chip">ENFP</div><div class="chip">INFJ</div><div class="chip">ENTP</div><div class="chip">ISFJ</div><div class="chip">더보기 ›</div>
+              </div>
+            </div>
+            <div class="cost-preview">
+              <div class="cost-label">소모 매칭권</div>
+              <div class="cost-val">1개 (기본)</div>
+            </div>
+            <button class="btn-main">바로 매칭하기 (매칭권 1개)</button>
+          </div>
+        </div>
+
+        <div class="home-tab-bar">
+          <div class="tab-item active"><div class="tab-icon">💘</div>매칭</div>
+          <div class="tab-item"><div class="tab-icon">💬</div>채팅</div>
+          <div class="tab-item"><div class="tab-icon">🤍</div>즐겨찾기</div>
+          <div class="tab-item"><div class="tab-icon">⚙️</div>설정</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end row 1 -->
+
+
+<!-- ══════════════════════════
+     ROW 2 : 필터 3개 선택 + 매칭권 부족 Alert
+══════════════════════════ -->
+<div class="row-label">ROW 2 · 필터 3개 선택 완료 / 매칭권 부족 Alert</div>
+<div class="row">
+
+  <!-- Screen 2 : 필터 3개 선택 (남자 회원 기준) -->
+  <div class="col">
+    <div class="screen-label">Screen 2 · 필터 3개 선택</div>
+    <div class="screen-sub">남자 회원 · 20대 + 서울 + 사랑스러운 선택 → 매칭권 4개 필요</div>
+    <div class="phone">
+      <div class="screen" style="background:var(--bg)">
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <div class="sb-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+        <div class="matching-bg" style="opacity:.3">
+          <div style="display:flex;justify-content:space-between;width:100%;align-items:center;margin-bottom:20px">
+            <div style="font-size:19px;font-weight:800">매칭</div>
+            <div class="ticket-badge" style="margin-bottom:0">🎫 매칭권 5개</div>
+          </div>
+          <div class="match-icon-area">💘</div>
+        </div>
+
+        <div class="popup-overlay">
+          <div class="popup-sheet">
+            <div class="sheet-handle"></div>
+            <div class="sheet-header">
+              <div class="sheet-title">매칭 조건 설정</div>
+              <div class="sheet-close">✕</div>
+            </div>
+            <div class="filter-counter">
+              <div class="counter-dot"></div>
+              <div class="counter-dot"></div>
+              <div class="counter-dot"></div>
+              <div class="counter-text">필터 <span>3</span> / 3개 선택 · 최대 도달</div>
+            </div>
+            <div class="filter-section">
+              <div class="filter-label">나이</div>
+              <div class="filter-chips">
+                <div class="chip selected">20대</div><div class="chip disabled">30대</div><div class="chip disabled">40대</div><div class="chip disabled">50대</div><div class="chip disabled">60대 이상</div>
+              </div>
+            </div>
+            <div class="filter-section">
+              <div class="filter-label">지역</div>
+              <div class="filter-chips">
+                <div class="chip selected">서울</div><div class="chip disabled">경기</div><div class="chip disabled">부산</div><div class="chip disabled">인천</div><div class="chip disabled">더보기 ›</div>
+              </div>
+            </div>
+            <div class="filter-section">
+              <div class="filter-label">나의 이상형</div>
+              <div class="filter-chips">
+                <div class="chip selected">사랑스러운</div><div class="chip disabled">털털한</div><div class="chip disabled">지적인</div><div class="chip disabled">발랄한</div>
+                <div class="chip disabled">차분한</div><div class="chip disabled">엉뚱한</div><div class="chip disabled">도도한</div><div class="chip disabled">다정한</div>
+              </div>
+            </div>
+            <div class="filter-section" style="opacity:.45">
+              <div class="filter-label">MBTI <span style="color:var(--t3);font-size:11px;font-weight:400">· 최대 3개 도달</span></div>
+              <div class="filter-chips">
+                <div class="chip disabled">ENFP</div><div class="chip disabled">INFJ</div><div class="chip disabled">ENTP</div><div class="chip disabled">ISFJ</div>
+              </div>
+            </div>
+            <div class="cost-preview" style="background:rgba(155,114,255,.1);border-color:rgba(155,114,255,.3)">
+              <div class="cost-label">소모 매칭권</div>
+              <div style="display:flex;align-items:center;gap:6px">
+                <span style="font-size:11px;color:var(--t2)">기본 1 + 필터 3</span>
+                <div class="cost-val">= 4개</div>
+              </div>
+            </div>
+            <button class="btn-main">매칭하기 (매칭권 4개)</button>
+          </div>
+        </div>
+
+        <div class="home-tab-bar">
+          <div class="tab-item active"><div class="tab-icon">💘</div>매칭</div>
+          <div class="tab-item"><div class="tab-icon">💬</div>채팅</div>
+          <div class="tab-item"><div class="tab-icon">🤍</div>즐겨찾기</div>
+          <div class="tab-item"><div class="tab-icon">⚙️</div>설정</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 3 : 매칭권 부족 Alert -->
+  <div class="col">
+    <div class="screen-label">Screen 3 · 매칭권 부족 Alert</div>
+    <div class="screen-sub">보유 3개 · 필터 3개 선택 → 4개 필요 → Alert 발동</div>
+    <div class="phone">
+      <div class="screen" style="background:var(--bg)">
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <div class="sb-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+
+        <!-- 매칭 탭 배경 (흐리게) -->
+        <div class="matching-bg" style="opacity:.2">
+          <div style="display:flex;justify-content:space-between;width:100%;align-items:center;margin-bottom:20px">
+            <div style="font-size:19px;font-weight:800">매칭</div>
+          </div>
+          <div class="match-icon-area">💘</div>
+        </div>
+
+        <!-- 바텀시트 (흐리게) -->
+        <div style="position:absolute;bottom:62px;left:0;right:0;height:420px;background:#16162a;border-radius:24px 24px 0 0;opacity:.25;z-index:25"></div>
+
+        <!-- Alert 오버레이 -->
+        <div class="alert-overlay"></div>
+
+        <!-- Alert 박스 -->
+        <div class="alert-box">
+          <!-- 아이콘 -->
+          <div style="text-align:center;margin-bottom:16px">
+            <div style="width:56px;height:56px;border-radius:50%;background:rgba(255,109,109,.12);border:1.5px solid rgba(255,109,109,.3);display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:26px">😢</div>
+          </div>
+
+          <div style="text-align:center;font-size:18px;font-weight:800;margin-bottom:8px">매칭권이 부족해요</div>
+
+          <!-- 보유/필요 비교 -->
+          <div style="background:var(--bg3);border-radius:12px;padding:14px 16px;margin-bottom:16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <span style="font-size:13px;color:var(--t2)">현재 보유</span>
+              <span style="font-size:15px;font-weight:800;color:var(--p1)">3개</span>
+            </div>
+            <div style="height:1px;background:var(--border);margin-bottom:8px"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:13px;color:var(--t2)">필요 매칭권</span>
+              <span style="font-size:15px;font-weight:800;color:var(--coral)">4개</span>
+            </div>
+          </div>
+
+          <div style="font-size:12px;color:var(--t2);text-align:center;line-height:1.8;margin-bottom:18px">
+            출석 체크로 매칭권을 충전해보세요 🎁
+          </div>
+
+          <div style="display:flex;gap:10px">
+            <button class="btn-gray" style="font-size:13px;padding:13px">닫기</button>
+            <button class="btn-main" style="font-size:13px;padding:13px">출석 체크 가기</button>
+          </div>
+        </div>
+
+        <!-- 하단 탭바 -->
+        <div class="home-tab-bar">
+          <div class="tab-item active"><div class="tab-icon">💘</div>매칭</div>
+          <div class="tab-item"><div class="tab-icon">💬</div>채팅</div>
+          <div class="tab-item"><div class="tab-icon">🤍</div>즐겨찾기</div>
+          <div class="tab-item"><div class="tab-icon">⚙️</div>설정</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 4 : 매칭 실패 -->
+  <div class="col">
+    <div class="screen-label">Screen 4 · 매칭 실패</div>
+    <div class="screen-sub">조건에 맞는 상대 없음 → 소모 매칭권 전체 반환</div>
+    <div class="phone">
+      <div class="screen" style="background:var(--bg)">
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <div class="sb-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+
+        <!-- 매칭 실패 화면 -->
+        <div class="fail-screen">
+
+          <!-- 아이콘 -->
+          <div style="
+            width:100px;height:100px;border-radius:50%;
+            background:rgba(110,110,144,.1);
+            border:2px solid rgba(110,110,144,.2);
+            display:flex;align-items:center;justify-content:center;
+            font-size:46px;margin-bottom:24px;
+          ">🔍</div>
+
+          <div style="font-size:21px;font-weight:800;margin-bottom:10px;line-height:1.3">
+            조건에 맞는 상대를<br>찾지 못했어요
+          </div>
+
+          <div style="font-size:13px;color:var(--t2);line-height:1.9;margin-bottom:24px">
+            설정한 조건에 맞는 회원이<br>현재 접속 중이지 않아요.
+          </div>
+
+          <!-- 매칭권 반환 안내 -->
+          <div style="
+            background:rgba(0,200,150,.07);
+            border:1px solid rgba(0,200,150,.2);
+            border-radius:14px;padding:14px 20px;
+            display:flex;align-items:center;gap:12px;
+            margin-bottom:32px;width:100%;
+          ">
+            <span style="font-size:22px">🎫</span>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--teal)">매칭권 4개 반환 완료</div>
+              <div style="font-size:11px;color:var(--t2);margin-top:3px">소모한 매칭권이 모두 돌아왔어요</div>
+            </div>
+          </div>
+
+          <!-- 선택된 필터 요약 -->
+          <div style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:28px">
+            <div style="font-size:11px;color:var(--t3);margin-bottom:8px">설정했던 조건</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              <span style="background:rgba(155,114,255,.1);color:var(--p1);font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid rgba(155,114,255,.2)">20대</span>
+              <span style="background:rgba(155,114,255,.1);color:var(--p1);font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid rgba(155,114,255,.2)">서울</span>
+              <span style="background:rgba(155,114,255,.1);color:var(--p1);font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid rgba(155,114,255,.2)">유머있는</span>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;width:100%">
+            <button class="btn-main">조건 변경하기</button>
+            <button class="btn-gray">조건 없이 랜덤 매칭</button>
+          </div>
+
+        </div>
+
+        <!-- 하단 탭바 -->
+        <div class="home-tab-bar">
+          <div class="tab-item active"><div class="tab-icon">💘</div>매칭</div>
+          <div class="tab-item"><div class="tab-icon">💬</div>채팅</div>
+          <div class="tab-item"><div class="tab-icon">🤍</div>즐겨찾기</div>
+          <div class="tab-item"><div class="tab-icon">⚙️</div>설정</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div><!-- end row 2 -->
+
+<!-- ══════════════════════════
+     ROW 3 : 매칭 실패
+══════════════════════════ -->
+<div class="row-label">ROW 3 · 매칭 실패 (조건에 맞는 상대 없음)</div>
+<div class="row">
+
+  <!-- Screen 4 : 매칭 실패 -->
+  <div class="col">
+    <div class="screen-label">Screen 4 · 매칭 실패</div>
+    <div class="screen-sub">조건에 맞는 상대 없음 → 소모 매칭권 전체 반환</div>
+    <div class="phone">
+      <div class="screen" style="background:var(--bg)">
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <div class="sb-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+        <div class="fail-screen">
+          <div style="width:100px;height:100px;border-radius:50%;background:rgba(110,110,144,.1);border:2px solid rgba(110,110,144,.2);display:flex;align-items:center;justify-content:center;font-size:46px;margin-bottom:24px">🔍</div>
+          <div style="font-size:21px;font-weight:800;margin-bottom:10px;line-height:1.3">조건에 맞는 상대를<br>찾지 못했어요</div>
+          <div style="font-size:13px;color:var(--t2);line-height:1.9;margin-bottom:24px">설정한 조건에 맞는 회원이<br>현재 접속 중이지 않아요.</div>
+          <!-- 매칭권 반환 안내 -->
+          <div style="background:rgba(0,200,150,.07);border:1px solid rgba(0,200,150,.2);border-radius:14px;padding:14px 20px;display:flex;align-items:center;gap:12px;margin-bottom:24px;width:100%">
+            <span style="font-size:22px">🎫</span>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--teal)">매칭권 4개 반환 완료</div>
+              <div style="font-size:11px;color:var(--t2);margin-top:3px">소모한 매칭권이 모두 돌아왔어요</div>
+            </div>
+          </div>
+          <!-- 설정했던 조건 요약 -->
+          <div style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:28px">
+            <div style="font-size:11px;color:var(--t3);margin-bottom:8px">설정했던 조건</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              <span style="background:rgba(155,114,255,.1);color:var(--p1);font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid rgba(155,114,255,.2)">20대</span>
+              <span style="background:rgba(155,114,255,.1);color:var(--p1);font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid rgba(155,114,255,.2)">서울</span>
+              <span style="background:rgba(155,114,255,.1);color:var(--p1);font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid rgba(155,114,255,.2)">사랑스러운</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;width:100%">
+            <button class="btn-main">조건 변경하기</button>
+            <button class="btn-gray">조건 없이 랜덤 매칭</button>
+          </div>
+        </div>
+        <div class="home-tab-bar">
+          <div class="tab-item active"><div class="tab-icon">💘</div>매칭</div>
+          <div class="tab-item"><div class="tab-icon">💬</div>채팅</div>
+          <div class="tab-item"><div class="tab-icon">🤍</div>즐겨찾기</div>
+          <div class="tab-item"><div class="tab-icon">⚙️</div>설정</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end row 3 -->
+
+<!-- ══════════════════════════
+     ROW 4 : 매칭 성공
+══════════════════════════ -->
+<div class="row-label">ROW 4 · 매칭 성공 (조건에 맞는 상대 1명 자동 선택)</div>
+<div class="row">
+
+  <!-- Screen 5 : 매칭 성공 -->
+  <div class="col">
+    <div class="screen-label">Screen 5 · 매칭 성공</div>
+    <div class="screen-sub">조건 충족 회원 중 랜덤 1명 자동 선택 → 채팅 시작 or 닫기</div>
+    <div class="phone">
+      <div class="screen" style="background:var(--bg)">
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <div class="sb-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+
+        <div class="fail-screen">
+
+          <!-- 성공 아이콘 -->
+          <div style="position:relative;margin-bottom:24px">
+            <div style="
+              width:108px;height:108px;border-radius:50%;
+              background:linear-gradient(135deg,rgba(155,114,255,.2),rgba(124,77,255,.1));
+              border:2px solid rgba(155,114,255,.35);
+              display:flex;align-items:center;justify-content:center;
+              font-size:50px;
+            ">💘</div>
+            <!-- 성공 뱃지 -->
+            <div style="
+              position:absolute;bottom:2px;right:2px;
+              width:30px;height:30px;border-radius:50%;
+              background:var(--teal);border:2px solid var(--bg);
+              display:flex;align-items:center;justify-content:center;
+              font-size:14px;
+            ">✓</div>
+          </div>
+
+          <div style="font-size:21px;font-weight:800;margin-bottom:8px;line-height:1.3">
+            조건에 맞는 상대를<br>찾았어요!
+          </div>
+          <div style="font-size:13px;color:var(--t2);line-height:1.8;margin-bottom:22px">
+            설정한 조건 안에서 상대가 선택됐어요.<br>채팅을 시작해 보세요.
+          </div>
+
+          <!-- 매칭된 조건 태그 -->
+          <div style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:20px">
+            <div style="font-size:11px;color:var(--t3);margin-bottom:8px">적용된 조건</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              <span style="background:rgba(155,114,255,.1);color:var(--p1);font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid rgba(155,114,255,.2)">20대</span>
+              <span style="background:rgba(155,114,255,.1);color:var(--p1);font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid rgba(155,114,255,.2)">서울</span>
+              <span style="background:rgba(155,114,255,.1);color:var(--p1);font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid rgba(155,114,255,.2)">사랑스러운</span>
+            </div>
+          </div>
+
+          <!-- 소모 매칭권 안내 -->
+          <div style="
+            width:100%;
+            background:rgba(155,114,255,.07);border:1px solid rgba(155,114,255,.18);
+            border-radius:12px;padding:12px 16px;
+            display:flex;align-items:center;justify-content:space-between;
+            margin-bottom:28px;font-size:13px;
+          ">
+            <span style="color:var(--t2)">소모된 매칭권</span>
+            <span style="font-weight:800;color:var(--p1)">4개 사용</span>
+          </div>
+
+          <!-- 버튼 2개 -->
+          <div style="display:flex;flex-direction:column;gap:10px;width:100%">
+            <button class="btn-main" style="font-size:15px;padding:16px">채팅방으로 이동</button>
+            <button class="btn-gray" style="font-size:14px">닫기 (메인으로)</button>
+          </div>
+
+        </div>
+
+        <div class="home-tab-bar">
+          <div class="tab-item active"><div class="tab-icon">💘</div>매칭</div>
+          <div class="tab-item"><div class="tab-icon">💬</div>채팅</div>
+          <div class="tab-item"><div class="tab-icon">🤍</div>즐겨찾기</div>
+          <div class="tab-item"><div class="tab-icon">⚙️</div>설정</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div><!-- end row 4 -->
+
+<div style="margin-top:8px;font-size:11px;color:var(--t3);text-align:center">
+  FREECHAT v2 목업 01 · 매칭 필터 바텀시트 · 필터 최대 3개 · OR 방식 · 랜덤 1명 자동 선택
+</div>
+
+</body>
+</html>
