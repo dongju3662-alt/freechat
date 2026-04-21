@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>FREECHAT 목업 07 – 팝업·Alert·신고</title>
+<style>
+:root{
+  --bg:#0C0C18; --surface:#13131F; --card:#16162A; --border:#1E1E30;
+  --brand:#9B72FF; --brand2:#7A52E0;
+  --warn:#FF6D6D; --success:#00C896; --reward:#FEE500;
+  --t1:#FFFFFF; --t2:#8E8EA0; --t3:#5A5A72;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#080812;
+  font-family:-apple-system,'Noto Sans KR',sans-serif;
+  color:var(--t1);
+  padding:48px 32px;
+}
+
+/* 페이지 헤더 */
+.page-title{text-align:center;margin-bottom:12px}
+.page-title h1{
+  font-size:26px;font-weight:700;letter-spacing:-.5px;
+  background:linear-gradient(135deg,#9B72FF,#C4A4FF);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.page-title p{font-size:13px;color:var(--t2);margin-top:6px}
+.tokens{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:40px}
+.token{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--t2);display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%}
+
+/* 행 */
+.row{display:flex;gap:40px;justify-content:center;margin-bottom:56px}
+.divider-row{border:none;border-top:1px solid #1a1a2e;margin-bottom:48px}
+
+/* 폰 블록 */
+.phone-wrap{display:flex;flex-direction:column;align-items:center;gap:16px}
+.screen-label{font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.8px;text-align:center}
+.screen-label strong{display:block;font-size:13px;color:var(--t1);margin-bottom:2px}
+
+.phone{
+  width:375px;height:812px;
+  background:var(--bg);border-radius:44px;overflow:hidden;position:relative;
+  border:2px solid #2a2a40;
+  box-shadow:0 24px 60px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05);
+  display:flex;flex-direction:column;
+}
+
+/* 상태바 */
+.sb{height:44px;padding:14px 24px 0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:relative;z-index:1}
+.sb .time{font-size:15px;font-weight:600}
+.sb .icons{display:flex;gap:6px;align-items:center}
+
+/* 헤더 */
+.hdr{height:56px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0;position:relative;z-index:1}
+.hdr .ttl{font-size:17px;font-weight:700}
+.hdr .ico{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px}
+.hdr .spc{width:32px}
+
+/* 딤 오버레이 */
+.dim{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,.65);
+  display:flex;align-items:center;justify-content:center;
+  z-index:10;
+  backdrop-filter:blur(2px);
+}
+
+/* Alert/팝업 카드 */
+.alert-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:28px 24px 20px;
+  margin:0 24px;
+  text-align:center;
+  width:100%;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+.alert-icon{font-size:36px;margin-bottom:12px}
+.alert-title{font-size:17px;font-weight:700;color:var(--t1);margin-bottom:8px;line-height:1.4}
+.alert-desc{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:20px}
+.alert-btns{display:flex;gap:10px}
+.btn-cancel{
+  flex:1;height:48px;border-radius:12px;
+  background:var(--surface);border:1px solid var(--border);
+  font-size:15px;font-weight:600;color:var(--t2);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+}
+.btn-confirm{
+  flex:1;height:48px;border-radius:12px;
+  background:var(--brand);
+  font-size:15px;font-weight:700;color:#fff;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+}
+.btn-confirm-red{
+  flex:1;height:48px;border-radius:12px;
+  background:var(--warn);
+  font-size:15px;font-weight:700;color:#fff;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+}
+.btn-full{
+  width:100%;height:48px;border-radius:12px;
+  background:var(--brand);
+  font-size:15px;font-weight:700;color:#fff;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  margin-top:0;
+}
+
+/* 플로우 노트 */
+.fnote{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:12px 14px;
+  font-size:11px;color:var(--t2);line-height:1.7;
+  margin-top:4px;width:375px;
+}
+.fnote strong{color:var(--brand);font-weight:700}
+
+/* 신고 화면용 */
+.report-type-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
+.report-type-item{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:14px 12px;
+  text-align:center;cursor:pointer;
+}
+.report-type-item.selected{
+  background:rgba(155,114,255,.12);
+  border:1.5px solid var(--brand);
+}
+.report-type-icon{font-size:22px;margin-bottom:6px}
+.report-type-label{font-size:12px;font-weight:600;color:var(--t2)}
+.report-type-item.selected .report-type-label{color:var(--brand)}
+
+.textarea-box{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:14px;
+  font-size:13px;color:var(--t2);
+  line-height:1.7;min-height:100px;
+  margin-bottom:12px;
+}
+.attach-box{
+  background:var(--surface);border:1px dashed var(--border);
+  border-radius:14px;padding:14px;
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:20px;cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<!-- 페이지 헤더 -->
+<div class="page-title">
+  <h1>FREECHAT 목업 07</h1>
+  <p>팝업 · Alert · 신고 화면</p>
+</div>
+<div class="tokens">
+  <span class="token"><span class="dot" style="background:#0C0C18;border:1px solid #333"></span>#0C0C18 배경</span>
+  <span class="token"><span class="dot" style="background:#9B72FF"></span>#9B72FF 브랜드</span>
+  <span class="token"><span class="dot" style="background:#FF6D6D"></span>#FF6D6D 경고</span>
+  <span class="token"><span class="dot" style="background:#00C896"></span>#00C896 성공</span>
+  <span class="token"><span class="dot" style="background:#FEE500"></span>#FEE500 리워드</span>
+</div>
+
+<!-- ═══════════════════════════════════
+     ROW 1 — Alert 2종
+═══════════════════════════════════ -->
+<div class="row">
+
+  <!-- ─── Screen A : 매칭권 0개 Alert ─── -->
+  <div class="phone-wrap">
+    <div class="screen-label">
+      <strong>Screen A · 매칭권 0개 Alert</strong>
+      매칭 신청 시 보유 0개일 때 발동
+    </div>
+    <div class="phone">
+      <div class="sb">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="11" viewBox="0 0 17 12" fill="white"><path d="M1 9h2v3H1zM5 6h2v6H5zM9 3h2v9H9zM13 0h2v12h-2z"/></svg>
+          <svg width="22" height="11" viewBox="0 0 24 12" fill="none"><rect x="0" y="2" width="20" height="8" rx="2" stroke="white" stroke-width="1.5"/><rect x="20" y="4" width="2" height="4" rx="1" fill="white"/><rect x="1.5" y="3.5" width="14" height="5" rx="1" fill="white"/></svg>
+        </div>
+      </div>
+
+      <!-- 배경: 매칭 메인 화면 흐릿하게 -->
+      <div style="flex:1;display:flex;flex-direction:column;padding:0 20px;gap:12px;padding-top:16px;opacity:.35;pointer-events:none">
+        <!-- 매칭권 배지 -->
+        <div style="display:flex;justify-content:flex-end">
+          <div style="background:#13131F;border:1px solid #1E1E30;border-radius:20px;padding:6px 14px;font-size:12px;color:#8E8EA0">🎟 매칭권 <strong style="color:#FF6D6D">0개</strong></div>
+        </div>
+        <div style="flex:1;background:#13131F;border-radius:20px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px">
+          <div style="width:72px;height:72px;border-radius:50%;background:#1a1a2e"></div>
+          <div style="width:140px;height:16px;background:#1a1a2e;border-radius:8px"></div>
+        </div>
+        <div style="background:#9B72FF;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center">
+          <span style="font-size:16px;font-weight:700">랜덤 매칭하기</span>
+        </div>
+        <div style="height:60px"></div>
+      </div>
+
+      <!-- 딤 + Alert -->
+      <div class="dim">
+        <div class="alert-card">
+          <div class="alert-icon">😢</div>
+          <div class="alert-title">현재 매칭권이 없습니다</div>
+          <div class="alert-desc">
+            매일 출석 체크로<br>매칭권을 받을 수 있어요! 🎁
+          </div>
+          <div class="alert-btns">
+            <div class="btn-full">확인</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fnote">
+      🎟 <strong>매칭권 0개 Alert (Section 10)</strong><br>
+      · 발동: 매칭권 0개 상태에서 매칭 버튼 탭 시<br>
+      · 별도 페이지 이동 없이 Alert 창만 표시<br>
+      · [확인] 클릭 → Alert 닫힘, 매칭 메인 유지<br>
+      · 출석 체크 버튼으로 이동 기능은 v2 검토
+    </div>
+  </div>
+
+  <!-- ─── Screen B : 채팅방 나가기 Alert ─── -->
+  <div class="phone-wrap">
+    <div class="screen-label">
+      <strong>Screen B · 채팅방 나가기 Alert</strong>
+      채팅방 내 나가기 버튼 탭 시 발동
+    </div>
+    <div class="phone">
+      <div class="sb">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="11" viewBox="0 0 17 12" fill="white"><path d="M1 9h2v3H1zM5 6h2v6H5zM9 3h2v9H9zM13 0h2v12h-2z"/></svg>
+          <svg width="22" height="11" viewBox="0 0 24 12" fill="none"><rect x="0" y="2" width="20" height="8" rx="2" stroke="white" stroke-width="1.5"/><rect x="20" y="4" width="2" height="4" rx="1" fill="white"/><rect x="1.5" y="3.5" width="14" height="5" rx="1" fill="white"/></svg>
+        </div>
+      </div>
+
+      <!-- 배경: 채팅방 흐릿하게 -->
+      <div style="position:absolute;top:44px;left:0;right:0;bottom:0;opacity:.3;pointer-events:none">
+        <div style="height:56px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1E1E30">
+          <div style="width:32px;height:32px;background:#13131F;border-radius:8px"></div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:32px;height:32px;border-radius:50%;background:#1a1a2e"></div>
+            <div style="width:70px;height:14px;background:#1a1a2e;border-radius:6px"></div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <div style="width:32px;height:32px;background:#13131F;border-radius:8px"></div>
+            <div style="width:32px;height:32px;background:#13131F;border-radius:8px"></div>
+          </div>
+        </div>
+        <div style="padding:20px;display:flex;flex-direction:column;gap:14px">
+          <div style="align-self:flex-start;background:#13131F;border-radius:14px;padding:12px 16px;max-width:70%">
+            <div style="width:140px;height:13px;background:#1a1a2e;border-radius:6px"></div>
+          </div>
+          <div style="align-self:flex-end;background:#9B72FF;border-radius:14px;padding:12px 16px;max-width:70%">
+            <div style="width:100px;height:13px;background:rgba(255,255,255,.2);border-radius:6px"></div>
+          </div>
+          <div style="align-self:flex-start;background:#13131F;border-radius:14px;padding:12px 16px;max-width:70%">
+            <div style="width:120px;height:13px;background:#1a1a2e;border-radius:6px"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 딤 + Alert -->
+      <div class="dim">
+        <div class="alert-card">
+          <div class="alert-icon">🚪</div>
+          <div class="alert-title">채팅방을 나가시겠어요?</div>
+          <div class="alert-desc">
+            채팅방을 나가면<br>대화 내용이 모두 삭제됩니다.
+          </div>
+          <div class="alert-btns">
+            <div class="btn-cancel">취소</div>
+            <div class="btn-confirm-red">나가기</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fnote">
+      🚪 <strong>채팅방 나가기 Alert</strong><br>
+      · 발동: 채팅방 내 나가기(←) 버튼 탭 시<br>
+      · [취소] → Alert 닫힘, 채팅방 유지<br>
+      · [나가기] → 즉시 채팅방 삭제 (복구 불가)<br>
+      · 상대방도 동시에 채팅방 삭제됨
+    </div>
+  </div>
+
+</div><!-- /row1 -->
+<hr class="divider-row">
+
+<!-- ═══════════════════════════════════
+     ROW 2 — 차단 확인 팝업 2버전
+═══════════════════════════════════ -->
+<div class="row">
+
+  <!-- ─── Screen C : 차단 팝업 (일반회원) ─── -->
+  <div class="phone-wrap">
+    <div class="screen-label">
+      <strong>Screen C · 차단 확인 팝업 (일반회원)</strong>
+      단일 계정 회원이 차단 버튼 탭 시
+    </div>
+    <div class="phone">
+      <div class="sb">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="11" viewBox="0 0 17 12" fill="white"><path d="M1 9h2v3H1zM5 6h2v6H5zM9 3h2v9H9zM13 0h2v12h-2z"/></svg>
+          <svg width="22" height="11" viewBox="0 0 24 12" fill="none"><rect x="0" y="2" width="20" height="8" rx="2" stroke="white" stroke-width="1.5"/><rect x="20" y="4" width="2" height="4" rx="1" fill="white"/><rect x="1.5" y="3.5" width="14" height="5" rx="1" fill="white"/></svg>
+        </div>
+      </div>
+
+      <!-- 배경: 채팅방 흐릿하게 -->
+      <div style="position:absolute;top:44px;left:0;right:0;bottom:0;opacity:.3;pointer-events:none">
+        <div style="height:56px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1E1E30">
+          <div style="width:32px;height:32px;background:#13131F;border-radius:8px"></div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:32px;height:32px;border-radius:50%;background:#1a1a2e"></div>
+            <div style="width:70px;height:14px;background:#1a1a2e;border-radius:6px"></div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <div style="width:32px;height:32px;background:#13131F;border-radius:8px"></div>
+            <div style="width:32px;height:32px;background:#13131F;border-radius:8px"></div>
+          </div>
+        </div>
+        <div style="padding:20px;display:flex;flex-direction:column;gap:14px">
+          <div style="align-self:flex-start;background:#13131F;border-radius:14px;padding:12px 16px;max-width:70%">
+            <div style="width:140px;height:13px;background:#1a1a2e;border-radius:6px"></div>
+          </div>
+          <div style="align-self:flex-end;background:#9B72FF;border-radius:14px;padding:12px 16px;max-width:70%">
+            <div style="width:100px;height:13px;background:rgba(255,255,255,.2);border-radius:6px"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 딤 + 팝업 -->
+      <div class="dim">
+        <div class="alert-card">
+          <div style="width:52px;height:52px;border-radius:50%;background:rgba(255,109,109,.12);border:1.5px solid rgba(255,109,109,.3);margin:0 auto 14px;display:flex;align-items:center;justify-content:center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="#FF6D6D" stroke-width="1.8"/>
+              <path d="M6 18L18 6M6 6l12 12" stroke="#FF6D6D" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="alert-title">솔빛달빛님을<br>차단하시겠어요?</div>
+          <div class="alert-desc">
+            차단 사실은 상대방에게 알리지 않아요.<br>
+            차단 후 서로 매칭이 되지 않아요.
+          </div>
+          <div class="alert-btns">
+            <div class="btn-cancel">취소</div>
+            <div class="btn-confirm-red">차단하기</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fnote">
+      🚫 <strong>차단 팝업 — 일반회원 (Section 19)</strong><br>
+      · 차단 사실 상대방에게 알리지 않음 (카카오톡 방식)<br>
+      · [취소] → 팝업 닫힘<br>
+      · [차단하기] → 즉시 차단, 채팅방 삭제<br>
+      · 차단 목록(설정)에서 해제 가능
+    </div>
+  </div>
+
+  <!-- ─── Screen D : 차단 팝업 (에이전시·다중계정) ─── -->
+  <div class="phone-wrap">
+    <div class="screen-label">
+      <strong>Screen D · 차단 확인 팝업 (다중 계정)</strong>
+      에이전시 여자회원 (다중 계정 보유) 차단 시
+    </div>
+    <div class="phone">
+      <div class="sb">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="11" viewBox="0 0 17 12" fill="white"><path d="M1 9h2v3H1zM5 6h2v6H5zM9 3h2v9H9zM13 0h2v12h-2z"/></svg>
+          <svg width="22" height="11" viewBox="0 0 24 12" fill="none"><rect x="0" y="2" width="20" height="8" rx="2" stroke="white" stroke-width="1.5"/><rect x="20" y="4" width="2" height="4" rx="1" fill="white"/><rect x="1.5" y="3.5" width="14" height="5" rx="1" fill="white"/></svg>
+        </div>
+      </div>
+
+      <!-- 배경 흐릿 -->
+      <div style="position:absolute;top:44px;left:0;right:0;bottom:0;opacity:.3;pointer-events:none">
+        <div style="height:56px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1E1E30">
+          <div style="width:32px;height:32px;background:#13131F;border-radius:8px"></div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:32px;height:32px;border-radius:50%;background:#1a1a2e"></div>
+            <div style="width:70px;height:14px;background:#1a1a2e;border-radius:6px"></div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <div style="width:32px;height:32px;background:#13131F;border-radius:8px"></div>
+            <div style="width:32px;height:32px;background:#13131F;border-radius:8px"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 딤 + 다중계정 팝업 -->
+      <div class="dim">
+        <div class="alert-card">
+          <div style="width:52px;height:52px;border-radius:50%;background:rgba(255,109,109,.12);border:1.5px solid rgba(255,109,109,.3);margin:0 auto 14px;display:flex;align-items:center;justify-content:center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="#FF6D6D" stroke-width="1.8"/>
+              <path d="M6 18L18 6M6 6l12 12" stroke="#FF6D6D" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="alert-title">차단 범위를<br>선택해 주세요</div>
+          <div class="alert-desc">
+            다중 계정이 감지되었어요.<br>차단 범위를 직접 선택해 주세요.
+          </div>
+
+          <!-- 선택지 2개 버튼 -->
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:14px 16px;cursor:pointer;text-align:left">
+              <div style="font-size:14px;font-weight:700;color:var(--t1);margin-bottom:4px">지금 계정만 차단</div>
+              <div style="font-size:12px;color:var(--t2);line-height:1.5">현재 사용 중인 계정에서만 차단 적용</div>
+            </div>
+            <div style="background:rgba(255,109,109,.08);border:1.5px solid rgba(255,109,109,.35);border-radius:14px;padding:14px 16px;cursor:pointer;text-align:left">
+              <div style="font-size:14px;font-weight:700;color:#FF6D6D;margin-bottom:4px">다중 계정 모두 차단</div>
+              <div style="font-size:12px;color:var(--t2);line-height:1.5">내 모든 계정에서 동시 차단 적용</div>
+            </div>
+            <div class="btn-cancel" style="margin-top:2px">취소</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fnote">
+      👥 <strong>차단 팝업 — 다중 계정 (Section 19)</strong><br>
+      · 에이전시 여자회원(다중 계정 보유)에만 노출<br>
+      · 앱이 대신 결정하지 않음 — 회원이 직접 선택<br>
+      · "지금 계정만 차단" → 현재 계정만 적용<br>
+      · "다중 계정 모두 차단" → 모든 계정 동시 적용
+    </div>
+  </div>
+
+</div><!-- /row2 -->
+<hr class="divider-row">
+
+<!-- ═══════════════════════════════════
+     ROW 3 — 신고 화면
+═══════════════════════════════════ -->
+<div class="row">
+
+  <!-- ─── Screen E : 신고 화면 ─── -->
+  <div class="phone-wrap">
+    <div class="screen-label">
+      <strong>Screen E · 신고 화면</strong>
+      채팅방 신고 버튼 → 풀스크린 진입
+    </div>
+    <div class="phone">
+      <div class="sb">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="11" viewBox="0 0 17 12" fill="white"><path d="M1 9h2v3H1zM5 6h2v6H5zM9 3h2v9H9zM13 0h2v12h-2z"/></svg>
+          <svg width="22" height="11" viewBox="0 0 24 12" fill="none"><rect x="0" y="2" width="20" height="8" rx="2" stroke="white" stroke-width="1.5"/><rect x="20" y="4" width="2" height="4" rx="1" fill="white"/><rect x="1.5" y="3.5" width="14" height="5" rx="1" fill="white"/></svg>
+        </div>
+      </div>
+
+      <!-- 헤더 -->
+      <div class="hdr">
+        <div class="ico">
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none"><path d="M9 1L1.5 8.5L9 16" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="ttl">신고하기</span>
+        <div class="spc"></div>
+      </div>
+
+      <!-- 본문 -->
+      <div style="flex:1;overflow-y:auto;padding:20px 20px 100px">
+
+        <!-- 신고 대상 -->
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:24px">
+          <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#9B72FF,#5A3CBD);flex-shrink:0"></div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--t1)">솔빛달빛</div>
+            <div style="font-size:11px;color:var(--t2);margin-top:2px">신고 대상 회원</div>
+          </div>
+        </div>
+
+        <!-- 신고 유형 -->
+        <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:12px">신고 유형 선택</div>
+        <div class="report-type-grid">
+          <!-- 선택됨 -->
+          <div class="report-type-item selected">
+            <div class="report-type-icon">🤬</div>
+            <div class="report-type-label">욕설 · 비방</div>
+          </div>
+          <div class="report-type-item">
+            <div class="report-type-icon">🔞</div>
+            <div class="report-type-label">음란물</div>
+          </div>
+          <div class="report-type-item">
+            <div class="report-type-icon">📢</div>
+            <div class="report-type-label">스팸 · 광고</div>
+          </div>
+          <div class="report-type-item">
+            <div class="report-type-icon">🔑</div>
+            <div class="report-type-label">개인정보 요구</div>
+          </div>
+          <div class="report-type-item" style="grid-column:1/-1">
+            <div class="report-type-icon">📝</div>
+            <div class="report-type-label">기타</div>
+          </div>
+        </div>
+
+        <!-- 상세 내용 입력 -->
+        <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:10px">상세 내용 입력</div>
+        <div class="textarea-box">
+          욕설 및 비방하는 메시지를 반복적으로 전송하고 있습니다...
+        </div>
+
+        <!-- 이미지 첨부 -->
+        <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:10px">
+          이미지 첨부 <span style="font-size:11px;color:var(--t2);font-weight:400">(선택)</span>
+        </div>
+        <div class="attach-box">
+          <div style="width:48px;height:48px;border-radius:10px;background:var(--card);border:1px dashed #2a2a40;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M12 5v14M5 12h14" stroke="#8E8EA0" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <!-- 첨부된 이미지 썸네일 예시 -->
+          <div style="width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,#2a2a40,#1a1a2e);border:1px solid #2a2a40;overflow:hidden;display:flex;align-items:center;justify-content:center">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#5A5A72"><path d="M21 19V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14l4-4h12a2 2 0 002-2z" opacity=".4"/><circle cx="8.5" cy="9.5" r="1.5" fill="#5A5A72"/><path d="M21 15l-5-5L5 21" stroke="#5A5A72" stroke-width="1.5"/></svg>
+          </div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.5">스크린샷을 첨부하면<br>처리가 빨라질 수 있어요</div>
+        </div>
+
+        <!-- 안내 문구 -->
+        <div style="background:rgba(155,114,255,.08);border:1px solid rgba(155,114,255,.18);border-radius:12px;padding:12px 14px;font-size:11px;color:var(--t2);line-height:1.7">
+          · 허위 신고 시 서비스 이용이 제한될 수 있어요<br>
+          · 신고 내용은 관리자가 검토 후 처리해요<br>
+          · 자동 제재는 없으며 관리자 판단 후 조치돼요
+        </div>
+      </div>
+
+      <!-- 하단 버튼 -->
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:16px 20px 36px;background:linear-gradient(to top,#0C0C18 70%,transparent)">
+        <div style="background:var(--warn);height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center">
+          <span style="font-size:16px;font-weight:700;color:#fff">신고 접수하기</span>
+        </div>
+      </div>
+    </div>
+    <div class="fnote">
+      🚨 <strong>신고 화면 (Section 19)</strong><br>
+      · 채팅방 우상단 신고 버튼 → 풀스크린 화면<br>
+      · 신고 유형 1개 선택 필수<br>
+      · 상세 내용 텍스트 입력<br>
+      · 이미지 첨부 선택 (원본 그대로 어드민 전달)<br>
+      · 단순 신고 = 자동 제재 없음, 관리자 수동 판단<br>
+      · 제재 단계: 7일 → 14일 → 30일 → 영구정지
+    </div>
+  </div>
+
+</div><!-- /row3 -->
+
+<!-- 목업 진행 현황 -->
+<div style="max-width:860px;margin:0 auto 0;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px">
+  <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:16px">📁 FREECHAT 목업 전체 진행 현황</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;font-size:12px">
+    <div style="background:rgba(0,200,150,.08);border:1px solid rgba(0,200,150,.2);border-radius:10px;padding:10px 12px">
+      <div style="color:var(--success);font-weight:700;margin-bottom:4px">✅ 완료</div>
+      <div style="color:var(--t2);line-height:1.9">
+        목업 01 — 스플래시·로그인<br>
+        목업 02 — 매칭탭·프로필<br>
+        목업 03 — 채팅탭·채팅방<br>
+        목업 04 — 즐겨찾기·사진<br>
+        목업 05 — 설정탭 (전체)<br>
+        목업 06 — 공지·문의내역<br>
+        목업 07 — 팝업·Alert·신고
+      </div>
+    </div>
+    <div style="background:rgba(254,229,0,.06);border:1px solid rgba(254,229,0,.18);border-radius:10px;padding:10px 12px">
+      <div style="color:var(--reward);font-weight:700;margin-bottom:4px">⏳ 예정</div>
+      <div style="color:var(--t2);line-height:1.9">
+        목업 08 — 스페셜 룰렛<br>
+        목업 09 — 에이전시 코드 입력<br>
+        목업 10 — 매칭 필터 바텀시트
+      </div>
+    </div>
+    <div style="background:rgba(155,114,255,.08);border:1px solid rgba(155,114,255,.2);border-radius:10px;padding:10px 12px">
+      <div style="color:var(--brand);font-weight:700;margin-bottom:4px">📦 산출물</div>
+      <div style="color:var(--t2);line-height:1.9">
+        개발자 PPT 기획서<br>
+        로고·아이콘·컬러팔레트<br>
+        사용자 여정 지도<br>
+        Flutter 코드 (추후)
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

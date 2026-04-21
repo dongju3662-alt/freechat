@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>FREECHAT 목업 12 · 프로필 이미지 승인</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --p1:#9B72FF;--p2:#7C4DFF;--coral:#FF6D6D;
+  --teal:#00C896;--yellow:#FEE500;
+  --bg:#0C0C18;--bg2:#111120;--bg3:#161625;
+  --border:#1a1a2a;--t2:#6e6e90;--t3:#38384e
+}
+body{
+  font-family:-apple-system,'Segoe UI','Noto Sans KR',sans-serif;
+  background:#0a0a14;color:#fff;padding:48px 32px;
+}
+h1{font-size:22px;font-weight:800;margin-bottom:4px}
+.subtitle{font-size:12px;color:var(--t2);margin-bottom:36px}
+.row{display:flex;gap:28px;margin-bottom:48px;flex-wrap:wrap}
+.col{display:flex;flex-direction:column;align-items:center;gap:12px}
+.screen-label{font-size:11px;font-weight:700;color:var(--t2);letter-spacing:1px;text-align:center}
+.screen-sub{font-size:10px;color:var(--t3);text-align:center;margin-top:2px}
+.row-label{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--t3);margin-bottom:8px}
+
+/* 폰 프레임 */
+.phone{
+  width:375px;height:812px;background:var(--bg);
+  border-radius:44px;border:2px solid var(--border);
+  overflow:hidden;position:relative;flex-shrink:0;
+  box-shadow:0 20px 60px rgba(0,0,0,.6)
+}
+.phone::before{
+  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:120px;height:30px;background:var(--bg);
+  border-radius:0 0 18px 18px;z-index:20;
+}
+.screen{width:100%;height:100%;overflow:hidden;position:relative}
+
+/* 상태바 */
+.statusbar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 22px 0;font-size:11px;font-weight:600;
+  position:relative;z-index:10;
+}
+.sb-time{font-size:13px;font-weight:700}
+.sb-icons{display:flex;gap:5px;align-items:center;font-size:10px}
+
+/* 네비 헤더 */
+.nav-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px 8px;
+}
+.nav-back{font-size:22px;color:#fff;cursor:pointer;width:32px}
+.nav-title{font-size:17px;font-weight:700}
+.nav-right{width:32px}
+
+/* 버튼 */
+.btn-main{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,var(--p1),var(--p2));
+  border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:700;cursor:pointer
+}
+.btn-gray{
+  width:100%;padding:15px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:14px;color:var(--t2);font-size:15px;font-weight:600;cursor:pointer
+}
+.btn-coral{
+  width:100%;padding:15px;
+  background:rgba(255,109,109,.15);border:1px solid rgba(255,109,109,.3);
+  border-radius:14px;color:var(--coral);font-size:15px;font-weight:700;cursor:pointer
+}
+
+/* 성별 아바타 */
+.avatar-male-xl{
+  width:96px;height:96px;border-radius:50%;
+  background:linear-gradient(135deg,#4a90d9,#2563a8);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;cursor:pointer;
+}
+.avatar-female-xl{
+  width:96px;height:96px;border-radius:50%;
+  background:linear-gradient(135deg,#ff7eb3,#e0306a);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;cursor:pointer;
+}
+.avatar-photo-xl{
+  width:96px;height:96px;border-radius:50%;
+  background:linear-gradient(135deg,#c8a882,#9c7a5a);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;cursor:pointer;overflow:hidden;
+}
+
+/* 아바타 카메라 버튼 (편집 아이콘) */
+.avatar-edit-btn{
+  position:absolute;bottom:2px;right:2px;
+  width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,var(--p1),var(--p2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;border:2px solid var(--bg);
+}
+/* 배지 - 심사중 */
+.badge-pending{
+  position:absolute;bottom:2px;right:2px;
+  width:28px;height:28px;border-radius:50%;
+  background:#FEE500;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;border:2px solid var(--bg);
+}
+/* 배지 - 반려 */
+.badge-rejected{
+  position:absolute;bottom:2px;right:2px;
+  width:28px;height:28px;border-radius:50%;
+  background:var(--coral);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;border:2px solid var(--bg);
+}
+/* 배지 - 승인 */
+.badge-approved{
+  position:absolute;bottom:2px;right:2px;
+  width:28px;height:28px;border-radius:50%;
+  background:var(--teal);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;border:2px solid var(--bg);
+}
+
+/* 상태 태그 */
+.status-tag{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:700;padding:4px 12px;
+  border-radius:20px;margin-top:10px;
+}
+.tag-pending{background:rgba(254,229,0,.15);color:var(--yellow);border:1px solid rgba(254,229,0,.25)}
+.tag-approved{background:rgba(0,200,150,.15);color:var(--teal);border:1px solid rgba(0,200,150,.25)}
+.tag-rejected{background:rgba(255,109,109,.15);color:var(--coral);border:1px solid rgba(255,109,109,.25)}
+
+/* 토스트 배너 */
+.toast-success{
+  position:absolute;top:56px;left:20px;right:20px;z-index:50;
+  background:#0a2018;border:1.5px solid var(--teal);
+  border-radius:12px;padding:12px 16px;
+  display:flex;align-items:center;gap:10px;
+  font-size:13px;font-weight:600;color:var(--teal);
+}
+.toast-reject{
+  position:absolute;top:56px;left:20px;right:20px;z-index:50;
+  background:#200a0a;border:1.5px solid var(--coral);
+  border-radius:12px;padding:12px 16px;
+  display:flex;align-items:center;gap:10px;
+  font-size:13px;font-weight:600;color:var(--coral);
+}
+
+/* 안내 배너 */
+.info-banner{
+  border-radius:12px;padding:14px 16px;margin:0 20px;
+  font-size:12px;line-height:1.7;
+}
+.info-pending{background:rgba(254,229,0,.07);border:1px solid rgba(254,229,0,.15);color:#b8a800}
+.info-rejected{background:rgba(255,109,109,.07);border:1px solid rgba(255,109,109,.15);color:#cc5555}
+
+/* 프로필 수정 섹션 행 */
+.edit-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px;border-bottom:1px solid var(--border);
+}
+.edit-row-label{font-size:13px;color:var(--t2)}
+.edit-row-val{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+
+/* 팝업 오버레이 */
+.popup-overlay{
+  position:absolute;inset:0;
+  background:rgba(12,12,24,.78);
+  display:flex;align-items:flex-end;
+  z-index:30;
+}
+.popup-sheet{
+  background:#16162a;
+  border-top:1px solid rgba(155,114,255,.2);
+  border-radius:24px 24px 0 0;
+  padding:20px 24px 36px;
+  width:100%;
+}
+.sheet-handle{
+  width:40px;height:4px;border-radius:2px;
+  background:var(--bg3);margin:0 auto 20px;
+}
+
+/* 시트 옵션 */
+.sheet-option{
+  display:flex;align-items:center;gap:14px;
+  padding:16px 0;border-bottom:1px solid var(--border);
+  cursor:pointer;
+}
+.sheet-option:last-child{border-bottom:none}
+.sheet-icon{
+  width:44px;height:44px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;flex-shrink:0;
+}
+.icon-gallery{background:rgba(155,114,255,.15)}
+.icon-camera{background:rgba(0,200,150,.12)}
+.icon-delete{background:rgba(255,109,109,.12)}
+.sheet-option-label{font-size:15px;font-weight:600}
+.sheet-option-desc{font-size:11px;color:var(--t2);margin-top:2px}
+
+/* 하단 탭바 */
+.home-tab-bar{
+  position:absolute;bottom:0;left:0;right:0;
+  background:var(--bg2);border-top:1px solid var(--border);
+  display:flex;justify-content:space-around;align-items:center;
+  padding:10px 0 14px;z-index:10;
+}
+.tab-item{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;color:var(--t3)}
+.tab-item.active{color:var(--p1)}
+.tab-icon{font-size:18px}
+
+/* 구분선 */
+.divider-full{height:1px;background:var(--border);margin:0 20px}
+
+/* 사진 미리보기 시뮬레이션 */
+.photo-sim{
+  width:100%;height:220px;
+  background:linear-gradient(135deg,#3a2a1a 0%,#6b4c2f 35%,#c8a882 65%,#f0d4b0 100%);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.photo-face{
+  width:80px;height:80px;border-radius:50%;
+  background:rgba(255,255,255,.15);
+  border:2px solid rgba(255,255,255,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:36px;
+}
+</style>
+</head>
+<body>
+
+<h1>📋 FREECHAT 목업 12 · 프로필 이미지 승인</h1>
+<div class="subtitle">이미지 선택 → 승인 대기 → 승인 완료 / 반려 흐름</div>
+
+<!-- ══════════════════════════
+     ROW 1 : 이미지 선택 바텀시트 + 승인 대기
+══════════════════════════ -->
+<div class="row-label">ROW 1 · 이미지 선택 바텀시트 / 승인 대기 상태</div>
+<div class="row">
+
+  <!-- Screen 1 : 이미지 선택 바텀시트 -->
+  <div class="col">
+    <div class="screen-label">Screen 1 · 이미지 선택</div>
+    <div class="screen-sub">프로필 수정 → 이미지 탭 → 바텀시트 등장</div>
+    <div class="phone">
+      <div class="screen" style="background:var(--bg)">
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <div class="sb-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+
+        <div class="nav-header">
+          <div class="nav-back">←</div>
+          <div class="nav-title">프로필 수정</div>
+          <div class="nav-right"></div>
+        </div>
+
+        <!-- 프로필 이미지 영역 -->
+        <div style="display:flex;flex-direction:column;align-items:center;padding:20px 0 24px">
+          <div class="avatar-male-xl">
+            <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+              <circle cx="26" cy="18" r="10" fill="rgba(255,255,255,0.9)"/>
+              <path d="M8 48c0-9.941 8.059-18 18-18s18 8.059 18 18" stroke="rgba(255,255,255,0.9)" stroke-width="3.5" stroke-linecap="round"/>
+            </svg>
+            <div class="avatar-edit-btn">📷</div>
+          </div>
+          <div style="margin-top:10px;font-size:13px;color:var(--t2)">사진을 탭해서 변경하세요</div>
+        </div>
+
+        <div class="divider-full"></div>
+
+        <!-- 수정 항목들 (흐리게) -->
+        <div style="opacity:.45">
+          <div class="edit-row">
+            <div class="edit-row-label">닉네임</div>
+            <div class="edit-row-val" style="color:#fff">귀여운판다 <span style="font-size:11px;color:var(--t3)">›</span></div>
+          </div>
+          <div class="edit-row">
+            <div class="edit-row-label">지역</div>
+            <div class="edit-row-val" style="color:#fff">서울특별시 강남구 <span style="font-size:11px;color:var(--t3)">›</span></div>
+          </div>
+          <div class="edit-row">
+            <div class="edit-row-label">MBTI</div>
+            <div class="edit-row-val" style="color:var(--t2)">선택 안 함 <span style="font-size:11px;color:var(--t3)">›</span></div>
+          </div>
+        </div>
+
+        <!-- 바텀시트 -->
+        <div class="popup-overlay">
+          <div class="popup-sheet">
+            <div class="sheet-handle"></div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:16px">프로필 사진 변경</div>
+
+            <div class="sheet-option">
+              <div class="sheet-icon icon-gallery">🖼️</div>
+              <div>
+                <div class="sheet-option-label">갤러리에서 선택</div>
+                <div class="sheet-option-desc">내 앨범에서 사진을 선택합니다</div>
+              </div>
+            </div>
+            <div class="sheet-option">
+              <div class="sheet-icon icon-camera">📷</div>
+              <div>
+                <div class="sheet-option-label">카메라로 촬영</div>
+                <div class="sheet-option-desc">지금 바로 사진을 찍습니다</div>
+              </div>
+            </div>
+            <div class="sheet-option" style="border-bottom:none">
+              <div class="sheet-icon icon-delete">🗑️</div>
+              <div>
+                <div class="sheet-option-label" style="color:var(--coral)">현재 사진 삭제</div>
+                <div class="sheet-option-desc">기본 이미지로 되돌립니다</div>
+              </div>
+            </div>
+
+            <div style="margin-top:12px">
+              <button class="btn-gray" style="font-size:14px;padding:13px">취소</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 2 : 승인 대기 상태 -->
+  <div class="col">
+    <div class="screen-label">Screen 2 · 승인 대기</div>
+    <div class="screen-sub">이미지 등록 완료 → 관리자 심사 전 대기 상태</div>
+    <div class="phone">
+      <div class="screen" style="background:var(--bg)">
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <div class="sb-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+
+        <div class="nav-header">
+          <div class="nav-back">←</div>
+          <div class="nav-title">프로필 수정</div>
+          <div class="nav-right"></div>
+        </div>
+
+        <!-- 아바타 (심사 중) -->
+        <div style="display:flex;flex-direction:column;align-items:center;padding:20px 0 8px">
+          <div class="avatar-male-xl">
+            <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+              <circle cx="26" cy="18" r="10" fill="rgba(255,255,255,0.9)"/>
+              <path d="M8 48c0-9.941 8.059-18 18-18s18 8.059 18 18" stroke="rgba(255,255,255,0.9)" stroke-width="3.5" stroke-linecap="round"/>
+            </svg>
+            <div class="badge-pending">⏳</div>
+          </div>
+          <div class="status-tag tag-pending">⏳ 이미지 심사 중</div>
+          <div style="margin-top:6px;font-size:11px;color:var(--t3)">승인되면 즉시 반영됩니다</div>
+        </div>
+
+        <!-- 안내 배너 -->
+        <div class="info-banner info-pending" style="margin-top:12px">
+          등록하신 이미지를 검토 중이에요.<br>
+          승인 전까지 기본 이미지가 표시됩니다.
+        </div>
+
+        <div class="divider-full" style="margin-top:20px"></div>
+
+        <!-- 수정 항목들 -->
+        <div class="edit-row">
+          <div class="edit-row-label">닉네임</div>
+          <div class="edit-row-val" style="color:#fff">귀여운판다 <span style="font-size:11px;color:var(--t3)">›</span></div>
+        </div>
+        <div class="edit-row">
+          <div class="edit-row-label">지역</div>
+          <div class="edit-row-val" style="color:#fff">서울특별시 강남구 <span style="font-size:11px;color:var(--t3)">›</span></div>
+        </div>
+        <div class="edit-row">
+          <div class="edit-row-label">스타일 태그</div>
+          <div class="edit-row-val" style="color:#fff;font-size:12px">
+            <span style="background:rgba(155,114,255,.15);color:var(--p1);padding:2px 8px;border-radius:10px;font-size:11px">유머</span>
+            <span style="font-size:11px;color:var(--t3)">›</span>
+          </div>
+        </div>
+        <div class="edit-row">
+          <div class="edit-row-label">MBTI</div>
+          <div class="edit-row-val" style="color:#fff">ENFP <span style="font-size:11px;color:var(--t3)">›</span></div>
+        </div>
+
+        <div style="padding:24px 20px 0;position:absolute;bottom:40px;left:0;right:0;padding:0 20px">
+          <button class="btn-main" style="opacity:.5;cursor:not-allowed">저장</button>
+          <div style="text-align:center;font-size:11px;color:var(--t3);margin-top:8px">이미지 심사 완료 후 변경 가능합니다</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div><!-- end row 1 -->
+
+
+<!-- ══════════════════════════
+     ROW 2 : 승인 완료 + 반려
+══════════════════════════ -->
+<div class="row-label">ROW 2 · 승인 완료 / 이미지 반려</div>
+<div class="row">
+
+  <!-- Screen 3 : 승인 완료 -->
+  <div class="col">
+    <div class="screen-label">Screen 3 · 승인 완료</div>
+    <div class="screen-sub">슈퍼관리자 승인 → 푸시 알림 + 프로필에 실제 사진 적용</div>
+    <div class="phone">
+      <div class="screen" style="background:var(--bg)">
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <div class="sb-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+
+        <!-- 승인 완료 토스트 -->
+        <div class="toast-success">
+          <span style="font-size:18px">✅</span>
+          <div>
+            <div>프로필 이미지가 승인되었습니다</div>
+            <div style="font-size:11px;color:rgba(0,200,150,.95);font-weight:400;margin-top:2px">지금부터 모든 회원에게 표시됩니다</div>
+          </div>
+        </div>
+
+        <div class="nav-header" style="margin-top:8px">
+          <div class="nav-back">←</div>
+          <div class="nav-title">프로필 수정</div>
+          <div class="nav-right"></div>
+        </div>
+
+        <!-- 실제 사진 적용된 아바타 -->
+        <div style="display:flex;flex-direction:column;align-items:center;padding:16px 0 8px">
+          <div class="avatar-photo-xl">
+            <!-- 사람 얼굴 시뮬레이션 -->
+            <svg width="96" height="96" viewBox="0 0 96 96" fill="none">
+              <rect width="96" height="96" fill="url(#photoGrad)"/>
+              <circle cx="48" cy="38" r="18" fill="rgba(240,200,160,.9)"/>
+              <ellipse cx="43" cy="35" rx="2.5" ry="3" fill="#5a3a20"/>
+              <ellipse cx="53" cy="35" rx="2.5" ry="3" fill="#5a3a20"/>
+              <path d="M43 44 Q48 48 53 44" stroke="#c07050" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              <path d="M8 96c0-22 18-38 40-38s40 16 40 38" fill="rgba(80,50,30,.6)"/>
+              <defs>
+                <linearGradient id="photoGrad" x1="0" y1="0" x2="96" y2="96">
+                  <stop offset="0%" stop-color="#4a3020"/>
+                  <stop offset="100%" stop-color="#8b6040"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="badge-approved">✓</div>
+          </div>
+          <div class="status-tag tag-approved">✓ 이미지 승인 완료</div>
+          <div style="margin-top:6px;font-size:11px;color:var(--t3)">사진을 탭해서 변경할 수 있습니다</div>
+        </div>
+
+        <div class="divider-full" style="margin-top:16px"></div>
+
+        <div class="edit-row">
+          <div class="edit-row-label">닉네임</div>
+          <div class="edit-row-val" style="color:#fff">귀여운판다 <span style="font-size:11px;color:var(--t3)">›</span></div>
+        </div>
+        <div class="edit-row">
+          <div class="edit-row-label">지역</div>
+          <div class="edit-row-val" style="color:#fff">서울특별시 강남구 <span style="font-size:11px;color:var(--t3)">›</span></div>
+        </div>
+        <div class="edit-row">
+          <div class="edit-row-label">스타일 태그</div>
+          <div class="edit-row-val" style="color:#fff;font-size:12px">
+            <span style="background:rgba(155,114,255,.15);color:var(--p1);padding:2px 8px;border-radius:10px;font-size:11px">유머</span>
+            <span style="font-size:11px;color:var(--t3)">›</span>
+          </div>
+        </div>
+        <div class="edit-row">
+          <div class="edit-row-label">MBTI</div>
+          <div class="edit-row-val" style="color:#fff">ENFP <span style="font-size:11px;color:var(--t3)">›</span></div>
+        </div>
+
+        <div style="position:absolute;bottom:40px;left:0;right:0;padding:0 20px">
+          <button class="btn-main">확인</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 4 : 반려 상태 -->
+  <div class="col">
+    <div class="screen-label">Screen 4 · 이미지 반려</div>
+    <div class="screen-sub">슈퍼관리자 반려 → 푸시 알림 + 기본 아바타 복귀 + 재등록 유도</div>
+    <div class="phone">
+      <div class="screen" style="background:var(--bg)">
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <div class="sb-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+
+        <!-- 반려 토스트 -->
+        <div class="toast-reject">
+          <span style="font-size:18px">❌</span>
+          <div>
+            <div>프로필 이미지가 반려되었습니다</div>
+            <div style="font-size:11px;color:rgba(255,109,109,.95);font-weight:400;margin-top:2px">다른 이미지로 다시 등록해 주세요</div>
+          </div>
+        </div>
+
+        <div class="nav-header" style="margin-top:8px">
+          <div class="nav-back">←</div>
+          <div class="nav-title">프로필 수정</div>
+          <div class="nav-right"></div>
+        </div>
+
+        <!-- 기본 아바타 복귀 (반려 배지) -->
+        <div style="display:flex;flex-direction:column;align-items:center;padding:16px 0 8px">
+          <div class="avatar-male-xl">
+            <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+              <circle cx="26" cy="18" r="10" fill="rgba(255,255,255,0.9)"/>
+              <path d="M8 48c0-9.941 8.059-18 18-18s18 8.059 18 18" stroke="rgba(255,255,255,0.9)" stroke-width="3.5" stroke-linecap="round"/>
+            </svg>
+            <div class="badge-rejected">✕</div>
+          </div>
+          <div class="status-tag tag-rejected">✕ 이미지 반려됨</div>
+        </div>
+
+        <!-- 반려 안내 배너 -->
+        <div class="info-banner info-rejected" style="margin-top:10px">
+          등록하신 이미지가 반려되었습니다.<br>
+          다른 이미지로 다시 등록해 주세요.
+        </div>
+
+        <div class="divider-full" style="margin-top:20px"></div>
+
+        <div class="edit-row">
+          <div class="edit-row-label">닉네임</div>
+          <div class="edit-row-val" style="color:#fff">귀여운판다 <span style="font-size:11px;color:var(--t3)">›</span></div>
+        </div>
+        <div class="edit-row">
+          <div class="edit-row-label">지역</div>
+          <div class="edit-row-val" style="color:#fff">서울특별시 강남구 <span style="font-size:11px;color:var(--t3)">›</span></div>
+        </div>
+        <div class="edit-row">
+          <div class="edit-row-label">스타일 태그</div>
+          <div class="edit-row-val" style="color:#fff;font-size:12px">
+            <span style="background:rgba(155,114,255,.15);color:var(--p1);padding:2px 8px;border-radius:10px;font-size:11px">유머</span>
+            <span style="font-size:11px;color:var(--t3)">›</span>
+          </div>
+        </div>
+        <div class="edit-row">
+          <div class="edit-row-label">MBTI</div>
+          <div class="edit-row-val" style="color:#fff">ENFP <span style="font-size:11px;color:var(--t3)">›</span></div>
+        </div>
+
+        <!-- 하단 고정 버튼 -->
+        <div style="position:absolute;bottom:40px;left:0;right:0;padding:0 20px">
+          <button class="btn-coral" style="display:flex;align-items:center;justify-content:center;gap:8px">
+            <span>📷</span> 다시 등록하기
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div><!-- end row 2 -->
+
+<div style="margin-top:8px;font-size:11px;color:var(--t3);text-align:center">
+  FREECHAT 목업 12 · 프로필 이미지 승인 대기·완료·반려 · v1
+</div>
+
+</body>
+</html>

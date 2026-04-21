@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FREECHAT 목업 06 – 공지사항 · 문의 내역</title>
+<style>
+  :root {
+    --bg:      #0C0C18;
+    --surface: #13131F;
+    --card:    #16162A;
+    --border:  #1E1E30;
+    --brand:   #9B72FF;
+    --brand2:  #7A52E0;
+    --warn:    #FF6D6D;
+    --success: #00C896;
+    --reward:  #FEE500;
+    --t1:      #FFFFFF;
+    --t2:      #8E8EA0;
+    --t3:      #5A5A72;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0a0a14;
+    font-family: -apple-system, 'Noto Sans KR', sans-serif;
+    color: var(--t1);
+    padding: 48px 32px;
+    min-height: 100vh;
+  }
+
+  /* ─── 페이지 헤더 ─── */
+  .page-title {
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .page-title h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -.5px;
+    background: linear-gradient(135deg, #9B72FF, #C4A4FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .page-title p {
+    font-size: 13px;
+    color: var(--t2);
+    margin-top: 6px;
+  }
+
+  .design-tokens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+  .token {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 11px;
+    color: var(--t2);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .token-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* ─── 화면 행 ─── */
+  .row {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    margin-bottom: 56px;
+  }
+
+  /* ─── 폰 프레임 ─── */
+  .phone-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .screen-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--t2);
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    text-align: center;
+  }
+  .screen-label strong { display: block; font-size: 13px; color: var(--t1); margin-bottom: 2px; }
+
+  .phone {
+    width: 375px;
+    height: 812px;
+    background: var(--bg);
+    border-radius: 44px;
+    overflow: hidden;
+    position: relative;
+    border: 2px solid #2a2a40;
+    box-shadow: 0 24px 60px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.05);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ─── 상태바 ─── */
+  .status-bar {
+    height: 44px;
+    padding: 14px 24px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .status-bar .time { font-size: 15px; font-weight: 600; }
+  .status-icons { display: flex; gap: 6px; align-items: center; }
+  .status-icons svg { width: 16px; height: 12px; fill: var(--t1); }
+
+  /* ─── 헤더 ─── */
+  .header {
+    height: 56px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .header .btn-icon {
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 8px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .header .title {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -.3px;
+  }
+  .header .spacer { width: 32px; }
+
+  /* ─── 스크롤 영역 ─── */
+  .scroll-area {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .inner { padding: 0 20px 32px; overflow-y: auto; flex: 1; }
+  .inner::-webkit-scrollbar { display: none; }
+
+  /* ─── 공통 컴포넌트 ─── */
+  .section-gap { height: 24px; }
+  .item-gap    { height: 1px; background: var(--border); margin: 0; }
+
+  /* 공지사항 아이템 */
+  .notice-item {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .notice-item:last-child { border-bottom: none; }
+  .notice-item-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .badge-new {
+    background: var(--brand);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 20px;
+    flex-shrink: 0;
+  }
+  .badge-pinned {
+    background: rgba(155,114,255,.15);
+    color: var(--brand);
+    border: 1px solid rgba(155,114,255,.3);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 20px;
+    flex-shrink: 0;
+  }
+  .notice-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--t1);
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .notice-date { font-size: 12px; color: var(--t3); }
+
+  /* 공지사항 상세 */
+  .notice-detail-title {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.5;
+    color: var(--t1);
+    margin: 20px 0 8px;
+  }
+  .notice-detail-meta {
+    font-size: 12px;
+    color: var(--t3);
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .notice-detail-body {
+    font-size: 14px;
+    color: rgba(255,255,255,.78);
+    line-height: 1.8;
+  }
+  .notice-detail-body p { margin-bottom: 12px; }
+
+  /* 문의 내역 아이템 */
+  .inquiry-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+    cursor: pointer;
+  }
+  .inquiry-item-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .inquiry-type {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+  .type-bug   { background: rgba(255,109,109,.15); color: var(--warn); border: 1px solid rgba(255,109,109,.3); }
+  .type-gen   { background: rgba(155,114,255,.12); color: var(--brand); border: 1px solid rgba(155,114,255,.28); }
+  .type-acc   { background: rgba(254,229,0,.1);   color: var(--reward); border: 1px solid rgba(254,229,0,.25); }
+  .type-feat  { background: rgba(0,200,150,.1);   color: var(--success); border: 1px solid rgba(0,200,150,.25); }
+
+  .inquiry-status {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+  .status-done    { background: rgba(0,200,150,.12); color: var(--success); border: 1px solid rgba(0,200,150,.25); }
+  .status-pending { background: rgba(142,142,160,.1); color: var(--t2); border: 1px solid rgba(142,142,160,.2); }
+
+  .inquiry-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--t1);
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .inquiry-preview {
+    font-size: 12px;
+    color: var(--t2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 8px;
+  }
+  .inquiry-date {
+    font-size: 11px;
+    color: var(--t3);
+  }
+
+  /* 문의 상세 */
+  .inquiry-detail-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .inquiry-detail-section-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--t3);
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    margin-bottom: 12px;
+  }
+  .inquiry-detail-body {
+    font-size: 14px;
+    color: rgba(255,255,255,.8);
+    line-height: 1.7;
+  }
+  .inquiry-detail-date {
+    font-size: 11px;
+    color: var(--t3);
+    margin-top: 10px;
+  }
+
+  .answer-section {
+    background: linear-gradient(135deg, rgba(155,114,255,.1), rgba(122,82,224,.05));
+    border: 1px solid rgba(155,114,255,.25);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .answer-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .answer-icon {
+    width: 28px; height: 28px;
+    background: var(--brand);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .answer-from { font-size: 12px; font-weight: 700; color: var(--brand); }
+  .answer-body {
+    font-size: 14px;
+    color: rgba(255,255,255,.85);
+    line-height: 1.7;
+  }
+  .answer-date {
+    font-size: 11px;
+    color: var(--t3);
+    margin-top: 10px;
+  }
+  .answer-pending {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 20px;
+    gap: 10px;
+  }
+  .answer-pending svg { opacity: .35; }
+  .answer-pending span { font-size: 13px; color: var(--t2); }
+
+  /* 플로우 노트 */
+  .flow-note {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 11px;
+    color: var(--t2);
+    line-height: 1.7;
+    margin-top: 4px;
+    text-align: left;
+  }
+  .flow-note strong { color: var(--brand); font-weight: 700; }
+
+  /* 구분선 */
+  .divider-row {
+    border: none;
+    border-top: 1px solid #1a1a2e;
+    margin: 8px 0 48px;
+  }
+
+  /* 빈 상태 */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 20px;
+    gap: 10px;
+  }
+  .empty-state svg { opacity: .3; }
+  .empty-state span { font-size: 14px; color: var(--t2); }
+</style>
+</head>
+<body>
+
+<!-- ─── 페이지 헤더 ─── -->
+<div class="page-title">
+  <h1>FREECHAT 목업 06</h1>
+  <p>공지사항 목록 · 공지사항 상세 · 문의 내역 · 문의 답변 확인</p>
+</div>
+<div class="design-tokens">
+  <span class="token"><span class="token-dot" style="background:#0C0C18;border:1px solid #333"></span>#0C0C18 배경</span>
+  <span class="token"><span class="token-dot" style="background:#9B72FF"></span>#9B72FF 브랜드</span>
+  <span class="token"><span class="token-dot" style="background:#FF6D6D"></span>#FF6D6D 경고</span>
+  <span class="token"><span class="token-dot" style="background:#00C896"></span>#00C896 성공</span>
+  <span class="token"><span class="token-dot" style="background:#FEE500"></span>#FEE500 리워드</span>
+</div>
+
+<!-- ═══════════════════════════════════
+     ROW 1 — Screen 20 + Screen 21
+═══════════════════════════════════ -->
+<div class="row">
+
+  <!-- ─── Screen 20 : 공지사항 목록 ─── -->
+  <div class="phone-wrap">
+    <div class="screen-label">
+      <strong>Screen 20 · 공지사항 목록</strong>
+      설정 → 공지사항 탭 진입 / 어드민 작성 공지 노출
+    </div>
+    <div class="phone">
+      <!-- 상태바 -->
+      <div class="status-bar">
+        <span class="time">9:41</span>
+        <div class="status-icons">
+          <svg viewBox="0 0 17 12"><path d="M1 9h2v3H1zM5 6h2v6H5zM9 3h2v9H9zM13 0h2v12h-2z"/></svg>
+          <svg viewBox="0 0 24 12"><rect x="0" y="2" width="20" height="8" rx="2" stroke="white" stroke-width="1.5" fill="none"/><rect x="20" y="4" width="2" height="4" rx="1" fill="white"/><rect x="1.5" y="3.5" width="15" height="5" rx="1" fill="white"/></svg>
+        </div>
+      </div>
+
+      <!-- 헤더 -->
+      <div class="header">
+        <div class="btn-icon">
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none">
+            <path d="M9 1L1.5 8.5L9 16" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="title">공지사항</span>
+        <div class="spacer"></div>
+      </div>
+
+      <!-- 목록 -->
+      <div class="scroll-area">
+        <div class="inner">
+          <div style="height:8px"></div>
+
+          <!-- 고정 공지 (NEW + 📌) -->
+          <div class="notice-item">
+            <div class="notice-item-top">
+              <span class="badge-pinned">📌 고정</span>
+              <span class="badge-new">NEW</span>
+              <span class="notice-title">서비스 이용약관 개정 안내</span>
+            </div>
+            <div class="notice-date">2026.04.17</div>
+          </div>
+
+          <!-- 일반 공지 (NEW) -->
+          <div class="notice-item">
+            <div class="notice-item-top">
+              <span class="badge-new">NEW</span>
+              <span class="notice-title">스페셜 룰렛 업데이트 안내 (v1.3)</span>
+            </div>
+            <div class="notice-date">2026.04.16</div>
+          </div>
+
+          <!-- 일반 공지 -->
+          <div class="notice-item">
+            <div class="notice-item-top">
+              <span class="notice-title">4월 이벤트 — 출석 보너스 2배</span>
+            </div>
+            <div class="notice-date">2026.04.10</div>
+          </div>
+
+          <!-- 일반 공지 -->
+          <div class="notice-item">
+            <div class="notice-item-top">
+              <span class="notice-title">프로필 이미지 심사 기준 안내</span>
+            </div>
+            <div class="notice-date">2026.04.03</div>
+          </div>
+
+          <!-- 일반 공지 -->
+          <div class="notice-item">
+            <div class="notice-item-top">
+              <span class="notice-title">매칭 필터 업데이트 안내</span>
+            </div>
+            <div class="notice-date">2026.03.28</div>
+          </div>
+
+          <!-- 일반 공지 -->
+          <div class="notice-item">
+            <div class="notice-item-top">
+              <span class="notice-title">서버 점검 완료 안내 (3월 20일)</span>
+            </div>
+            <div class="notice-date">2026.03.20</div>
+          </div>
+
+          <!-- 일반 공지 -->
+          <div class="notice-item">
+            <div class="notice-item-top">
+              <span class="notice-title">즐겨찾기 맞팔 기능 출시 안내</span>
+            </div>
+            <div class="notice-date">2026.03.15</div>
+          </div>
+
+          <!-- 일반 공지 -->
+          <div class="notice-item">
+            <div class="notice-item-top">
+              <span class="notice-title">욕설 필터링 정책 강화 안내</span>
+            </div>
+            <div class="notice-date">2026.03.10</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flow-note">
+      📋 <strong>공지사항 로직 (Section 27)</strong><br>
+      • 작성 주체: 슈퍼관리자 어드민<br>
+      • 확인 방법: 설정 탭 → 공지사항 목록<br>
+      • 팝업 방식 미사용 (직접 탭 진입)<br>
+      • 고정 공지 📌 상단 고정 노출<br>
+      • NEW 배지: 7일 이내 등록된 공지
+    </div>
+  </div>
+
+  <!-- ─── Screen 21 : 공지사항 상세 ─── -->
+  <div class="phone-wrap">
+    <div class="screen-label">
+      <strong>Screen 21 · 공지사항 상세</strong>
+      공지 항목 탭 → 전체 내용 확인
+    </div>
+    <div class="phone">
+      <!-- 상태바 -->
+      <div class="status-bar">
+        <span class="time">9:41</span>
+        <div class="status-icons">
+          <svg viewBox="0 0 17 12"><path d="M1 9h2v3H1zM5 6h2v6H5zM9 3h2v9H9zM13 0h2v12h-2z"/></svg>
+          <svg viewBox="0 0 24 12"><rect x="0" y="2" width="20" height="8" rx="2" stroke="white" stroke-width="1.5" fill="none"/><rect x="20" y="4" width="2" height="4" rx="1" fill="white"/><rect x="1.5" y="3.5" width="15" height="5" rx="1" fill="white"/></svg>
+        </div>
+      </div>
+
+      <!-- 헤더 -->
+      <div class="header">
+        <div class="btn-icon">
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none">
+            <path d="M9 1L1.5 8.5L9 16" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="title">공지사항</span>
+        <div class="spacer"></div>
+      </div>
+
+      <!-- 상세 본문 -->
+      <div class="scroll-area">
+        <div class="inner">
+          <!-- 배지 -->
+          <div style="display:flex;gap:6px;margin-top:20px;margin-bottom:0">
+            <span class="badge-pinned">📌 고정</span>
+            <span class="badge-new">NEW</span>
+          </div>
+
+          <!-- 제목 -->
+          <div class="notice-detail-title">서비스 이용약관 개정 안내</div>
+
+          <!-- 메타 -->
+          <div class="notice-detail-meta">등록일 2026.04.17 &nbsp;·&nbsp; 관리자</div>
+
+          <!-- 본문 -->
+          <div class="notice-detail-body">
+            <p>안녕하세요, FREECHAT 운영팀입니다.</p>
+            <p>2026년 5월 1일부터 아래와 같이 서비스 이용약관이 개정될 예정입니다. 주요 변경 사항을 확인해 주세요.</p>
+            <p style="color:var(--brand);font-weight:600">▸ 주요 변경 내용</p>
+            <p>① 매칭권 환불 정책 조항 신설 (제9조 3항)<br>
+            ② 신고 처리 절차 및 제재 기준 명확화 (제12조)<br>
+            ③ 개인정보 보관 기간 상세 안내 (제15조)</p>
+            <p>변경된 약관은 2026년 5월 1일부터 적용되며, 계속 서비스를 이용하시면 변경 약관에 동의한 것으로 간주됩니다.</p>
+            <p>문의 사항은 앱 내 문의하기 기능을 통해 접수해 주세요.<br>감사합니다.</p>
+            <p style="color:var(--t3);font-size:12px">— FREECHAT 운영팀 드림</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flow-note">
+      📄 <strong>공지사항 상세</strong><br>
+      • 뒤로가기로 목록 복귀<br>
+      • 고정/NEW 배지 유지 노출<br>
+      • 스크롤로 전체 본문 확인<br>
+      • 공유/저장 버튼 없음 (읽기 전용)
+    </div>
+  </div>
+
+</div><!-- /row1 -->
+
+<hr class="divider-row">
+
+<!-- ═══════════════════════════════════
+     ROW 2 — Screen 22 + Screen 23
+═══════════════════════════════════ -->
+<div class="row">
+
+  <!-- ─── Screen 22 : 문의 내역 목록 ─── -->
+  <div class="phone-wrap">
+    <div class="screen-label">
+      <strong>Screen 22 · 문의 내역 목록</strong>
+      문의하기 → 문의 내역 탭 / 답변 상태 확인
+    </div>
+    <div class="phone">
+      <!-- 상태바 -->
+      <div class="status-bar">
+        <span class="time">9:41</span>
+        <div class="status-icons">
+          <svg viewBox="0 0 17 12"><path d="M1 9h2v3H1zM5 6h2v6H5zM9 3h2v9H9zM13 0h2v12h-2z"/></svg>
+          <svg viewBox="0 0 24 12"><rect x="0" y="2" width="20" height="8" rx="2" stroke="white" stroke-width="1.5" fill="none"/><rect x="20" y="4" width="2" height="4" rx="1" fill="white"/><rect x="1.5" y="3.5" width="15" height="5" rx="1" fill="white"/></svg>
+        </div>
+      </div>
+
+      <!-- 헤더 -->
+      <div class="header">
+        <div class="btn-icon">
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none">
+            <path d="M9 1L1.5 8.5L9 16" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="title">문의 내역</span>
+        <div class="spacer"></div>
+      </div>
+
+      <!-- 탭 (문의하기 / 문의 내역) -->
+      <div style="display:flex;border-bottom:1px solid var(--border);flex-shrink:0">
+        <div style="flex:1;height:44px;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--t2);cursor:pointer">
+          문의하기
+        </div>
+        <div style="flex:1;height:44px;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--brand);font-weight:700;cursor:pointer;border-bottom:2px solid var(--brand);margin-bottom:-1px">
+          문의 내역
+        </div>
+      </div>
+
+      <!-- 목록 -->
+      <div class="scroll-area">
+        <div class="inner" style="padding-top:16px">
+
+          <!-- 문의 1 — 답변 완료 (NEW 읽지 않음) -->
+          <div class="inquiry-item" style="border-color:rgba(155,114,255,.3)">
+            <div class="inquiry-item-top">
+              <span class="inquiry-type type-bug">버그 신고</span>
+              <div style="display:flex;align-items:center;gap:6px">
+                <span style="width:7px;height:7px;border-radius:50%;background:var(--brand);flex-shrink:0"></span>
+                <span class="inquiry-status status-done">답변 완료</span>
+              </div>
+            </div>
+            <div class="inquiry-title">채팅방 입장 시 앱이 강제 종료됩니다</div>
+            <div class="inquiry-preview">안녕하세요, 특정 채팅방 입장 시 앱이 갑자기...</div>
+            <div class="inquiry-date">2026.04.14</div>
+          </div>
+
+          <!-- 문의 2 — 답변 대기 -->
+          <div class="inquiry-item">
+            <div class="inquiry-item-top">
+              <span class="inquiry-type type-gen">일반 문의</span>
+              <span class="inquiry-status status-pending">답변 대기</span>
+            </div>
+            <div class="inquiry-title">매칭권 충전 후 반영이 안 됩니다</div>
+            <div class="inquiry-preview">결제는 완료됐는데 매칭권이 추가되지 않아서...</div>
+            <div class="inquiry-date">2026.04.16</div>
+          </div>
+
+          <!-- 문의 3 — 답변 완료 (읽음) -->
+          <div class="inquiry-item">
+            <div class="inquiry-item-top">
+              <span class="inquiry-type type-acc">계정 문제</span>
+              <span class="inquiry-status status-done">답변 완료</span>
+            </div>
+            <div class="inquiry-title">닉네임 변경 횟수 초기화 요청</div>
+            <div class="inquiry-preview">닉네임을 잘못 변경해서 다시 바꾸고 싶은데...</div>
+            <div class="inquiry-date">2026.04.08</div>
+          </div>
+
+          <!-- 문의 4 — 답변 완료 (읽음) -->
+          <div class="inquiry-item">
+            <div class="inquiry-item-top">
+              <span class="inquiry-type type-feat">기능 제안</span>
+              <span class="inquiry-status status-done">답변 완료</span>
+            </div>
+            <div class="inquiry-title">다크 테마 외 라이트 모드 추가 요청</div>
+            <div class="inquiry-preview">라이트 모드도 있으면 좋겠습니다. 눈이 편해서...</div>
+            <div class="inquiry-date">2026.03.29</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="flow-note">
+      📬 <strong>문의 내역 로직 (Section 26)</strong><br>
+      • 탭 구성: 문의하기 / 문의 내역<br>
+      • 답변 완료 + 미읽음: 보라 점(●) 표시<br>
+      • 답변 대기: 회색 상태 배지<br>
+      • 답변 완료 시 푸시 알림 → 앱 내 확인<br>
+      • 외부 링크(카카오채널 등) 미사용
+    </div>
+  </div>
+
+  <!-- ─── Screen 23 : 문의 답변 확인 ─── -->
+  <div class="phone-wrap">
+    <div class="screen-label">
+      <strong>Screen 23 · 문의 답변 확인</strong>
+      문의 내역 항목 탭 → 내 문의 + 어드민 답변
+    </div>
+    <div class="phone">
+      <!-- 상태바 -->
+      <div class="status-bar">
+        <span class="time">9:41</span>
+        <div class="status-icons">
+          <svg viewBox="0 0 17 12"><path d="M1 9h2v3H1zM5 6h2v6H5zM9 3h2v9H9zM13 0h2v12h-2z"/></svg>
+          <svg viewBox="0 0 24 12"><rect x="0" y="2" width="20" height="8" rx="2" stroke="white" stroke-width="1.5" fill="none"/><rect x="20" y="4" width="2" height="4" rx="1" fill="white"/><rect x="1.5" y="3.5" width="15" height="5" rx="1" fill="white"/></svg>
+        </div>
+      </div>
+
+      <!-- 헤더 -->
+      <div class="header">
+        <div class="btn-icon">
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none">
+            <path d="M9 1L1.5 8.5L9 16" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="title">문의 상세</span>
+        <div class="spacer"></div>
+      </div>
+
+      <!-- 내용 -->
+      <div class="scroll-area">
+        <div class="inner" style="padding-top:20px">
+
+          <!-- 문의 헤더 정보 -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <span class="inquiry-type type-bug">버그 신고</span>
+            <span class="inquiry-status status-done">답변 완료</span>
+          </div>
+
+          <!-- 내 문의 섹션 -->
+          <div class="inquiry-detail-section">
+            <div class="inquiry-detail-section-label">내 문의</div>
+            <div class="inquiry-detail-body">채팅방 입장 시 앱이 강제 종료됩니다.<br><br>안녕하세요. 특정 채팅방에 입장하려고 하면 앱이 갑자기 꺼지는 문제가 반복되고 있습니다. 어제부터 발생하고 있으며, 재시작 후에도 동일합니다. 빠른 처리 부탁드립니다.</div>
+            <div class="inquiry-detail-date">접수일 2026.04.14 · 접수 이메일 dongju3662@gmail.com</div>
+          </div>
+
+          <!-- 답변 섹션 -->
+          <div class="answer-section">
+            <div class="answer-header">
+              <div class="answer-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+                  <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="answer-from">FREECHAT 고객센터</div>
+              </div>
+            </div>
+            <div class="answer-body">안녕하세요, FREECHAT 운영팀입니다.<br><br>불편을 드려 죄송합니다. 말씀하신 증상은 앱 v1.2.1 버전에서 일부 기기에서 발생한 오류로 확인되었습니다.<br><br>현재 v1.2.2 업데이트를 통해 수정되었으니, 스토어에서 최신 버전으로 업데이트 후 재시도해 주세요. 그래도 동일한 문제가 발생하면 추가로 문의 주시기 바랍니다.<br><br>감사합니다.</div>
+            <div class="answer-date">답변일 2026.04.15</div>
+          </div>
+
+          <!-- 구분선 -->
+          <div style="height:4px"></div>
+
+          <!-- 추가 문의 버튼 -->
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer">
+            <span style="font-size:13px;color:var(--t2)">추가 문의가 있으신가요?</span>
+            <span style="font-size:13px;color:var(--brand);font-weight:700">새 문의 작성 →</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="flow-note">
+      💬 <strong>문의 답변 로직 (Section 26)</strong><br>
+      • 내 문의 내용 + 어드민 답변 동시 노출<br>
+      • 답변 완료 시 푸시 알림 발송 후 진입<br>
+      • 접수 이메일: 카카오 계정 이메일 자동 표시<br>
+      • 답변 대기 상태: 어드민 답변 영역 대신<br>
+      &nbsp;&nbsp;"답변 대기 중" 안내 메시지 노출<br>
+      • 외부 링크 미사용 (앱 내 처리)
+    </div>
+  </div>
+
+</div><!-- /row2 -->
+
+<!-- ─── 답변 대기 상태 보조 설명 ─── -->
+<div style="max-width:860px;margin:0 auto 48px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px">
+  <div style="font-size:13px;font-weight:700;color:var(--brand);margin-bottom:14px">📎 Screen 23 보조 — 답변 대기 상태일 때 답변 영역</div>
+  <div style="background:rgba(142,142,160,.06);border:1px dashed rgba(142,142,160,.25);border-radius:14px;padding:32px 20px;display:flex;flex-direction:column;align-items:center;gap:10px">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" style="opacity:.35">
+      <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5"/>
+      <path d="M12 8v4l3 3" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <span style="font-size:14px;color:#8E8EA0">아직 답변 대기 중이에요</span>
+    <span style="font-size:12px;color:#5A5A72">답변이 완료되면 푸시 알림으로 알려드릴게요</span>
+  </div>
+  <div style="font-size:11px;color:var(--t3);margin-top:12px;line-height:1.7">
+    → 답변 완료 시 위 영역이 보라색 배경의 "FREECHAT 고객센터" 답변 카드로 교체됨
+  </div>
+</div>
+
+<!-- ─── 목업 전체 진행 현황 ─── -->
+<div style="max-width:860px;margin:0 auto 0;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px">
+  <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:16px">📁 FREECHAT 목업 전체 진행 현황</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;font-size:12px">
+    <div style="background:rgba(0,200,150,.08);border:1px solid rgba(0,200,150,.2);border-radius:10px;padding:10px 12px">
+      <div style="color:var(--success);font-weight:700;margin-bottom:4px">✅ 완료</div>
+      <div style="color:var(--t2);line-height:1.8">
+        목업 01 — 스플래시·로그인<br>
+        목업 02 — 매칭탭·프로필<br>
+        목업 03 — 채팅탭·채팅방<br>
+        목업 04 — 즐겨찾기·사진<br>
+        목업 05 — 설정탭 (설정~탈퇴)<br>
+        목업 06 — 공지·문의내역
+      </div>
+    </div>
+    <div style="background:rgba(254,229,0,.06);border:1px solid rgba(254,229,0,.18);border-radius:10px;padding:10px 12px">
+      <div style="color:var(--reward);font-weight:700;margin-bottom:4px">⏳ 예정</div>
+      <div style="color:var(--t2);line-height:1.8">
+        목업 07 — 팝업·Alert<br>
+        &nbsp;&nbsp;(매칭권 0개 / 채팅방 나가기<br>
+        &nbsp;&nbsp;/ 차단 확인 팝업)<br>
+        목업 08 — 신고 화면<br>
+        목업 09 — 스페셜 룰렛<br>
+        목업 10 — 에이전시 코드 입력
+      </div>
+    </div>
+    <div style="background:rgba(155,114,255,.08);border:1px solid rgba(155,114,255,.2);border-radius:10px;padding:10px 12px">
+      <div style="color:var(--brand);font-weight:700;margin-bottom:4px">📦 산출물</div>
+      <div style="color:var(--t2);line-height:1.8">
+        개발자 PPT 기획서<br>
+        로고·아이콘·컬러팔레트<br>
+        사용자 여정 지도<br>
+        Flutter 코드 (추후)
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

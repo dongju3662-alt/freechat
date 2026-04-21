@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>FREECHAT 목업 — 02 매칭 탭</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:-apple-system,'Noto Sans KR','Segoe UI',sans-serif;
+  background:#080812;
+  color:#fff;
+  padding:48px 32px;
+  min-height:100vh;
+}
+h1{font-size:18px;font-weight:800;color:#fff;margin-bottom:4px}
+.page-sub{font-size:11px;color:#6e6e90;margin-bottom:48px;letter-spacing:.5px}
+
+.screens-wrap{display:flex;gap:40px;align-items:flex-start;flex-wrap:wrap;}
+
+.screen-block{display:flex;flex-direction:column;align-items:center;gap:16px;}
+.screen-label{font-size:10px;font-weight:700;letter-spacing:2px;color:#6e6e90;text-transform:uppercase;}
+
+.phone{
+  width:375px;height:812px;
+  background:#0C0C18;
+  border-radius:44px;overflow:hidden;position:relative;
+  border:2px solid #1a1a2e;
+  box-shadow:0 24px 80px rgba(0,0,0,.8),inset 0 0 0 1px rgba(255,255,255,.04);
+  flex-shrink:0;
+}
+.notch{
+  position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  width:120px;height:34px;background:#000;border-radius:20px;z-index:10;
+}
+.statusbar{
+  position:absolute;top:0;left:0;right:0;height:54px;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  padding:0 28px 8px;z-index:9;font-size:12px;font-weight:600;
+}
+.statusbar .time{font-size:15px;font-weight:700}
+.statusbar .icons{display:flex;gap:6px;align-items:center}
+
+/* 헤더 */
+.app-header{
+  position:absolute;top:54px;left:0;right:0;height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;z-index:5;
+  border-bottom:1px solid #1a1a2a;background:#0C0C18;
+}
+.header-ticket{
+  display:flex;align-items:center;gap:6px;
+  background:#161625;border:1px solid #1a1a2a;
+  border-radius:20px;padding:6px 12px;
+  font-size:13px;font-weight:700;
+}
+.ticket-count{color:#FEE500}
+.header-right{display:flex;gap:8px;align-items:center;}
+.header-icon-btn{
+  width:38px;height:38px;background:#161625;
+  border:1px solid #1a1a2a;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* 탭바 */
+.tabbar{
+  position:absolute;bottom:0;left:0;right:0;height:60px;
+  background:#0E0E1C;border-top:1px solid #1a1a2a;
+  display:flex;align-items:center;justify-content:space-around;
+  padding:0 8px;z-index:5;
+}
+.tab-item{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;cursor:pointer;padding:6px 0;}
+.tab-icon{font-size:22px;opacity:.4}
+.tab-icon.active{opacity:1;}
+.tab-label{font-size:9px;color:#38384e;font-weight:600}
+.tab-label.active{color:#9B72FF}
+
+/* 화살표 */
+.arrow-wrap{display:flex;align-items:center;padding-top:380px;}
+.arrow{width:48px;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.arrow-h{
+  width:32px;height:2px;
+  background:linear-gradient(to right,#9B72FF44,#9B72FF,#9B72FF44);
+  position:relative;
+}
+.arrow-h::after{
+  content:'';position:absolute;right:-1px;top:-4px;
+  width:0;height:0;
+  border-left:8px solid #9B72FF;
+  border-top:5px solid transparent;border-bottom:5px solid transparent;
+}
+.arrow-label{font-size:9px;color:#6e6e90;letter-spacing:.5px;white-space:nowrap;margin-top:6px;}
+</style>
+</head>
+<body>
+
+<h1>📱 FREECHAT 목업 — 02 매칭 탭</h1>
+<div class="page-sub">SCREEN 05~07 · 매칭 메인 → 닉네임 검색 → 검색 결과 프로필 상세</div>
+
+<div class="screens-wrap">
+
+  <!-- ────────── SCREEN 05: 매칭 메인 ────────── -->
+  <div class="screen-block">
+    <div class="screen-label">05 · 매칭 메인</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4" y="2" width="3" height="10" rx="1"/><rect x="8" y="0" width="3" height="12" rx="1"/><rect x="12" y="1" width="3" height="11" rx="1" opacity=".3"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="white"><rect x="0" y="1" width="22" height="10" rx="3" stroke="white" stroke-width="1.5" fill="none" opacity=".5"/><rect x="1.5" y="2.5" width="17" height="7" rx="2" fill="white"/><rect x="23" y="4" width="2" height="4" rx="1" fill="white" opacity=".4"/></svg>
+        </div>
+      </div>
+
+      <!-- 헤더 -->
+      <div class="app-header">
+        <div style="font-size:17px;font-weight:900;color:#fff;letter-spacing:-0.5px;">FREE<span style="color:#9B72FF;">CHAT</span></div>
+        <div class="header-right">
+          <div class="header-ticket">
+            <span style="font-size:14px">🎟</span>
+            <span style="color:#6e6e90;font-size:12px">매칭권</span>
+            <span class="ticket-count">10</span>
+          </div>
+          <div class="header-icon-btn">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="6.5" cy="6.5" r="5" stroke="#6e6e90" stroke-width="1.5"/>
+              <path d="M10.5 10.5L14 14" stroke="#6e6e90" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- 메인 콘텐츠 -->
+      <div style="position:absolute;top:110px;left:0;right:0;bottom:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 20px;gap:28px;">
+
+        <!-- 상태 텍스트 -->
+        <div style="text-align:center;">
+          <div style="font-size:12px;color:#6e6e90;letter-spacing:2px;margin-bottom:10px;text-transform:uppercase;">지금 접속 중 <span style="color:#00C896;font-weight:700;">247명</span></div>
+          <div style="font-size:24px;font-weight:800;line-height:1.35;">설레는 대화,<br><span style="color:#9B72FF;">지금 시작해요</span></div>
+        </div>
+
+        <!-- 메인 매칭 버튼 (원형) -->
+        <div style="position:relative;">
+          <!-- 파동 효과 -->
+          <div style="position:absolute;inset:-20px;border-radius:50%;background:rgba(155,114,255,.06);animation:none;"></div>
+          <div style="position:absolute;inset:-10px;border-radius:50%;background:rgba(155,114,255,.1);"></div>
+          <div style="
+            width:180px;height:180px;
+            background:linear-gradient(135deg,#9B72FF,#7C4DFF);
+            border-radius:50%;
+            display:flex;flex-direction:column;
+            align-items:center;justify-content:center;gap:6px;
+            cursor:pointer;position:relative;
+            box-shadow:0 8px 40px rgba(155,114,255,.5);
+          ">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <path d="M6 24C6 14.059 14.059 6 24 6C33.941 6 42 14.059 42 24C42 33.941 33.941 42 24 42C21.2 42 18.6 41.3 16.3 40L6 42L8.1 31.7C6.8 29.4 6 26.8 6 24Z" fill="white" opacity="0.95"/>
+              <circle cx="18" cy="24" r="3" fill="#9B72FF"/>
+              <circle cx="24" cy="24" r="3" fill="#9B72FF"/>
+              <circle cx="30" cy="24" r="3" fill="#9B72FF"/>
+            </svg>
+            <div style="font-size:17px;font-weight:800;color:#fff;">매칭 시작</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.65);">매칭권 1개 사용</div>
+          </div>
+        </div>
+
+        <!-- 스페셜 룰렛 버튼 (보조) -->
+        <div style="
+          display:flex;align-items:center;gap:10px;
+          background:#111120;
+          border:1px solid rgba(254,229,0,.25);
+          border-radius:28px;padding:11px 22px;
+          cursor:pointer;
+        ">
+          <span style="font-size:20px;">🎰</span>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:#FEE500;">스페셜 룰렛 매칭</div>
+            <div style="font-size:10px;color:#6e6e90;margin-top:1px;">오늘 3회 남음 · 조건 맞는 상대 연결</div>
+          </div>
+          <svg width="7" height="12" viewBox="0 0 7 12" fill="none" style="margin-left:4px;"><path d="M1 1L6 6L1 11" stroke="#FEE500" stroke-width="1.5" stroke-linecap="round" opacity=".6"/></svg>
+        </div>
+
+        <!-- 오늘의 매칭 통계 -->
+        <div style="display:flex;gap:12px;width:100%;">
+          <div style="flex:1;background:#111120;border:1px solid #1a1a2a;border-radius:12px;padding:14px;text-align:center;">
+            <div style="font-size:20px;font-weight:800;color:#9B72FF;">38</div>
+            <div style="font-size:10px;color:#6e6e90;margin-top:3px;">오늘 매칭 수</div>
+          </div>
+          <div style="flex:1;background:#111120;border:1px solid #1a1a2a;border-radius:12px;padding:14px;text-align:center;">
+            <div style="font-size:20px;font-weight:800;color:#00C896;">7일</div>
+            <div style="font-size:10px;color:#6e6e90;margin-top:3px;">연속 출석</div>
+          </div>
+          <div style="flex:1;background:#111120;border:1px solid #1a1a2a;border-radius:12px;padding:14px;text-align:center;">
+            <div style="font-size:20px;font-weight:800;color:#FEE500;">10</div>
+            <div style="font-size:10px;color:#6e6e90;margin-top:3px;">잔여 매칭권</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="tabbar">
+        <div class="tab-item"><div class="tab-icon active">💬</div><div class="tab-label active">매칭</div></div>
+        <div class="tab-item"><div class="tab-icon">🗨️</div><div class="tab-label">채팅</div></div>
+        <div class="tab-item"><div class="tab-icon">❤️</div><div class="tab-label">즐겨찾기</div></div>
+        <div class="tab-item"><div class="tab-icon">⚙️</div><div class="tab-label">설정</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 화살표 -->
+  <div class="arrow-wrap">
+    <div class="arrow">
+      <div class="arrow-h"></div>
+      <div class="arrow-label">돋보기 클릭</div>
+    </div>
+  </div>
+
+  <!-- ────────── SCREEN 06: 닉네임 검색 ────────── -->
+  <div class="screen-block">
+    <div class="screen-label">06 · 닉네임 검색</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4" y="2" width="3" height="10" rx="1"/><rect x="8" y="0" width="3" height="12" rx="1"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="white"><rect x="0" y="1" width="22" height="10" rx="3" stroke="white" stroke-width="1.5" fill="none" opacity=".5"/><rect x="1.5" y="2.5" width="17" height="7" rx="2" fill="white"/></svg>
+        </div>
+      </div>
+
+      <!-- 검색 헤더 -->
+      <div style="
+        position:absolute;top:54px;left:0;right:0;
+        padding:12px 20px;
+        background:#0C0C18;
+        border-bottom:1px solid #1a1a2a;
+        z-index:5;display:flex;align-items:center;gap:12px;
+      ">
+        <!-- 뒤로가기 -->
+        <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none"><path d="M9 1L1 8.5L9 16" stroke="#9B72FF" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <!-- 검색 입력창 -->
+        <div style="
+          flex:1;height:44px;
+          background:#161625;border:1.5px solid #9B72FF;
+          border-radius:12px;display:flex;align-items:center;
+          padding:0 14px;gap:8px;
+        ">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+            <circle cx="6.5" cy="6.5" r="5" stroke="#9B72FF" stroke-width="1.5"/>
+            <path d="M10.5 10.5L14 14" stroke="#9B72FF" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span style="font-size:14px;color:#9B72FF;font-weight:500;">달콤한</span>
+          <div style="width:2px;height:18px;background:#9B72FF;margin-left:1px;opacity:.8;"></div>
+        </div>
+      </div>
+
+      <!-- 검색 안내 & 결과 영역 -->
+      <div style="position:absolute;top:118px;left:0;right:0;bottom:0;padding:0 20px;">
+
+        <!-- 안내 배너 -->
+        <div style="
+          background:#111120;border:1px solid #1a1a2a;border-radius:12px;
+          padding:12px 16px;margin-top:16px;margin-bottom:20px;
+          display:flex;align-items:center;gap:10px;
+        ">
+          <span style="font-size:18px;">👀</span>
+          <div style="font-size:12px;color:#6e6e90;line-height:1.6;">
+            <span style="color:#9B72FF;font-weight:700;">이성 회원</span>의 닉네임으로만 검색 가능해요
+          </div>
+        </div>
+
+        <!-- 검색 결과 -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:#6e6e90;">검색 결과</div>
+          <div style="font-size:11px;color:#6e6e90;">3명</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <!-- 결과 1 -->
+          <div style="background:#111120;border:1px solid #1a1a2a;border-radius:16px;padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;">
+            <div style="width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#FF6D6D,#ff4444);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🌸</div>
+            <div style="flex:1;">
+              <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:4px;">달콤한사과</div>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                <span style="font-size:10px;background:#1a1a2e;color:#9B72FF;padding:2px 7px;border-radius:5px;">26세</span>
+                <span style="font-size:10px;background:#1a1a2e;color:#6e6e90;padding:2px 7px;border-radius:5px;">서울특별시 강남구</span>
+                <span style="font-size:10px;background:#1a1a2e;color:#6e6e90;padding:2px 7px;border-radius:5px;">INFP</span>
+              </div>
+            </div>
+            <svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1L6 6L1 11" stroke="#38384e" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <!-- 결과 2 -->
+          <div style="background:#111120;border:1px solid #1a1a2a;border-radius:16px;padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;">
+            <div style="width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#9B72FF,#7C4DFF);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🍀</div>
+            <div style="flex:1;">
+              <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:4px;">달콤한하루</div>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                <span style="font-size:10px;background:#1a1a2e;color:#9B72FF;padding:2px 7px;border-radius:5px;">23세</span>
+                <span style="font-size:10px;background:#1a1a2e;color:#6e6e90;padding:2px 7px;border-radius:5px;">경기도 성남시</span>
+                <span style="font-size:10px;background:#1a1a2e;color:#6e6e90;padding:2px 7px;border-radius:5px;">ENFJ</span>
+              </div>
+            </div>
+            <svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1L6 6L1 11" stroke="#38384e" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <!-- 결과 3 -->
+          <div style="background:#111120;border:1px solid #1a1a2a;border-radius:16px;padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;">
+            <div style="width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#00C896,#009970);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🌙</div>
+            <div style="flex:1;">
+              <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:4px;">달콤새벽감성</div>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                <span style="font-size:10px;background:#1a1a2e;color:#9B72FF;padding:2px 7px;border-radius:5px;">29세</span>
+                <span style="font-size:10px;background:#1a1a2e;color:#6e6e90;padding:2px 7px;border-radius:5px;">부산광역시 해운대구</span>
+                <span style="font-size:10px;background:#1a1a2e;color:#6e6e90;padding:2px 7px;border-radius:5px;">ISTP</span>
+              </div>
+            </div>
+            <svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1L6 6L1 11" stroke="#38384e" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+
+        <!-- 최근 검색어 -->
+        <div style="margin-top:28px;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:#6e6e90;margin-bottom:12px;">최근 검색</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #1a1a2a;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#38384e" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="#38384e" stroke-width="1.5" stroke-linecap="round"/></svg>
+                <span style="font-size:13px;color:#6e6e90;">봄날의향기</span>
+              </div>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="#38384e" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #1a1a2a;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#38384e" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="#38384e" stroke-width="1.5" stroke-linecap="round"/></svg>
+                <span style="font-size:13px;color:#6e6e90;">하늘빛노을</span>
+              </div>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="#38384e" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 화살표 -->
+  <div class="arrow-wrap">
+    <div class="arrow">
+      <div class="arrow-h"></div>
+      <div class="arrow-label">결과 클릭</div>
+    </div>
+  </div>
+
+  <!-- ────────── SCREEN 07: 검색 결과 프로필 상세 ────────── -->
+  <div class="screen-block">
+    <div class="screen-label">07 · 프로필 상세</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4" y="2" width="3" height="10" rx="1"/><rect x="8" y="0" width="3" height="12" rx="1"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="white"><rect x="0" y="1" width="22" height="10" rx="3" stroke="white" stroke-width="1.5" fill="none" opacity=".5"/><rect x="1.5" y="2.5" width="17" height="7" rx="2" fill="white"/></svg>
+        </div>
+      </div>
+
+      <!-- 뒤로가기 헤더 -->
+      <div style="
+        position:absolute;top:54px;left:0;right:0;height:52px;
+        display:flex;align-items:center;padding:0 20px;
+        background:#0C0C18;border-bottom:1px solid #1a1a2a;z-index:5;
+      ">
+        <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none"><path d="M9 1L1 8.5L9 16" stroke="#9B72FF" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div style="flex:1;text-align:center;font-size:16px;font-weight:700;color:#fff;">프로필</div>
+        <div style="width:36px;height:36px;flex-shrink:0;"></div>
+      </div>
+
+      <!-- 프로필 콘텐츠 -->
+      <div style="position:absolute;top:106px;left:0;right:0;bottom:0;overflow-y:auto;padding-bottom:100px;">
+
+        <!-- 프로필 이미지 영역 -->
+        <div style="
+          width:100%;height:240px;
+          background:linear-gradient(160deg,#2a0a3a,#1a0a2a);
+          display:flex;align-items:center;justify-content:center;
+          position:relative;
+        ">
+          <div style="
+            width:110px;height:110px;border-radius:50%;
+            background:linear-gradient(135deg,#FF6D6D,#ff4444);
+            display:flex;align-items:center;justify-content:center;
+            font-size:52px;
+            border:3px solid rgba(255,255,255,.15);
+            box-shadow:0 8px 32px rgba(0,0,0,.5);
+          ">🌸</div>
+          <!-- 즐겨찾기 버튼 (우측 상단 오버레이) -->
+          <div style="
+            position:absolute;top:16px;right:16px;
+            display:flex;align-items:center;gap:6px;
+            background:rgba(22,22,37,.85);
+            border:1px solid rgba(255,255,255,.12);
+            border-radius:20px;padding:7px 14px;
+            cursor:pointer;backdrop-filter:blur(8px);
+          ">
+            <span style="font-size:16px;">🤍</span>
+            <span style="font-size:12px;font-weight:600;color:#ccc;">즐겨찾기</span>
+          </div>
+          <!-- 그라데이션 오버레이 -->
+          <div style="position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top,#0C0C18,transparent);"></div>
+        </div>
+
+        <!-- 이름 & 기본 정보 -->
+        <div style="padding:0 20px;margin-top:-20px;position:relative;z-index:2;">
+          <!-- 닉네임 -->
+          <div style="text-align:center;margin-bottom:20px;">
+            <div style="font-size:22px;font-weight:800;color:#fff;">달콤한사과</div>
+          </div>
+
+          <!-- 구분선 -->
+          <div style="height:1px;background:#1a1a2a;margin-bottom:20px;"></div>
+
+          <!-- 정보 리스트 -->
+          <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:28px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;background:#111120;border:1px solid #1a1a2a;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;">📍</div>
+              <div>
+                <div style="font-size:10px;color:#6e6e90;margin-bottom:2px;">지역</div>
+                <div style="font-size:14px;font-weight:600;color:#fff;">서울특별시 강남구</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;background:#111120;border:1px solid #1a1a2a;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;">🎂</div>
+              <div>
+                <div style="font-size:10px;color:#6e6e90;margin-bottom:2px;">나이</div>
+                <div style="font-size:14px;font-weight:600;color:#fff;">26세</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;background:#111120;border:1px solid #1a1a2a;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;">💫</div>
+              <div>
+                <div style="font-size:10px;color:#6e6e90;margin-bottom:2px;">스타일</div>
+                <div style="font-size:14px;font-weight:600;color:#fff;">사랑스러운</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;background:#111120;border:1px solid #1a1a2a;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;">🧠</div>
+              <div>
+                <div style="font-size:10px;color:#6e6e90;margin-bottom:2px;">MBTI</div>
+                <div style="font-size:14px;font-weight:600;color:#fff;">INFP</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 하단 채팅 신청 버튼 (fixed) -->
+      <div style="
+        position:absolute;bottom:0;left:0;right:0;
+        padding:12px 20px 28px;
+        background:linear-gradient(to top,#0C0C18 70%,transparent);
+        z-index:10;
+      ">
+        <div style="
+          width:100%;height:52px;
+          background:linear-gradient(135deg,#9B72FF,#7C4DFF);
+          border-radius:14px;
+          display:flex;align-items:center;justify-content:center;
+          gap:8px;font-size:16px;font-weight:700;color:#fff;
+          cursor:pointer;
+          box-shadow:0 4px 20px rgba(155,114,255,.4);
+        ">
+          <span style="font-size:18px;">💬</span>
+          채팅 신청하기
+          <span style="font-size:11px;opacity:.7;font-weight:500;">(매칭권 1개)</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /screens-wrap -->
+
+<!-- 플로우 노트 -->
+<div style="margin-top:48px;padding:24px;background:#111120;border:1px solid #1a1a2a;border-radius:16px;max-width:1400px;">
+  <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:#6e6e90;margin-bottom:16px;">FLOW NOTES</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
+    <div>
+      <div style="font-size:13px;font-weight:700;color:#9B72FF;margin-bottom:8px;">05 매칭 메인</div>
+      <div style="font-size:12px;color:#6e6e90;line-height:1.8;">
+        · 랜덤 매칭 버튼: 중앙 대형 원형 (주)<br>
+        · 스페셜 룰렛: 하단 보조 버튼 (부)<br>
+        · 헤더 좌측: FREECHAT 앱명/로고<br>
+        · 헤더 우측: 매칭권 개수 + 돋보기<br>
+        · 접속 중/오늘 매칭 수: 실시간 데이터 (목업은 임의값)
+      </div>
+    </div>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:#9B72FF;margin-bottom:8px;">06 닉네임 검색</div>
+      <div style="font-size:12px;color:#6e6e90;line-height:1.8;">
+        · 이성 회원만 검색 가능<br>
+        · 부분 검색 지원 → 여러 명 노출 가능<br>
+        · 최근 검색어 저장 (X 버튼으로 개별 삭제)<br>
+        · 검색 결과 클릭 → 프로필 상세 이동
+      </div>
+    </div>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:#9B72FF;margin-bottom:8px;">07 프로필 상세</div>
+      <div style="font-size:12px;color:#6e6e90;line-height:1.8;">
+        · 프로필 이미지 / 닉네임<br>
+        · 지역(시+구) / 나이 / 스타일 / MBTI<br>
+        · 🤍 즐겨찾기 버튼 (프로필 이미지 우측 상단 오버레이)<br>
+        · 닉네임 밑 중복 텍스트 제거<br>
+        · 하단 고정: 채팅 신청하기 버튼 (매칭권 1개)<br>
+        · 소개글 없음 (스팸/번호 노출 방지)
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

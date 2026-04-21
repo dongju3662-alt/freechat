@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>FREECHAT 목업 — 03 채팅 탭</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:-apple-system,'Noto Sans KR','Segoe UI',sans-serif;
+  background:#080812;
+  color:#fff;
+  padding:48px 32px;
+  min-height:100vh;
+}
+h1{font-size:18px;font-weight:800;color:#fff;margin-bottom:4px}
+.page-sub{font-size:11px;color:#6e6e90;margin-bottom:48px;letter-spacing:.5px}
+
+.row-wrap{display:flex;gap:40px;align-items:flex-start;flex-wrap:wrap;margin-bottom:60px;}
+
+.screen-block{display:flex;flex-direction:column;align-items:center;gap:16px;}
+.screen-label{font-size:10px;font-weight:700;letter-spacing:2px;color:#6e6e90;text-transform:uppercase;}
+
+.phone{
+  width:375px;height:812px;
+  background:#0C0C18;
+  border-radius:44px;overflow:hidden;position:relative;
+  border:2px solid #1a1a2e;
+  box-shadow:0 24px 80px rgba(0,0,0,.8),inset 0 0 0 1px rgba(255,255,255,.04);
+  flex-shrink:0;
+}
+.notch{
+  position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  width:120px;height:34px;background:#000;border-radius:20px;z-index:10;
+}
+.statusbar{
+  position:absolute;top:0;left:0;right:0;height:54px;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  padding:0 28px 8px;z-index:9;font-size:12px;font-weight:600;
+}
+.statusbar .time{font-size:15px;font-weight:700}
+.statusbar .icons{display:flex;gap:6px;align-items:center}
+
+.app-header{
+  position:absolute;top:54px;left:0;right:0;height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;z-index:5;
+  border-bottom:1px solid #1a1a2a;background:#0C0C18;
+}
+
+.tabbar{
+  position:absolute;bottom:0;left:0;right:0;height:60px;
+  background:#0E0E1C;border-top:1px solid #1a1a2a;
+  display:flex;align-items:center;justify-content:space-around;
+  padding:0 8px;z-index:5;
+}
+.tab-item{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;cursor:pointer;padding:6px 0;}
+.tab-icon{font-size:22px;opacity:.4}
+.tab-icon.active{opacity:1;}
+.tab-label{font-size:9px;color:#38384e;font-weight:600}
+.tab-label.active{color:#9B72FF}
+
+.arrow-wrap{display:flex;align-items:center;padding-top:380px;}
+.arrow{width:48px;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.arrow-h{
+  width:32px;height:2px;
+  background:linear-gradient(to right,#9B72FF44,#9B72FF,#9B72FF44);
+  position:relative;
+}
+.arrow-h::after{
+  content:'';position:absolute;right:-1px;top:-4px;
+  width:0;height:0;
+  border-left:8px solid #9B72FF;
+  border-top:5px solid transparent;border-bottom:5px solid transparent;
+}
+.arrow-label{font-size:9px;color:#6e6e90;letter-spacing:.5px;white-space:nowrap;margin-top:6px;}
+
+.row-title{
+  font-size:11px;font-weight:700;letter-spacing:2px;color:#9B72FF;
+  padding:0 0 20px;text-transform:uppercase;
+}
+</style>
+</head>
+<body>
+
+<h1>📱 FREECHAT 목업 — 03 채팅 탭</h1>
+<div class="page-sub">SCREEN 08A~10 · 일반/에이전시 채팅 리스트 → 채팅방 → 플러스 메뉴</div>
+
+<!-- ══════════════ ROW 1: 채팅 리스트 2종 ══════════════ -->
+<div class="row-title">▸ 채팅 리스트</div>
+<div class="row-wrap">
+
+  <!-- ────────── SCREEN 08A: 에이전시 여자회원 채팅 리스트 ────────── -->
+  <div class="screen-block">
+    <div class="screen-label">08A · 에이전시 여자회원 (다중 계정 3개)</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4" y="2" width="3" height="10" rx="1"/><rect x="8" y="0" width="3" height="12" rx="1"/><rect x="12" y="1" width="3" height="11" rx="1" opacity=".3"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="white"><rect x="0" y="1" width="22" height="10" rx="3" stroke="white" stroke-width="1.5" fill="none" opacity=".5"/><rect x="1.5" y="2.5" width="17" height="7" rx="2" fill="white"/><rect x="23" y="4" width="2" height="4" rx="1" fill="white" opacity=".4"/></svg>
+        </div>
+      </div>
+
+      <!-- 헤더 -->
+      <div class="app-header">
+        <div style="font-size:17px;font-weight:900;color:#fff;letter-spacing:-0.5px;">FREE<span style="color:#9B72FF;">CHAT</span></div>
+        <div style="width:38px;height:38px;background:#161625;border:1px solid #1a1a2a;border-radius:12px;display:flex;align-items:center;justify-content:center;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <circle cx="6.5" cy="6.5" r="5" stroke="#6e6e90" stroke-width="1.5"/>
+            <path d="M10.5 10.5L14 14" stroke="#6e6e90" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- 콘텐츠 -->
+      <div style="position:absolute;top:110px;left:0;right:0;bottom:60px;overflow-y:auto;">
+
+        <!-- 다중 계정 전환 탭 (에이전시 전용, 최상단) -->
+        <div style="padding:16px 20px 14px;border-bottom:1px solid #1a1a2a;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:#6e6e90;margin-bottom:12px;">내 계정</div>
+          <div style="display:flex;gap:20px;">
+            <!-- 계정 1 (활성 — 보라 테두리 + 이름 표시) -->
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;">
+              <div style="
+                width:60px;height:60px;border-radius:50%;
+                background:linear-gradient(135deg,#FF6D6D,#ff4444);
+                border:3px solid #9B72FF;
+                box-shadow:0 0 0 2px rgba(155,114,255,.3);
+              "></div>
+              <div style="font-size:10px;font-weight:700;color:#9B72FF;">달콤한사과</div>
+            </div>
+            <!-- 계정 2 (비활성 — 흐린 테두리, 이름 미표시) -->
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:.45;">
+              <div style="
+                width:60px;height:60px;border-radius:50%;
+                background:linear-gradient(135deg,#9B72FF,#7C4DFF);
+                border:3px solid #38384e;
+              "></div>
+              <div style="font-size:10px;color:transparent;">-</div>
+            </div>
+            <!-- 계정 3 (비활성) -->
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:.45;">
+              <div style="
+                width:60px;height:60px;border-radius:50%;
+                background:linear-gradient(135deg,#00C896,#009970);
+                border:3px solid #38384e;
+              "></div>
+              <div style="font-size:10px;color:transparent;">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 채팅 목록 -->
+        <div style="padding:12px 20px 0;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:#6e6e90;margin-bottom:8px;">대화 중</div>
+
+          <!-- 아이템 1 — 안읽음 2 + 맞팔 ♥ -->
+          <div style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #111120;cursor:pointer;">
+            <div style="position:relative;flex-shrink:0;">
+              <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#4A90E2,#357ABD);"></div>
+              <div style="position:absolute;bottom:1px;right:1px;width:12px;height:12px;background:#00C896;border-radius:50%;border:2px solid #0C0C18;"></div>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                <div style="display:flex;align-items:center;gap:5px;">
+                  <div style="font-size:15px;font-weight:700;color:#fff;">하늘나그네</div>
+                  <span style="font-size:14px;color:#FF6D6D;">♥</span>
+                </div>
+                <div style="font-size:11px;color:#6e6e90;">오후 3:12</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:13px;color:#6e6e90;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:195px;">오늘 어떠세요? 🥰</div>
+                <div style="min-width:20px;height:20px;background:#FF6D6D;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;padding:0 5px;">2</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 아이템 2 — 안읽음 1 + 단방향 즐겨찾기 ♡ -->
+          <div style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #111120;cursor:pointer;">
+            <div style="position:relative;flex-shrink:0;">
+              <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#FEE500,#e6c800);"></div>
+              <div style="position:absolute;bottom:1px;right:1px;width:12px;height:12px;background:#00C896;border-radius:50%;border:2px solid #0C0C18;"></div>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                <div style="display:flex;align-items:center;gap:5px;">
+                  <div style="font-size:15px;font-weight:700;color:#fff;">별빛청년</div>
+                  <span style="font-size:14px;color:#6e6e90;">♡</span>
+                </div>
+                <div style="font-size:11px;color:#6e6e90;">오후 1:55</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:13px;color:#6e6e90;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:195px;">안녕하세요 잘 지내셨나요</div>
+                <div style="min-width:20px;height:20px;background:#9B72FF;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;padding:0 5px;">1</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 아이템 3 — 매칭 중 상태 -->
+          <div style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #111120;cursor:pointer;">
+            <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#9B72FF,#7C4DFF);flex-shrink:0;"></div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                <div style="font-size:15px;font-weight:700;color:#fff;">봄바람남자</div>
+                <div style="font-size:11px;color:#6e6e90;">오후 12:30</div>
+              </div>
+              <div style="font-size:13px;color:#9B72FF;font-style:italic;">매칭 중...</div>
+            </div>
+          </div>
+
+          <!-- 아이템 4 — 읽음 -->
+          <div style="display:flex;align-items:center;gap:12px;padding:13px 0;cursor:pointer;opacity:.7;">
+            <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#FF6D6D,#9B72FF);flex-shrink:0;"></div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                <div style="font-size:15px;font-weight:600;color:#9a9ab0;">새벽감성맨</div>
+                <div style="font-size:11px;color:#38384e;">어제</div>
+              </div>
+              <div style="font-size:13px;color:#38384e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">나: 내일 또 얘기해요!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabbar">
+        <div class="tab-item"><div class="tab-icon">💬</div><div class="tab-label">매칭</div></div>
+        <div class="tab-item"><div class="tab-icon active">🗨️</div><div class="tab-label active">채팅</div></div>
+        <div class="tab-item"><div class="tab-icon">❤️</div><div class="tab-label">즐겨찾기</div></div>
+        <div class="tab-item"><div class="tab-icon">⚙️</div><div class="tab-label">설정</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ────────── SCREEN 08B: 일반회원 채팅 리스트 ────────── -->
+  <div class="screen-block">
+    <div class="screen-label">08B · 일반회원 (단일 계정)</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4" y="2" width="3" height="10" rx="1"/><rect x="8" y="0" width="3" height="12" rx="1"/><rect x="12" y="1" width="3" height="11" rx="1" opacity=".3"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="white"><rect x="0" y="1" width="22" height="10" rx="3" stroke="white" stroke-width="1.5" fill="none" opacity=".5"/><rect x="1.5" y="2.5" width="17" height="7" rx="2" fill="white"/><rect x="23" y="4" width="2" height="4" rx="1" fill="white" opacity=".4"/></svg>
+        </div>
+      </div>
+
+      <!-- 헤더 -->
+      <div class="app-header">
+        <div style="font-size:17px;font-weight:900;color:#fff;letter-spacing:-0.5px;">FREE<span style="color:#9B72FF;">CHAT</span></div>
+        <div style="width:38px;height:38px;background:#161625;border:1px solid #1a1a2a;border-radius:12px;display:flex;align-items:center;justify-content:center;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <circle cx="6.5" cy="6.5" r="5" stroke="#6e6e90" stroke-width="1.5"/>
+            <path d="M10.5 10.5L14 14" stroke="#6e6e90" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- 콘텐츠 — 계정 전환 탭 없음, 리스트만 바로 표시 -->
+      <div style="position:absolute;top:110px;left:0;right:0;bottom:60px;overflow-y:auto;padding:16px 20px 0;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:#6e6e90;margin-bottom:10px;">대화 중</div>
+
+        <!-- 아이템 1 — 안읽음 2 + 맞팔 ♥ -->
+        <div style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #111120;cursor:pointer;">
+          <div style="position:relative;flex-shrink:0;">
+            <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#FF6D6D,#ff4444);"></div>
+            <div style="position:absolute;bottom:1px;right:1px;width:12px;height:12px;background:#00C896;border-radius:50%;border:2px solid #0C0C18;"></div>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="font-size:15px;font-weight:700;color:#fff;">달콤한사과</div>
+                <span style="font-size:14px;color:#FF6D6D;">♥</span>
+              </div>
+              <div style="font-size:11px;color:#6e6e90;">오후 2:34</div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:13px;color:#6e6e90;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:195px;">안녕하세요! 반가워요 😊</div>
+              <div style="min-width:20px;height:20px;background:#FF6D6D;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;padding:0 5px;">2</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 아이템 2 — 안읽음 1 -->
+        <div style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #111120;cursor:pointer;">
+          <div style="position:relative;flex-shrink:0;">
+            <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#9B72FF,#7C4DFF);"></div>
+            <div style="position:absolute;bottom:1px;right:1px;width:12px;height:12px;background:#00C896;border-radius:50%;border:2px solid #0C0C18;"></div>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+              <div style="font-size:15px;font-weight:700;color:#fff;">봄날향기</div>
+              <div style="font-size:11px;color:#6e6e90;">오후 1:15</div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:13px;color:#6e6e90;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:195px;">오늘 날씨 너무 좋지 않나요?</div>
+              <div style="min-width:20px;height:20px;background:#9B72FF;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;padding:0 5px;">1</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 아이템 3 — 매칭 중 -->
+        <div style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #111120;cursor:pointer;">
+          <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#00C896,#009970);flex-shrink:0;"></div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+              <div style="font-size:15px;font-weight:700;color:#fff;">하늘빛노을</div>
+              <div style="font-size:11px;color:#6e6e90;">오후 12:00</div>
+            </div>
+            <div style="font-size:13px;color:#9B72FF;font-style:italic;">매칭 중...</div>
+          </div>
+        </div>
+
+        <!-- 아이템 4 — 읽음, 단방향 ♡ -->
+        <div style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #111120;cursor:pointer;opacity:.7;">
+          <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#FEE500,#e6c800);flex-shrink:0;"></div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="font-size:15px;font-weight:600;color:#9a9ab0;">별빛소나기</div>
+                <span style="font-size:14px;color:#38384e;">♡</span>
+              </div>
+              <div style="font-size:11px;color:#38384e;">월요일</div>
+            </div>
+            <div style="font-size:13px;color:#38384e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">ㅋㅋㅋ 맞아요 진짜루</div>
+          </div>
+        </div>
+
+        <!-- 아이템 5 — 읽음 -->
+        <div style="display:flex;align-items:center;gap:12px;padding:13px 0;cursor:pointer;opacity:.7;">
+          <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#FF6D6D,#9B72FF);flex-shrink:0;"></div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+              <div style="font-size:15px;font-weight:600;color:#9a9ab0;">새벽감성</div>
+              <div style="font-size:11px;color:#38384e;">지난주</div>
+            </div>
+            <div style="font-size:13px;color:#38384e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">사진</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="tabbar">
+        <div class="tab-item"><div class="tab-icon">💬</div><div class="tab-label">매칭</div></div>
+        <div class="tab-item"><div class="tab-icon active">🗨️</div><div class="tab-label active">채팅</div></div>
+        <div class="tab-item"><div class="tab-icon">❤️</div><div class="tab-label">즐겨찾기</div></div>
+        <div class="tab-item"><div class="tab-icon">⚙️</div><div class="tab-label">설정</div></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /row-wrap -->
+
+<!-- ══════════════ ROW 2: 채팅방 + 플러스 메뉴 ══════════════ -->
+<div class="row-title">▸ 채팅방</div>
+<div class="row-wrap">
+
+  <!-- ────────── SCREEN 09: 채팅방 ────────── -->
+  <div class="screen-block">
+    <div class="screen-label">09 · 채팅방</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4" y="2" width="3" height="10" rx="1"/><rect x="8" y="0" width="3" height="12" rx="1"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="white"><rect x="0" y="1" width="22" height="10" rx="3" stroke="white" stroke-width="1.5" fill="none" opacity=".5"/><rect x="1.5" y="2.5" width="17" height="7" rx="2" fill="white"/></svg>
+        </div>
+      </div>
+
+      <!-- 채팅방 헤더 -->
+      <div style="
+        position:absolute;top:54px;left:0;right:0;height:56px;
+        display:flex;align-items:center;padding:0 16px;gap:10px;
+        background:#0C0C18;border-bottom:1px solid #1a1a2a;z-index:5;
+      ">
+        <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none"><path d="M9 1L1 8.5L9 16" stroke="#9B72FF" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#FF6D6D,#ff4444);flex-shrink:0;position:relative;">
+          <div style="position:absolute;bottom:0;right:0;width:10px;height:10px;background:#00C896;border-radius:50%;border:2px solid #0C0C18;"></div>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:15px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">달콤한사과</div>
+          <div style="font-size:11px;color:#00C896;margin-top:1px;">접속 중</div>
+        </div>
+        <!-- 신고/차단 — 동일 색상 -->
+        <div style="display:flex;gap:6px;flex-shrink:0;">
+          <div style="
+            display:flex;align-items:center;gap:4px;
+            background:#111120;border:1px solid #1a1a2a;
+            border-radius:10px;padding:6px 10px;cursor:pointer;
+          ">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+              <path d="M8 2L9.5 6H14L10.5 8.5L12 12.5L8 10L4 12.5L5.5 8.5L2 6H6.5L8 2Z" stroke="#6e6e90" stroke-width="1.5" stroke-linejoin="round"/>
+            </svg>
+            <span style="font-size:11px;font-weight:700;color:#6e6e90;">신고</span>
+          </div>
+          <div style="
+            display:flex;align-items:center;gap:4px;
+            background:#111120;border:1px solid #1a1a2a;
+            border-radius:10px;padding:6px 10px;cursor:pointer;
+          ">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="8" r="6" stroke="#6e6e90" stroke-width="1.5"/>
+              <path d="M5 5L11 11" stroke="#6e6e90" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span style="font-size:11px;font-weight:700;color:#6e6e90;">차단</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 날짜 -->
+      <div style="position:absolute;top:128px;left:0;right:0;display:flex;justify-content:center;padding-top:16px;z-index:2;">
+        <div style="background:#161625;border:1px solid #1a1a2a;border-radius:12px;padding:4px 14px;font-size:11px;color:#6e6e90;">2026년 4월 17일 목요일</div>
+      </div>
+
+      <!-- 채팅 메시지 -->
+      <div style="position:absolute;top:110px;left:0;right:0;bottom:70px;overflow-y:auto;padding:56px 16px 16px;">
+        <!-- 상대방 1 -->
+        <div style="display:flex;gap:8px;margin-bottom:12px;align-items:flex-end;">
+          <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#FF6D6D,#ff4444);flex-shrink:0;"></div>
+          <div>
+            <div style="font-size:10px;color:#6e6e90;margin-bottom:4px;">달콤한사과</div>
+            <div style="display:flex;align-items:flex-end;gap:6px;">
+              <div style="background:#1a1a2e;border:1px solid #252540;border-radius:4px 16px 16px 16px;padding:10px 14px;max-width:220px;font-size:14px;color:#fff;line-height:1.5;">안녕하세요! 반가워요 😊</div>
+              <div style="font-size:10px;color:#38384e;white-space:nowrap;">오후 2:30</div>
+            </div>
+          </div>
+        </div>
+        <!-- 상대방 2 -->
+        <div style="display:flex;gap:8px;margin-bottom:20px;align-items:flex-end;">
+          <div style="width:34px;flex-shrink:0;"></div>
+          <div style="display:flex;align-items:flex-end;gap:6px;">
+            <div style="background:#1a1a2e;border:1px solid #252540;border-radius:4px 16px 16px 16px;padding:10px 14px;max-width:220px;font-size:14px;color:#fff;line-height:1.5;">저도 오늘 처음 해보는 앱인데 재밌네요!</div>
+            <div style="font-size:10px;color:#38384e;white-space:nowrap;">오후 2:31</div>
+          </div>
+        </div>
+        <!-- 내 메시지 1 -->
+        <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
+          <div style="display:flex;align-items:flex-end;gap:6px;">
+            <div style="font-size:10px;color:#38384e;white-space:nowrap;">오후 2:33</div>
+            <div style="background:linear-gradient(135deg,#9B72FF,#7C4DFF);border-radius:16px 16px 4px 16px;padding:10px 14px;max-width:220px;font-size:14px;color:#fff;line-height:1.5;">저도 반가워요! 어디 사세요?</div>
+          </div>
+        </div>
+        <!-- 내 메시지 2 -->
+        <div style="display:flex;justify-content:flex-end;margin-bottom:20px;">
+          <div style="display:flex;align-items:flex-end;gap:6px;">
+            <div style="font-size:10px;color:#38384e;white-space:nowrap;">오후 2:33</div>
+            <div style="background:linear-gradient(135deg,#9B72FF,#7C4DFF);border-radius:16px 16px 4px 16px;padding:10px 14px;max-width:220px;font-size:14px;color:#fff;line-height:1.5;">저는 서울이에요 ㅎㅎ</div>
+          </div>
+        </div>
+        <!-- 상대방 3 -->
+        <div style="display:flex;gap:8px;margin-bottom:12px;align-items:flex-end;">
+          <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#FF6D6D,#ff4444);flex-shrink:0;"></div>
+          <div style="display:flex;align-items:flex-end;gap:6px;">
+            <div style="background:#1a1a2e;border:1px solid #252540;border-radius:4px 16px 16px 16px;padding:10px 14px;max-width:220px;font-size:14px;color:#fff;line-height:1.5;">오 저도요! 강남 쪽이에요 😄</div>
+            <div style="font-size:10px;color:#38384e;white-space:nowrap;">오후 2:34</div>
+          </div>
+        </div>
+        <!-- 타이핑 인디케이터 -->
+        <div style="display:flex;gap:8px;align-items:flex-end;">
+          <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#FF6D6D,#ff4444);flex-shrink:0;"></div>
+          <div style="background:#1a1a2e;border:1px solid #252540;border-radius:4px 16px 16px 16px;padding:12px 16px;display:flex;align-items:center;gap:4px;">
+            <div style="width:6px;height:6px;background:#6e6e90;border-radius:50%;opacity:.5;"></div>
+            <div style="width:6px;height:6px;background:#6e6e90;border-radius:50%;opacity:.75;"></div>
+            <div style="width:6px;height:6px;background:#6e6e90;border-radius:50%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 입력창 -->
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:10px 12px 16px;background:#0C0C18;border-top:1px solid #1a1a2a;display:flex;align-items:center;gap:8px;z-index:5;">
+        <div style="width:40px;height:40px;flex-shrink:0;background:#161625;border:1px solid #1a1a2a;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3V15M3 9H15" stroke="#9B72FF" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div style="flex:1;height:40px;background:#161625;border:1.5px solid #252540;border-radius:20px;display:flex;align-items:center;padding:0 14px;">
+          <span style="font-size:14px;color:#38384e;">메시지 입력...</span>
+        </div>
+        <div style="width:40px;height:40px;flex-shrink:0;background:#161625;border:1px solid #1a1a2a;border-radius:12px;display:flex;align-items:center;justify-content:center;opacity:.4;">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9L15 3L12 9L15 15L3 9Z" fill="#9B72FF"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 화살표 -->
+  <div class="arrow-wrap">
+    <div class="arrow">
+      <div class="arrow-h"></div>
+      <div class="arrow-label">+ 버튼 클릭</div>
+    </div>
+  </div>
+
+  <!-- ────────── SCREEN 10: 플러스 메뉴 ────────── -->
+  <div class="screen-block">
+    <div class="screen-label">10 · 플러스 메뉴</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4" y="2" width="3" height="10" rx="1"/><rect x="8" y="0" width="3" height="12" rx="1"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="white"><rect x="0" y="1" width="22" height="10" rx="3" stroke="white" stroke-width="1.5" fill="none" opacity=".5"/><rect x="1.5" y="2.5" width="17" height="7" rx="2" fill="white"/></svg>
+        </div>
+      </div>
+
+      <!-- 헤더 (동일) -->
+      <div style="position:absolute;top:54px;left:0;right:0;height:56px;display:flex;align-items:center;padding:0 16px;gap:10px;background:#0C0C18;border-bottom:1px solid #1a1a2a;z-index:5;">
+        <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none"><path d="M9 1L1 8.5L9 16" stroke="#9B72FF" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#FF6D6D,#ff4444);flex-shrink:0;position:relative;">
+          <div style="position:absolute;bottom:0;right:0;width:10px;height:10px;background:#00C896;border-radius:50%;border:2px solid #0C0C18;"></div>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:15px;font-weight:700;color:#fff;">달콤한사과</div>
+          <div style="font-size:11px;color:#00C896;margin-top:1px;">접속 중</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0;">
+          <div style="display:flex;align-items:center;gap:4px;background:#111120;border:1px solid #1a1a2a;border-radius:10px;padding:6px 10px;cursor:pointer;">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6H14L10.5 8.5L12 12.5L8 10L4 12.5L5.5 8.5L2 6H6.5L8 2Z" stroke="#6e6e90" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            <span style="font-size:11px;font-weight:700;color:#6e6e90;">신고</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:4px;background:#111120;border:1px solid #1a1a2a;border-radius:10px;padding:6px 10px;cursor:pointer;">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#6e6e90" stroke-width="1.5"/><path d="M5 5L11 11" stroke="#6e6e90" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span style="font-size:11px;font-weight:700;color:#6e6e90;">차단</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 채팅 배경 (흐리게) -->
+      <div style="position:absolute;top:110px;left:0;right:0;bottom:195px;overflow:hidden;padding:16px;opacity:.3;">
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+          <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#FF6D6D,#ff4444);flex-shrink:0;"></div>
+          <div style="background:#1a1a2e;border-radius:4px 16px 16px 16px;padding:10px 14px;font-size:14px;color:#fff;">안녕하세요! 반가워요 😊</div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
+          <div style="background:linear-gradient(135deg,#9B72FF,#7C4DFF);border-radius:16px 16px 4px 16px;padding:10px 14px;font-size:14px;color:#fff;">저도 반가워요!</div>
+        </div>
+      </div>
+
+      <!-- 딤 -->
+      <div style="position:absolute;top:110px;left:0;right:0;bottom:195px;background:rgba(12,12,24,.65);z-index:3;"></div>
+
+      <!-- 입력창 (+ 활성) -->
+      <div style="position:absolute;bottom:195px;left:0;right:0;padding:10px 12px 12px;background:#0C0C18;border-top:1px solid #1a1a2a;display:flex;align-items:center;gap:8px;z-index:6;">
+        <div style="width:40px;height:40px;flex-shrink:0;background:#9B72FF;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 3L13 13M13 3L3 13" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div style="flex:1;height:40px;background:#161625;border:1.5px solid #9B72FF;border-radius:20px;display:flex;align-items:center;padding:0 14px;">
+          <span style="font-size:14px;color:#38384e;">메시지 입력...</span>
+        </div>
+        <div style="width:40px;height:40px;flex-shrink:0;background:#161625;border:1px solid #1a1a2a;border-radius:12px;display:flex;align-items:center;justify-content:center;opacity:.4;">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9L15 3L12 9L15 15L3 9Z" fill="#9B72FF"/></svg>
+        </div>
+      </div>
+
+      <!-- 플러스 메뉴 패널 (사진/카메라/이모티콘 3개) -->
+      <div style="position:absolute;bottom:0;left:0;right:0;height:195px;background:#111120;border-top:1px solid #252540;border-radius:24px 24px 0 0;padding:18px 32px 32px;z-index:7;">
+        <div style="width:36px;height:4px;background:#252540;border-radius:2px;margin:0 auto 22px;"></div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+
+          <!-- 사진 -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:9px;cursor:pointer;">
+            <div style="width:60px;height:60px;border-radius:18px;background:linear-gradient(135deg,#4A90E2,#357ABD);display:flex;align-items:center;justify-content:center;">
+              <svg width="28" height="24" viewBox="0 0 28 24" fill="none">
+                <rect x="1" y="5" width="26" height="18" rx="3" stroke="white" stroke-width="1.8"/>
+                <circle cx="14" cy="14" r="5" stroke="white" stroke-width="1.8"/>
+                <path d="M9 5L11 2H17L19 5" stroke="white" stroke-width="1.8" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div style="font-size:12px;color:#ccc;font-weight:600;">사진</div>
+          </div>
+
+          <!-- 카메라 -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:9px;cursor:pointer;">
+            <div style="width:60px;height:60px;border-radius:18px;background:linear-gradient(135deg,#FF6D6D,#e04444);display:flex;align-items:center;justify-content:center;">
+              <svg width="28" height="24" viewBox="0 0 28 24" fill="none">
+                <rect x="1" y="6" width="26" height="17" rx="3" stroke="white" stroke-width="1.8"/>
+                <circle cx="14" cy="14" r="5" stroke="white" stroke-width="1.8"/>
+                <circle cx="23" cy="10" r="1.5" fill="white"/>
+                <path d="M9 6L11 3H17L19 6" stroke="white" stroke-width="1.8" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div style="font-size:12px;color:#ccc;font-weight:600;">카메라</div>
+          </div>
+
+          <!-- 이모티콘 -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:9px;cursor:pointer;">
+            <div style="width:60px;height:60px;border-radius:18px;background:linear-gradient(135deg,#FEE500,#e6c800);display:flex;align-items:center;justify-content:center;">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                <circle cx="14" cy="14" r="12" stroke="#8a7000" stroke-width="1.8"/>
+                <circle cx="10" cy="11" r="1.8" fill="#8a7000"/>
+                <circle cx="18" cy="11" r="1.8" fill="#8a7000"/>
+                <path d="M9 17.5C10.2 20.5 17.8 20.5 19 17.5" stroke="#8a7000" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div style="font-size:12px;color:#ccc;font-weight:600;">이모티콘</div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /row-wrap -->
+
+<!-- 플로우 노트 -->
+<div style="margin-top:16px;padding:24px;background:#111120;border:1px solid #1a1a2a;border-radius:16px;max-width:1700px;">
+  <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:#6e6e90;margin-bottom:16px;">FLOW NOTES</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;">
+    <div>
+      <div style="font-size:13px;font-weight:700;color:#9B72FF;margin-bottom:8px;">08A 에이전시 여자회원 채팅 리스트</div>
+      <div style="font-size:12px;color:#6e6e90;line-height:1.8;">
+        · 최상단: 원형 계정 전환 탭 (최대 3개)<br>
+        · 활성 계정: 보라 테두리 + 이름 표시<br>
+        · 비활성 계정: 흐린 테두리, 이름 미표시<br>
+        · 탭 클릭 시 해당 계정 채팅 리스트로 즉시 전환<br>
+        · 닉네임 옆 ♥ 맞팔 / ♡ 단방향 즐겨찾기<br>
+        · "매칭 중..." 특수 상태 표시
+      </div>
+    </div>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:#9B72FF;margin-bottom:8px;">08B 일반회원 채팅 리스트</div>
+      <div style="font-size:12px;color:#6e6e90;line-height:1.8;">
+        · 단일 계정 → 계정 전환 탭 영역 완전 미노출<br>
+        · 헤더 바로 아래 채팅 리스트만 표시<br>
+        · 닉네임 옆 ♥ 맞팔 / ♡ 단방향 즐겨찾기<br>
+        · "매칭 중..." 특수 상태 표시<br>
+        · 안읽음 뱃지 / 온라인 초록 점 표시
+      </div>
+    </div>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:#9B72FF;margin-bottom:8px;">09 채팅방</div>
+      <div style="font-size:12px;color:#6e6e90;line-height:1.8;">
+        · 헤더: 뒤로가기 | 아바타+닉네임 | 신고/차단<br>
+        · 신고·차단 동일 회색 스타일 (법적 필수)<br>
+        · 내 말풍선: 우측 보라색 / 상대: 좌측 어두운색<br>
+        · + 버튼: 매칭 직후 즉시 활성화
+      </div>
+    </div>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:#9B72FF;margin-bottom:8px;">10 플러스 메뉴</div>
+      <div style="font-size:12px;color:#6e6e90;line-height:1.8;">
+        · + 클릭 → X로 변경 + 하단 패널 슬라이드업<br>
+        · 메뉴: 사진 / 카메라 / 이모티콘 (3종)<br>
+        · 파일 전송 없음<br>
+        · 뒤 채팅 영역 딤 처리
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

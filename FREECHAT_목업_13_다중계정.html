@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>FREECHAT 목업 13 · 다중 계정</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --p1:#9B72FF;--p2:#7C4DFF;--coral:#FF6D6D;
+  --teal:#00C896;--yellow:#FEE500;
+  --bg:#0C0C18;--bg2:#111120;--bg3:#161625;
+  --border:#1a1a2a;--t2:#6e6e90;--t3:#38384e
+}
+body{
+  font-family:-apple-system,'Segoe UI','Noto Sans KR',sans-serif;
+  background:#0a0a14;color:#fff;padding:48px 32px;
+}
+h1{font-size:22px;font-weight:800;margin-bottom:4px}
+.subtitle{font-size:12px;color:var(--t2);margin-bottom:36px}
+.row{display:flex;gap:28px;margin-bottom:48px;flex-wrap:wrap}
+.col{display:flex;flex-direction:column;align-items:center;gap:12px}
+.screen-label{font-size:11px;font-weight:700;color:var(--t2);letter-spacing:1px;text-align:center}
+.screen-sub{font-size:10px;color:var(--t3);text-align:center;margin-top:2px}
+.row-label{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--t3);margin-bottom:8px}
+
+/* 폰 프레임 */
+.phone{
+  width:375px;height:812px;background:var(--bg);
+  border-radius:44px;border:2px solid var(--border);
+  overflow:hidden;position:relative;flex-shrink:0;
+  box-shadow:0 20px 60px rgba(0,0,0,.6)
+}
+.phone::before{
+  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:120px;height:30px;background:var(--bg);
+  border-radius:0 0 18px 18px;z-index:20;
+}
+.screen{width:100%;height:100%;overflow:hidden;position:relative}
+
+/* 상태바 */
+.statusbar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 22px 0;font-size:11px;font-weight:600;
+  position:relative;z-index:10;
+}
+.sb-time{font-size:13px;font-weight:700}
+.sb-icons{display:flex;gap:5px;align-items:center;font-size:10px}
+
+/* 네비 헤더 */
+.nav-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px 8px;
+}
+.nav-back{font-size:22px;color:#fff;cursor:pointer;width:32px}
+.nav-title{font-size:17px;font-weight:700}
+.nav-right{width:32px;font-size:13px;color:var(--t2)}
+
+/* 버튼 */
+.btn-main{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,var(--p1),var(--p2));
+  border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:700;cursor:pointer
+}
+.btn-gray{
+  width:100%;padding:15px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:14px;color:var(--t2);font-size:15px;font-weight:600;cursor:pointer
+}
+.btn-disabled{
+  width:100%;padding:15px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:14px;color:var(--t3);font-size:15px;font-weight:700;cursor:not-allowed
+}
+
+/* 설정 메뉴 행 */
+.setting-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px;border-bottom:1px solid var(--border);cursor:pointer;
+}
+.setting-row:active{background:rgba(255,255,255,.03)}
+.setting-label{font-size:14px;font-weight:500}
+.setting-arrow{font-size:14px;color:var(--t3)}
+.setting-badge{
+  font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;
+  background:rgba(155,114,255,.15);color:var(--p1);margin-right:6px;
+}
+
+/* 계정 카드 */
+.account-card{
+  margin:0 20px;background:var(--bg2);
+  border:1px solid var(--border);border-radius:16px;
+  padding:16px;display:flex;align-items:center;gap:14px;
+  margin-bottom:10px;
+}
+.account-card.active-card{
+  border-color:rgba(155,114,255,.4);
+  background:rgba(155,114,255,.05);
+}
+.acct-avatar{
+  width:48px;height:48px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+.acct-avatar-female{background:linear-gradient(135deg,#ff7eb3,#e0306a)}
+.acct-active-ring{
+  position:absolute;inset:-3px;border-radius:50%;
+  border:2px solid var(--p1);
+}
+.acct-info{flex:1}
+.acct-name{font-size:14px;font-weight:700}
+.acct-sub{font-size:11px;color:var(--t2);margin-top:3px}
+.acct-main-badge{
+  font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;
+  background:rgba(0,200,150,.15);color:var(--teal);
+  border:1px solid rgba(0,200,150,.2);margin-left:6px;
+}
+
+/* 계정 추가 버튼 카드 */
+.add-account-card{
+  margin:0 20px;
+  border:1.5px dashed rgba(155,114,255,.3);border-radius:16px;
+  padding:16px;display:flex;align-items:center;gap:14px;
+  cursor:pointer;
+}
+.add-icon{
+  width:48px;height:48px;border-radius:50%;flex-shrink:0;
+  background:rgba(155,114,255,.1);border:1.5px dashed rgba(155,114,255,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;color:var(--p1);
+}
+.add-label{font-size:14px;font-weight:600;color:var(--p1)}
+.add-sub{font-size:11px;color:var(--t3);margin-top:3px}
+
+/* 계정 추가 불가 카드 */
+.add-disabled-card{
+  margin:0 20px;
+  border:1.5px dashed var(--t3);border-radius:16px;
+  padding:16px;display:flex;align-items:center;gap:14px;
+  opacity:.5;
+}
+.add-disabled-icon{
+  width:48px;height:48px;border-radius:50%;flex-shrink:0;
+  background:var(--bg3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;color:var(--t3);
+}
+
+/* 닉네임 카드 (온보딩) */
+.nickname-card{
+  background:linear-gradient(135deg,rgba(155,114,255,.1),rgba(124,77,255,.05));
+  border:1.5px solid rgba(155,114,255,.25);
+  border-radius:20px;padding:24px;text-align:center;
+  margin-bottom:24px;
+}
+.avatar-female-lg{
+  width:72px;height:72px;border-radius:50%;
+  background:linear-gradient(135deg,#ff7eb3,#e0306a);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 14px;
+}
+
+/* 계정 배지 */
+.acct-num-badge{
+  display:inline-block;
+  background:rgba(254,229,0,.15);color:var(--yellow);
+  border:1px solid rgba(254,229,0,.25);
+  font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;
+  margin-bottom:10px;
+}
+
+/* 채팅 리스트 상단 계정 전환 영역 */
+.acct-switch-bar{
+  padding:14px 16px 10px;
+  display:flex;gap:16px;align-items:flex-start;
+  border-bottom:1px solid var(--border);
+  overflow-x:auto;
+}
+.acct-tab{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  cursor:pointer;flex-shrink:0;
+}
+.acct-tab-avatar{
+  width:52px;height:52px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+.acct-tab-female{background:linear-gradient(135deg,#ff7eb3,#e0306a)}
+.acct-tab-female2{background:linear-gradient(135deg,#d966c0,#a0329a)}
+.acct-tab-female3{background:linear-gradient(135deg,#ff9960,#d94f20)}
+.acct-tab-ring-active{
+  position:absolute;inset:-3px;border-radius:50%;
+  border:2.5px solid var(--p1);
+}
+.acct-tab-ring-inactive{
+  position:absolute;inset:-3px;border-radius:50%;
+  border:2px solid var(--t3);
+}
+.acct-tab-name{font-size:10px;font-weight:600;color:var(--p1);max-width:56px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.acct-tab-name-inactive{font-size:10px;color:var(--t3);max-width:56px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* 계정 탭 안읽은 메시지 뱃지 */
+.tab-unread{
+  position:absolute;top:-3px;right:-3px;
+  min-width:17px;height:17px;border-radius:9px;
+  background:var(--coral);color:#fff;
+  font-size:10px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 4px;border:2px solid var(--bg);
+  z-index:10;
+}
+
+/* 채팅 리스트 아이템 */
+.chat-item{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 20px;border-bottom:1px solid var(--border);
+}
+.chat-avatar{
+  width:46px;height:46px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.chat-av-male{background:linear-gradient(135deg,#4a90d9,#2563a8)}
+.chat-info{flex:1;min-width:0}
+.chat-name-row{display:flex;align-items:center;justify-content:space-between}
+.chat-name{font-size:14px;font-weight:700}
+.chat-time{font-size:10px;color:var(--t2)}
+.chat-preview{font-size:12px;color:var(--t2);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.unread-badge{
+  min-width:18px;height:18px;border-radius:9px;
+  background:var(--coral);color:#fff;
+  font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 4px;flex-shrink:0;
+}
+
+/* 팝업 오버레이 */
+.popup-overlay{
+  position:absolute;inset:0;
+  background:rgba(12,12,24,.82);
+  display:flex;align-items:flex-end;
+  z-index:30;
+}
+.popup-sheet{
+  background:#16162a;
+  border-top:1px solid rgba(155,114,255,.2);
+  border-radius:24px 24px 0 0;
+  padding:20px 24px 36px;
+  width:100%;
+}
+.sheet-handle{
+  width:40px;height:4px;border-radius:2px;
+  background:var(--bg3);margin:0 auto 20px;
+}
+
+/* 차단 옵션 */
+.block-option{
+  border-radius:14px;padding:16px 18px;
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:10px;cursor:pointer;
+}
+.block-opt-yellow{background:rgba(254,229,0,.07);border:1px solid rgba(254,229,0,.2)}
+.block-opt-purple{background:rgba(155,114,255,.08);border:1px solid rgba(155,114,255,.2)}
+.block-opt-icon{font-size:22px;flex-shrink:0}
+.block-opt-label{font-size:14px;font-weight:700}
+.block-opt-desc{font-size:11px;color:var(--t2);margin-top:3px}
+
+/* 하단 탭바 */
+.home-tab-bar{
+  position:absolute;bottom:0;left:0;right:0;
+  background:var(--bg2);border-top:1px solid var(--border);
+  display:flex;justify-content:space-around;align-items:center;
+  padding:10px 0 14px;z-index:10;
+}
+.tab-item{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;color:var(--t3)}
+.tab-item.active{color:var(--p1)}
+.tab-icon{font-size:18px}
+
+/* 섹션 타이틀 */
+.section-title{
+  font-size:11px;font-weight:700;color:var(--t2);
+  padding:14px 20px 6px;letter-spacing:1px;
+}
+
+/* 구분선 */
+.divider-full{height:1px;background:var(--border);margin:0 20px}
+
+/* 입력 필드 */
+.input-field{
+  width:100%;background:var(--bg2);border:1.5px solid var(--border);
+  border-radius:14px;padding:14px 52px 14px 16px;
+  font-size:18px;color:#fff;font-weight:700;outline:none;
+}
+.input-field.active-border{border-color:var(--p1)}
+.step-row{display:flex;align-items:center;justify-content:center;gap:6px}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--bg3);border:1px solid var(--t3)}
+.step-dot.active{background:var(--p1);border-color:var(--p1);width:24px;border-radius:4px}
+.step-dot.done{background:var(--teal);border-color:var(--teal)}
+</style>
+</head>
+<body>
+
+<h1>📋 FREECHAT 목업 13 · 다중 계정</h1>
+<div class="subtitle">계정 추가 · 새 계정 생성 · 계정 전환 · 차단 선택 팝업 · 에이전시 여자회원 전용</div>
+
+<!-- ══════════════════════════
+     ROW 1 : 계정 추가 설정 + 새 계정 닉네임 확인
+══════════════════════════ -->
+<div class="row-label">ROW 1 · 계정 추가 (설정) / 새 계정 닉네임 확인</div>
+<div class="row">
+
+  <!-- Screen 1A : 계정 추가 가능 상태 -->
+  <div class="col">
+    <div class="screen-label">Screen 1 · 계정 추가 (추가 가능)</div>
+    <div class="screen-sub">현재 1개 운영 중 → 추가 가능 (최대 3개)</div>
+    <div class="phone">
+      <div class="screen" style="background:var(--bg)">
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <div class="sb-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+
+        <div class="nav-header">
+          <div class="nav-back">←</div>
+          <div class="nav-title">내 계정 관리</div>
+          <div class="nav-right"></div>
+        </div>
+
+        <!-- 안내 배너 -->
+        <div style="margin:0 20px 16px;background:rgba(155,114,255,.07);border:1px solid rgba(155,114,255,.18);border-radius:12px;padding:12px 16px;font-size:12px;color:var(--t2);line-height:1.7">
+          에이전시 소속 회원은 최대 <strong style="color:var(--p1)">3개</strong>의 계정을 운영할 수 있어요.<br>
+          각 계정은 독립된 프로필과 채팅 목록을 가집니다.
+        </div>
+
+        <div class="section-title">내 계정 목록</div>
+
+        <!-- 메인 계정 -->
+        <div class="account-card active-card">
+          <div class="acct-avatar acct-avatar-female">
+            <div class="acct-active-ring"></div>
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+              <circle cx="14" cy="9" r="5.5" fill="rgba(255,255,255,0.9)"/>
+              <path d="M4 26c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="rgba(255,255,255,0.9)" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="acct-info">
+            <div class="acct-name">달콤한하루<span class="acct-main-badge">메인</span></div>
+            <div class="acct-sub">현재 사용 중 · 스타일: 유머</div>
+          </div>
+          <div style="font-size:11px;color:var(--t2)">설정 ›</div>
+        </div>
+
+        <!-- 계정 추가 버튼 -->
+        <div class="add-account-card" style="margin-top:2px">
+          <div class="add-icon">＋</div>
+          <div>
+            <div class="add-label">계정 추가하기</div>
+            <div class="add-sub">새로운 프로필로 채팅을 시작해요 (2/3)</div>
+          </div>
+        </div>
+
+        <div style="margin:20px 20px 0;font-size:11px;color:var(--t3);line-height:1.8">
+          · 각 계정은 독립된 닉네임·프로필·채팅 목록을 가집니다<br>
+          · 메인 계정 탈퇴 시 모든 계정이 함께 삭제됩니다
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 2 : 새 계정 닉네임 확인 -->
+  <div class="col">
+    <div class="screen-label">Screen 2 · 새 계정 닉네임 확인</div>
+    <div class="screen-sub">계정 추가 → 앱이 자동 부여한 닉네임 확인</div>
+    <div class="phone">
+      <div class="screen" style="background:var(--bg)">
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <div class="sb-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+
+        <div style="padding:12px 20px 0">
+          <div class="step-row">
+            <div class="step-dot done"></div>
+            <div class="step-dot active"></div>
+            <div class="step-dot"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--t3);margin-top:5px;padding:0 4px">
+            <span style="color:var(--teal)">계정 생성</span>
+            <span style="color:var(--p1);font-weight:700">닉네임 확인</span>
+            <span>시작</span>
+          </div>
+        </div>
+
+        <div style="padding:20px 24px 0">
+          <!-- 계정 2 배지 -->
+          <div style="text-align:center;margin-bottom:16px">
+            <span class="acct-num-badge">계정 2</span>
+          </div>
+
+          <div style="font-size:13px;color:var(--t2);margin-bottom:6px;text-align:center">새 프로필 닉네임이에요!</div>
+          <div style="font-size:20px;font-weight:800;line-height:1.3;margin-bottom:20px;text-align:center">마음에 드시나요?</div>
+
+          <!-- 닉네임 카드 -->
+          <div class="nickname-card">
+            <div class="avatar-female-lg">
+              <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
+                <circle cx="21" cy="14" r="7.5" fill="rgba(255,255,255,0.9)"/>
+                <path d="M6 38c0-8.284 6.716-15 15-15s15 6.716 15 15" stroke="rgba(255,255,255,0.9)" stroke-width="3" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div style="font-size:22px;font-weight:800;letter-spacing:-0.5px;margin-bottom:6px">새벽별하나</div>
+            <div style="font-size:11px;color:var(--t2)">자동 생성된 닉네임이에요</div>
+          </div>
+
+          <div style="margin-bottom:12px">
+            <button class="btn-main">이 닉네임으로 시작</button>
+          </div>
+          <button class="btn-gray">닉네임 변경하기</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div><!-- end row 1 -->
+
+
+<!-- ══════════════════════════
+     ROW 2 : 계정 전환 + 차단 팝업
+══════════════════════════ -->
+<div class="row-label">ROW 2 · 채팅 리스트 계정 전환 / 차단 선택 팝업</div>
+<div class="row">
+
+  <!-- Screen 3 : 계정 전환 UI -->
+  <div class="col">
+    <div class="screen-label">Screen 3 · 계정 전환</div>
+    <div class="screen-sub">채팅 리스트 상단 원형 탭 — 계정 2 활성 상태</div>
+    <div class="phone">
+      <div class="screen" style="background:var(--bg)">
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <div class="sb-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+
+        <!-- 상단 헤더 -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 20px 8px">
+          <div style="font-size:19px;font-weight:800">채팅</div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="background:rgba(155,114,255,.12);border:1px solid rgba(155,114,255,.2);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;color:var(--p1)">🎫 매칭권 3</div>
+            <div style="font-size:20px;color:var(--t2)">🔍</div>
+          </div>
+        </div>
+
+        <!-- 계정 전환 탭바 -->
+        <div style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:12px 16px 10px;display:flex;gap:18px;align-items:flex-start">
+
+          <!-- 계정 1 (비활성) -->
+          <div class="acct-tab">
+            <div class="acct-tab-avatar acct-tab-female" style="opacity:.6">
+              <div class="acct-tab-ring-inactive"></div>
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                <circle cx="14" cy="9" r="5.5" fill="rgba(255,255,255,0.85)"/>
+                <path d="M4 26c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="rgba(255,255,255,0.85)" stroke-width="2.2" stroke-linecap="round"/>
+              </svg>
+              <div class="tab-unread" style="opacity:1">5</div>
+            </div>
+            <div class="acct-tab-name-inactive">달콤한하루</div>
+          </div>
+
+          <!-- 계정 2 (활성) -->
+          <div class="acct-tab">
+            <div class="acct-tab-avatar acct-tab-female2">
+              <div class="acct-tab-ring-active"></div>
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                <circle cx="14" cy="9" r="5.5" fill="rgba(255,255,255,0.9)"/>
+                <path d="M4 26c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="rgba(255,255,255,0.9)" stroke-width="2.2" stroke-linecap="round"/>
+              </svg>
+              <div class="tab-unread">3</div>
+            </div>
+            <div class="acct-tab-name">새벽별하나</div>
+          </div>
+
+          <!-- 계정 3 (비활성) -->
+          <div class="acct-tab">
+            <div class="acct-tab-avatar acct-tab-female3" style="opacity:.6">
+              <div class="acct-tab-ring-inactive"></div>
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                <circle cx="14" cy="9" r="5.5" fill="rgba(255,255,255,0.85)"/>
+                <path d="M4 26c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="rgba(255,255,255,0.85)" stroke-width="2.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="acct-tab-name-inactive">봄날의온기</div>
+          </div>
+
+        </div>
+
+        <!-- 채팅 목록 (계정 2 기준) -->
+        <div class="chat-item">
+          <div class="chat-avatar chat-av-male">
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+              <circle cx="13" cy="8" r="5" fill="rgba(255,255,255,0.9)"/>
+              <path d="M3 24c0-5.523 4.477-9 10-9s10 3.477 10 9" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="chat-info">
+            <div class="chat-name-row">
+              <span class="chat-name">구름위산책</span>
+              <span class="chat-time">오전 11:23</span>
+            </div>
+            <div class="chat-preview">오늘 날씨 진짜 좋다 ㅎㅎ</div>
+          </div>
+          <div class="unread-badge">3</div>
+        </div>
+
+        <div class="chat-item">
+          <div class="chat-avatar chat-av-male">
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+              <circle cx="13" cy="8" r="5" fill="rgba(255,255,255,0.9)"/>
+              <path d="M3 24c0-5.523 4.477-9 10-9s10 3.477 10 9" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="chat-info">
+            <div class="chat-name-row">
+              <span class="chat-name">바람의검객</span>
+              <span class="chat-time">어제</span>
+            </div>
+            <div class="chat-preview">안녕하세요 반가워요!</div>
+          </div>
+        </div>
+
+        <div class="chat-item" style="opacity:.5">
+          <div class="chat-avatar" style="width:46px;height:46px;border-radius:50%;background:var(--bg3)"></div>
+          <div class="chat-info">
+            <div class="chat-name-row">
+              <span class="chat-name" style="color:var(--t2)">채팅 없음</span>
+            </div>
+            <div class="chat-preview">—</div>
+          </div>
+        </div>
+
+        <!-- 하단 탭바 -->
+        <div class="home-tab-bar">
+          <div class="tab-item"><div class="tab-icon">💘</div>매칭</div>
+          <div class="tab-item active"><div class="tab-icon">💬</div>채팅</div>
+          <div class="tab-item"><div class="tab-icon">🤍</div>즐겨찾기</div>
+          <div class="tab-item"><div class="tab-icon">⚙️</div>설정</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 4 : 차단 선택 팝업 -->
+  <div class="col">
+    <div class="screen-label">Screen 4 · 차단 선택 팝업</div>
+    <div class="screen-sub">다중 계정 보유자가 상대 차단 시 — 계정 범위 직접 선택</div>
+    <div class="phone">
+      <div class="screen" style="background:var(--bg)">
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <div class="sb-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+
+        <!-- 상단 헤더 -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 20px 8px">
+          <div style="font-size:19px;font-weight:800">채팅</div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="background:rgba(155,114,255,.12);border:1px solid rgba(155,114,255,.2);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;color:var(--p1)">🎫 매칭권 3</div>
+            <div style="font-size:20px;color:var(--t2)">🔍</div>
+          </div>
+        </div>
+
+        <!-- 채팅 아이템들 (흐리게) -->
+        <div style="opacity:.3">
+          <div class="chat-item">
+            <div class="chat-avatar chat-av-male">
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+                <circle cx="13" cy="8" r="5" fill="rgba(255,255,255,0.9)"/>
+                <path d="M3 24c0-5.523 4.477-9 10-9s10 3.477 10 9" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="chat-info">
+              <div class="chat-name-row">
+                <span class="chat-name">구름위산책</span>
+                <span class="chat-time">오전 11:23</span>
+              </div>
+              <div class="chat-preview">오늘 날씨 진짜 좋다 ㅎㅎ</div>
+            </div>
+          </div>
+          <div class="chat-item">
+            <div class="chat-avatar chat-av-male">
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+                <circle cx="13" cy="8" r="5" fill="rgba(255,255,255,0.9)"/>
+                <path d="M3 24c0-5.523 4.477-9 10-9s10 3.477 10 9" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="chat-info">
+              <div class="chat-name-row">
+                <span class="chat-name">바람의검객</span>
+                <span class="chat-time">어제</span>
+              </div>
+              <div class="chat-preview">안녕하세요 반가워요!</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 차단 팝업 -->
+        <div class="popup-overlay">
+          <div class="popup-sheet">
+            <div class="sheet-handle"></div>
+
+            <div style="margin-bottom:6px;font-size:15px;font-weight:800">차단 범위를 선택해 주세요</div>
+            <div style="font-size:12px;color:var(--t2);margin-bottom:18px;line-height:1.6">
+              <strong style="color:#fff">구름위산책</strong> 님을 어떤 범위로 차단할까요?
+            </div>
+
+            <!-- 옵션 1 -->
+            <div class="block-option block-opt-yellow">
+              <div class="block-opt-icon">🔒</div>
+              <div>
+                <div class="block-opt-label" style="color:var(--yellow)">지금 계정만 차단</div>
+                <div class="block-opt-desc">새벽별하나 계정에서만 차단됩니다</div>
+              </div>
+            </div>
+
+            <!-- 옵션 2 -->
+            <div class="block-option block-opt-purple">
+              <div class="block-opt-icon">🚫</div>
+              <div>
+                <div class="block-opt-label" style="color:var(--p1)">다중 계정 모두 차단</div>
+                <div class="block-opt-desc">내 모든 계정에서 동시 차단됩니다</div>
+              </div>
+            </div>
+
+            <div style="margin-top:4px;font-size:11px;color:var(--t3);text-align:center;margin-bottom:14px">
+              차단 후에는 상대방과의 채팅이 불가능합니다
+            </div>
+
+            <button class="btn-gray" style="font-size:14px;padding:13px">취소</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div><!-- end row 2 -->
+
+<div style="margin-top:8px;font-size:11px;color:var(--t3);text-align:center">
+  FREECHAT 목업 13 · 다중 계정 · 에이전시 여자회원 전용 · v1
+</div>
+
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>FREECHAT 목업 — 04 즐겨찾기 + 사진 미리보기</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:-apple-system,'Noto Sans KR','Segoe UI',sans-serif;
+  background:#080812;color:#fff;
+  padding:48px 32px;min-height:100vh;
+}
+h1{font-size:18px;font-weight:800;color:#fff;margin-bottom:4px}
+.page-sub{font-size:11px;color:#6e6e90;margin-bottom:48px;letter-spacing:.5px}
+
+.screens-wrap{display:flex;gap:40px;align-items:flex-start;flex-wrap:wrap;}
+
+.screen-block{display:flex;flex-direction:column;align-items:center;gap:16px;}
+.screen-label{font-size:10px;font-weight:700;letter-spacing:2px;color:#6e6e90;text-transform:uppercase;}
+
+.phone{
+  width:375px;height:812px;
+  background:#0C0C18;border-radius:44px;overflow:hidden;position:relative;
+  border:2px solid #1a1a2e;
+  box-shadow:0 24px 80px rgba(0,0,0,.8),inset 0 0 0 1px rgba(255,255,255,.04);
+  flex-shrink:0;
+}
+.notch{
+  position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  width:120px;height:34px;background:#000;border-radius:20px;z-index:10;
+}
+.statusbar{
+  position:absolute;top:0;left:0;right:0;height:54px;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  padding:0 28px 8px;z-index:9;
+}
+.statusbar .time{font-size:15px;font-weight:700}
+.statusbar .icons{display:flex;gap:6px;align-items:center}
+
+.app-header{
+  position:absolute;top:54px;left:0;right:0;height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;z-index:5;
+  border-bottom:1px solid #1a1a2a;background:#0C0C18;
+}
+
+.tabbar{
+  position:absolute;bottom:0;left:0;right:0;height:60px;
+  background:#0E0E1C;border-top:1px solid #1a1a2a;
+  display:flex;align-items:center;justify-content:space-around;
+  padding:0 8px;z-index:5;
+}
+.tab-item{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;cursor:pointer;padding:6px 0;}
+.tab-icon{font-size:22px;opacity:.4}
+.tab-icon.active{opacity:1;}
+.tab-label{font-size:9px;color:#38384e;font-weight:600}
+.tab-label.active{color:#9B72FF}
+
+.arrow-wrap{display:flex;align-items:center;padding-top:380px;}
+.arrow{width:48px;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.arrow-h{
+  width:32px;height:2px;
+  background:linear-gradient(to right,#9B72FF44,#9B72FF,#9B72FF44);
+  position:relative;
+}
+.arrow-h::after{
+  content:'';position:absolute;right:-1px;top:-4px;
+  width:0;height:0;
+  border-left:8px solid #9B72FF;
+  border-top:5px solid transparent;border-bottom:5px solid transparent;
+}
+.arrow-label{font-size:9px;color:#6e6e90;letter-spacing:.5px;white-space:nowrap;margin-top:6px;}
+</style>
+</head>
+<body>
+
+<h1>📱 FREECHAT 목업 — 04 즐겨찾기 + 사진 미리보기</h1>
+<div class="page-sub">SCREEN 11~12 · 즐겨찾기 목록 → 사진 미리보기</div>
+
+<div class="screens-wrap">
+
+  <!-- ────────── SCREEN 11: 즐겨찾기 목록 ────────── -->
+  <div class="screen-block">
+    <div class="screen-label">11 · 즐겨찾기 목록</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4" y="2" width="3" height="10" rx="1"/><rect x="8" y="0" width="3" height="12" rx="1"/><rect x="12" y="1" width="3" height="11" rx="1" opacity=".3"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="white"><rect x="0" y="1" width="22" height="10" rx="3" stroke="white" stroke-width="1.5" fill="none" opacity=".5"/><rect x="1.5" y="2.5" width="17" height="7" rx="2" fill="white"/><rect x="23" y="4" width="2" height="4" rx="1" fill="white" opacity=".4"/></svg>
+        </div>
+      </div>
+
+      <!-- 헤더 -->
+      <div class="app-header">
+        <div style="font-size:17px;font-weight:900;color:#fff;letter-spacing:-0.5px;">FREE<span style="color:#9B72FF;">CHAT</span></div>
+        <!-- 저장 수 표시 -->
+        <div style="
+          display:flex;align-items:center;gap:6px;
+          background:#161625;border:1px solid #1a1a2a;
+          border-radius:20px;padding:6px 12px;
+          font-size:12px;color:#6e6e90;
+        ">
+          <span style="color:#FEE500;font-size:14px;">♥</span>
+          <span>즐겨찾기</span>
+          <span style="color:#FEE500;font-weight:700;">4</span>
+          <span style="color:#38384e;">/ 10</span>
+        </div>
+      </div>
+
+      <!-- 안내 배너 (맞팔 혜택) -->
+      <div style="position:absolute;top:110px;left:0;right:0;padding:14px 20px 0;">
+        <div style="
+          background:linear-gradient(135deg,rgba(254,229,0,.1),rgba(155,114,255,.08));
+          border:1px solid rgba(254,229,0,.25);
+          border-radius:14px;padding:12px 16px;
+          display:flex;align-items:center;gap:10px;
+        ">
+          <span style="font-size:20px;">♥</span>
+          <div style="font-size:12px;color:#ccc;line-height:1.7;">
+            <span style="color:#FEE500;font-weight:700;">서로 즐겨찾기</span> 상태면<br>
+            <span style="color:#00C896;font-weight:700;">매칭권 소모 없이</span> 바로 채팅 가능해요!
+          </div>
+        </div>
+      </div>
+
+      <!-- 즐겨찾기 목록 -->
+      <div style="position:absolute;top:192px;left:0;right:0;bottom:60px;overflow-y:auto;padding:0 20px;">
+
+        <!-- 섹션: 맞팔 -->
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:#6e6e90;margin-bottom:10px;margin-top:4px;">서로 즐겨찾기 ♥</div>
+
+        <!-- 맞팔 아이템 1 -->
+        <div style="
+          display:flex;align-items:center;gap:12px;
+          padding:14px 16px;margin-bottom:8px;
+          background:#111120;border:1px solid rgba(254,229,0,.2);
+          border-radius:16px;cursor:pointer;
+        ">
+          <div style="position:relative;flex-shrink:0;">
+            <div style="width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#FF6D6D,#ff4444);border:2px solid #FEE500;"></div>
+            <div style="position:absolute;bottom:1px;right:1px;width:12px;height:12px;background:#00C896;border-radius:50%;border:2px solid #111120;"></div>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+              <div style="font-size:15px;font-weight:700;color:#fff;">달콤한사과</div>
+              <span style="font-size:16px;color:#FEE500;">♥</span>
+            </div>
+            <div style="display:flex;gap:6px;">
+              <span style="font-size:10px;background:#1a1a2e;color:#9B72FF;padding:2px 7px;border-radius:5px;">26세</span>
+              <span style="font-size:10px;background:#1a1a2e;color:#6e6e90;padding:2px 7px;border-radius:5px;">서울특별시 강남구</span>
+            </div>
+          </div>
+          <!-- 바로 채팅 버튼 -->
+          <div style="
+            display:flex;align-items:center;gap:5px;
+            background:linear-gradient(135deg,#9B72FF,#7C4DFF);
+            border-radius:10px;padding:8px 12px;
+            font-size:12px;font-weight:700;color:#fff;
+            flex-shrink:0;cursor:pointer;
+          ">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 12C2 7 6 3 10 3C13 3 14 5 14 7C14 10 12 12 9 12H6L2 14V12Z" fill="white" opacity=".9"/></svg>
+            채팅
+          </div>
+        </div>
+
+        <!-- 맞팔 아이템 2 -->
+        <div style="
+          display:flex;align-items:center;gap:12px;
+          padding:14px 16px;margin-bottom:20px;
+          background:#111120;border:1px solid rgba(254,229,0,.2);
+          border-radius:16px;cursor:pointer;
+        ">
+          <div style="position:relative;flex-shrink:0;">
+            <div style="width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#9B72FF,#7C4DFF);border:2px solid #FEE500;"></div>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+              <div style="font-size:15px;font-weight:700;color:#fff;">봄날향기</div>
+              <span style="font-size:16px;color:#FEE500;">♥</span>
+            </div>
+            <div style="display:flex;gap:6px;">
+              <span style="font-size:10px;background:#1a1a2e;color:#9B72FF;padding:2px 7px;border-radius:5px;">23세</span>
+              <span style="font-size:10px;background:#1a1a2e;color:#6e6e90;padding:2px 7px;border-radius:5px;">경기도 성남시</span>
+            </div>
+          </div>
+          <div style="
+            display:flex;align-items:center;gap:5px;
+            background:linear-gradient(135deg,#9B72FF,#7C4DFF);
+            border-radius:10px;padding:8px 12px;
+            font-size:12px;font-weight:700;color:#fff;
+            flex-shrink:0;cursor:pointer;
+          ">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 12C2 7 6 3 10 3C13 3 14 5 14 7C14 10 12 12 9 12H6L2 14V12Z" fill="white" opacity=".9"/></svg>
+            채팅
+          </div>
+        </div>
+
+        <!-- 섹션: 단방향 즐겨찾기 -->
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:#6e6e90;margin-bottom:10px;">내가 즐겨찾기 ♡</div>
+
+        <!-- 스와이프 안내 라벨 -->
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+          <div style="flex:1;height:1px;background:linear-gradient(to right,transparent,#9B72FF44);"></div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:1px;color:#9B72FF;white-space:nowrap;">← 왼쪽으로 스와이프 시</div>
+          <div style="flex:1;height:1px;background:linear-gradient(to left,transparent,#9B72FF44);"></div>
+        </div>
+
+        <!-- 단방향 아이템 1 — 스와이프 상태 -->
+        <div style="position:relative;margin-bottom:8px;border-radius:16px;overflow:hidden;">
+          <!-- 삭제 버튼 (우측 고정 노출) -->
+          <div style="
+            position:absolute;top:0;right:0;bottom:0;
+            width:80px;
+            background:#FF3B30;
+            display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+            cursor:pointer;
+          ">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M4 5H16M8 5V3H12V5M7 5V16H13V5H7Z" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span style="font-size:11px;font-weight:700;color:#fff;">삭제</span>
+          </div>
+          <!-- 아이템 본체 (왼쪽으로 밀린 상태) -->
+          <div style="
+            display:flex;align-items:center;gap:12px;
+            padding:14px 16px;
+            background:#111120;border:1px solid #1a1a2a;
+            border-radius:16px;
+            transform:translateX(-80px);
+            position:relative;z-index:1;
+          ">
+            <div style="position:relative;flex-shrink:0;">
+              <div style="width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#00C896,#009970);border:2px solid #1a1a2a;"></div>
+              <div style="position:absolute;bottom:1px;right:1px;width:12px;height:12px;background:#00C896;border-radius:50%;border:2px solid #111120;"></div>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+                <div style="font-size:15px;font-weight:700;color:#fff;">하늘빛노을</div>
+                <span style="font-size:16px;color:#6e6e90;">♡</span>
+              </div>
+              <div style="display:flex;gap:6px;">
+                <span style="font-size:10px;background:#1a1a2e;color:#9B72FF;padding:2px 7px;border-radius:5px;">29세</span>
+                <span style="font-size:10px;background:#1a1a2e;color:#6e6e90;padding:2px 7px;border-radius:5px;">부산광역시 해운대구</span>
+              </div>
+            </div>
+            <div style="
+              display:flex;align-items:center;gap:5px;
+              background:#161625;border:1px solid #1a1a2a;
+              border-radius:10px;padding:8px 12px;
+              font-size:12px;font-weight:700;color:#6e6e90;
+              flex-shrink:0;
+            ">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 12C2 7 6 3 10 3C13 3 14 5 14 7C14 10 12 12 9 12H6L2 14V12Z" stroke="#6e6e90" stroke-width="1.5" fill="none"/></svg>
+              채팅
+            </div>
+          </div>
+        </div>
+
+        <!-- 단방향 아이템 2 -->
+        <div style="
+          display:flex;align-items:center;gap:12px;
+          padding:14px 16px;
+          background:#111120;border:1px solid #1a1a2a;
+          border-radius:16px;cursor:pointer;
+        ">
+          <div style="position:relative;flex-shrink:0;">
+            <div style="width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#FEE500,#e6c800);border:2px solid #1a1a2a;"></div>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+              <div style="font-size:15px;font-weight:700;color:#fff;">별빛소나기</div>
+              <span style="font-size:16px;color:#6e6e90;">♡</span>
+            </div>
+            <div style="display:flex;gap:6px;">
+              <span style="font-size:10px;background:#1a1a2e;color:#9B72FF;padding:2px 7px;border-radius:5px;">24세</span>
+              <span style="font-size:10px;background:#1a1a2e;color:#6e6e90;padding:2px 7px;border-radius:5px;">서울특별시 마포구</span>
+            </div>
+          </div>
+          <div style="
+            display:flex;align-items:center;gap:5px;
+            background:#161625;border:1px solid #1a1a2a;
+            border-radius:10px;padding:8px 12px;
+            font-size:12px;font-weight:700;color:#6e6e90;
+            flex-shrink:0;cursor:pointer;
+          ">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 12C2 7 6 3 10 3C13 3 14 5 14 7C14 10 12 12 9 12H6L2 14V12Z" stroke="#6e6e90" stroke-width="1.5" fill="none"/></svg>
+            채팅
+          </div>
+        </div>
+
+        <!-- 하단 여유 공간 -->
+        <div style="height:20px;"></div>
+      </div>
+
+      <div class="tabbar">
+        <div class="tab-item"><div class="tab-icon">💬</div><div class="tab-label">매칭</div></div>
+        <div class="tab-item"><div class="tab-icon">🗨️</div><div class="tab-label">채팅</div></div>
+        <div class="tab-item"><div class="tab-icon active">❤️</div><div class="tab-label active">즐겨찾기</div></div>
+        <div class="tab-item"><div class="tab-icon">⚙️</div><div class="tab-label">설정</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 화살표 -->
+  <div class="arrow-wrap">
+    <div class="arrow">
+      <div class="arrow-h"></div>
+      <div class="arrow-label">사진 탭</div>
+    </div>
+  </div>
+
+  <!-- ────────── SCREEN 12: 사진 미리보기 ────────── -->
+  <div class="screen-block">
+    <div class="screen-label">12 · 사진 미리보기</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4" y="2" width="3" height="10" rx="1"/><rect x="8" y="0" width="3" height="12" rx="1"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="white"><rect x="0" y="1" width="22" height="10" rx="3" stroke="white" stroke-width="1.5" fill="none" opacity=".5"/><rect x="1.5" y="2.5" width="17" height="7" rx="2" fill="white"/></svg>
+        </div>
+      </div>
+
+      <!-- 전체화면 어두운 배경 -->
+      <div style="position:absolute;inset:0;background:#000;z-index:1;"></div>
+
+      <!-- 상단 오버레이 바 -->
+      <div style="
+        position:absolute;top:0;left:0;right:0;height:100px;
+        background:linear-gradient(to bottom,rgba(0,0,0,.75),transparent);
+        z-index:5;display:flex;align-items:flex-end;
+        padding:0 20px 12px;justify-content:space-between;
+      ">
+        <!-- 닫기 버튼 -->
+        <div style="
+          width:38px;height:38px;
+          background:rgba(255,255,255,.12);border-radius:50%;
+          display:flex;align-items:center;justify-content:center;cursor:pointer;
+        ">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M1 1L13 13M13 1L1 13" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <!-- 전송자 + 사진 카운트 -->
+        <div style="text-align:right;">
+          <div style="font-size:13px;font-weight:700;color:#fff;">달콤한사과</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.6);margin-top:2px;">3 / 5장</div>
+        </div>
+      </div>
+
+      <!-- 사진 (전체화면 풀블리드) -->
+      <div style="
+        position:absolute;top:0;left:0;right:0;bottom:0;
+        display:flex;align-items:center;justify-content:center;
+        z-index:2;
+      ">
+        <!-- 사진 플레이스홀더 (그라데이션으로 표현) -->
+        <div style="
+          width:100%;height:420px;
+          background:linear-gradient(160deg,#1a0a2a,#2a1040,#0a0a1a);
+          display:flex;align-items:center;justify-content:center;
+          position:relative;overflow:hidden;
+        ">
+          <!-- 추상적 이미지 표현 -->
+          <div style="position:absolute;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(155,114,255,.3),transparent);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+          <div style="position:absolute;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,109,109,.2),transparent);top:30%;left:30%;"></div>
+          <svg width="56" height="56" viewBox="0 0 56 56" fill="none" opacity=".3">
+            <rect x="4" y="12" width="48" height="36" rx="5" stroke="white" stroke-width="2.5"/>
+            <circle cx="28" cy="30" r="10" stroke="white" stroke-width="2.5"/>
+            <path d="M20 12L24 6H32L36 12" stroke="white" stroke-width="2.5" stroke-linejoin="round"/>
+          </svg>
+          <div style="position:absolute;bottom:16px;right:16px;font-size:11px;color:rgba(255,255,255,.3);">사진 미리보기</div>
+        </div>
+      </div>
+
+      <!-- 좌우 넘기기 화살표 -->
+      <div style="position:absolute;top:50%;left:16px;transform:translateY(-50%);z-index:6;">
+        <div style="width:36px;height:36px;background:rgba(255,255,255,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <svg width="9" height="16" viewBox="0 0 9 16" fill="none"><path d="M8 1L1 8L8 15" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div style="position:absolute;top:50%;right:16px;transform:translateY(-50%);z-index:6;">
+        <div style="width:36px;height:36px;background:rgba(255,255,255,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <svg width="9" height="16" viewBox="0 0 9 16" fill="none"><path d="M1 1L8 8L1 15" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+
+      <!-- 하단 오버레이 바 -->
+      <div style="
+        position:absolute;bottom:0;left:0;right:0;height:160px;
+        background:linear-gradient(to top,rgba(0,0,0,.85),transparent);
+        z-index:5;display:flex;flex-direction:column;
+        justify-content:flex-end;padding:0 20px 28px;
+      ">
+        <!-- 썸네일 스트립 (5장 제한 표시) -->
+        <div style="display:flex;gap:6px;justify-content:center;margin-bottom:16px;">
+          <div style="width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#2a1040,#1a0a2a);border:2px solid rgba(155,114,255,.5);"></div>
+          <div style="width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#0a1a2a,#1a2a3a);border:1px solid rgba(255,255,255,.15);"></div>
+          <!-- 현재 선택 (3번째) -->
+          <div style="width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#1a0a2a,#2a1040);border:2px solid #9B72FF;box-shadow:0 0 8px rgba(155,114,255,.5);"></div>
+          <div style="width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#0a2a1a,#1a3a2a);border:1px solid rgba(255,255,255,.15);"></div>
+          <div style="width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#2a1a0a,#3a2a1a);border:1px solid rgba(255,255,255,.15);"></div>
+        </div>
+
+        <!-- 남은 사진 수 안내 + 신고 버튼 -->
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="font-size:11px;color:rgba(255,255,255,.5);">
+            채팅방 전송 가능: <span style="color:#FEE500;font-weight:700;">2장</span> 남음
+          </div>
+          <!-- 신고 버튼 (길게 누르기 안내) -->
+          <div style="
+            display:flex;align-items:center;gap:5px;
+            background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
+            border-radius:10px;padding:7px 12px;cursor:pointer;
+          ">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+              <path d="M8 2L9.5 6H14L10.5 8.5L12 12.5L8 10L4 12.5L5.5 8.5L2 6H6.5L8 2Z" stroke="rgba(255,255,255,.7)" stroke-width="1.5" stroke-linejoin="round"/>
+            </svg>
+            <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,.7);">신고</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 길게 누르기 안내 툴팁 -->
+      <div style="
+        position:absolute;top:50%;left:50%;transform:translate(-50%,60px);
+        background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.1);
+        border-radius:10px;padding:8px 14px;z-index:7;white-space:nowrap;
+      ">
+        <div style="font-size:11px;color:rgba(255,255,255,.6);">이미지 길게 누르면 신고 가능</div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /screens-wrap -->
+
+<!-- 플로우 노트 -->
+<div style="margin-top:48px;padding:24px;background:#111120;border:1px solid #1a1a2a;border-radius:16px;max-width:900px;">
+  <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:#6e6e90;margin-bottom:16px;">FLOW NOTES</div>
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:24px;">
+    <div>
+      <div style="font-size:13px;font-weight:700;color:#9B72FF;margin-bottom:8px;">11 즐겨찾기 목록</div>
+      <div style="font-size:12px;color:#6e6e90;line-height:1.8;">
+        · 최대 10명 저장 (헤더에 n/10 표시)<br>
+        · 서로 즐겨찾기(맞팔) ♥: 노란 테두리 + 채팅 버튼 보라색 (매칭권 소모 없음)<br>
+        · 나만 즐겨찾기 ♡: 일반 테두리 + 채팅 버튼 회색 (매칭권 1개 소모)<br>
+        · 둘 중 한 명 삭제 시 즉시 일반 매칭권 방식 복귀<br>
+        · 상단 안내 배너: 맞팔 혜택 설명<br>
+        · 삭제: 아이템 왼쪽 스와이프 → 빨간 삭제 버튼 노출
+      </div>
+    </div>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:#9B72FF;margin-bottom:8px;">12 사진 미리보기</div>
+      <div style="font-size:12px;color:#6e6e90;line-height:1.8;">
+        · 채팅방 내 사진 탭 시 전체화면 진입<br>
+        · 채팅방 1개당 최대 5장 제한 (하단 남은 장 수 표시)<br>
+        · 하단 썸네일 스트립: 전체 사진 인덱스 표시<br>
+        · 앱 내 저장 버튼 없음<br>
+        · 신고: 이미지 길게 누르기 또는 신고 버튼 클릭<br>
+        · 신고 시 원본 이미지 + 텍스트 어드민 즉시 전달
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

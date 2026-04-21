@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>FREECHAT 목업 — 05 설정 탭</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:-apple-system,'Noto Sans KR','Segoe UI',sans-serif;
+  background:#080812;color:#fff;
+  padding:48px 32px;min-height:100vh;
+}
+h1{font-size:18px;font-weight:800;color:#fff;margin-bottom:4px}
+.page-sub{font-size:11px;color:#6e6e90;margin-bottom:40px;letter-spacing:.5px}
+
+.row-title{font-size:11px;font-weight:700;letter-spacing:2px;color:#9B72FF;padding-bottom:20px;text-transform:uppercase;}
+.row-wrap{display:flex;gap:40px;align-items:flex-start;flex-wrap:wrap;margin-bottom:56px;}
+
+.screen-block{display:flex;flex-direction:column;align-items:center;gap:16px;}
+.screen-label{font-size:10px;font-weight:700;letter-spacing:2px;color:#6e6e90;text-transform:uppercase;}
+
+.phone{
+  width:375px;height:812px;
+  background:#0C0C18;border-radius:44px;overflow:hidden;position:relative;
+  border:2px solid #1a1a2e;
+  box-shadow:0 24px 80px rgba(0,0,0,.8),inset 0 0 0 1px rgba(255,255,255,.04);
+  flex-shrink:0;
+}
+.notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:34px;background:#000;border-radius:20px;z-index:10;}
+.statusbar{position:absolute;top:0;left:0;right:0;height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 28px 8px;z-index:9;}
+.statusbar .time{font-size:15px;font-weight:700}
+.statusbar .icons{display:flex;gap:6px;align-items:center}
+
+.tabbar{
+  position:absolute;bottom:0;left:0;right:0;height:60px;
+  background:#0E0E1C;border-top:1px solid #1a1a2a;
+  display:flex;align-items:center;justify-content:space-around;padding:0 8px;z-index:5;
+}
+.tab-item{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;cursor:pointer;padding:6px 0;}
+.tab-icon{font-size:22px;opacity:.4}
+.tab-icon.active{opacity:1;}
+.tab-label{font-size:9px;color:#38384e;font-weight:600}
+.tab-label.active{color:#9B72FF}
+
+/* 공통 서브 헤더 */
+.sub-header{
+  position:absolute;top:54px;left:0;right:0;height:56px;
+  display:flex;align-items:center;padding:0 20px;gap:12px;
+  background:#0C0C18;border-bottom:1px solid #1a1a2a;z-index:5;
+}
+
+.arrow-wrap{display:flex;align-items:center;padding-top:380px;}
+.arrow{width:48px;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.arrow-h{width:32px;height:2px;background:linear-gradient(to right,#9B72FF44,#9B72FF,#9B72FF44);position:relative;}
+.arrow-h::after{content:'';position:absolute;right:-1px;top:-4px;width:0;height:0;border-left:8px solid #9B72FF;border-top:5px solid transparent;border-bottom:5px solid transparent;}
+.arrow-label{font-size:9px;color:#6e6e90;letter-spacing:.5px;white-space:nowrap;margin-top:6px;}
+
+/* 설정 공통 리스트 아이템 */
+.setting-row{
+  display:flex;align-items:center;gap:14px;
+  padding:0 20px;height:58px;
+  border-bottom:1px solid #111120;cursor:pointer;
+}
+.setting-icon{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.setting-label{flex:1;font-size:15px;font-weight:600;color:#fff;}
+.setting-chevron{opacity:.3;}
+</style>
+</head>
+<body>
+
+<h1>📱 FREECHAT 목업 — 05 설정 탭</h1>
+<div class="page-sub">SCREEN 13~19 · 설정 메인 → 프로필 수정 → 알림 → 차단 목록 → 문의하기 → 회원 탈퇴</div>
+
+<!-- ══ ROW 1: 설정 메인 + 프로필 수정 ══ -->
+<div class="row-title">▸ 설정 메인 · 프로필 수정</div>
+<div class="row-wrap">
+
+  <!-- ── SCREEN 13: 설정 메인 ── -->
+  <div class="screen-block">
+    <div class="screen-label">13 · 설정 메인</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4" y="2" width="3" height="10" rx="1"/><rect x="8" y="0" width="3" height="12" rx="1"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="white"><rect x="0" y="1" width="22" height="10" rx="3" stroke="white" stroke-width="1.5" fill="none" opacity=".5"/><rect x="1.5" y="2.5" width="17" height="7" rx="2" fill="white"/></svg>
+        </div>
+      </div>
+
+      <!-- 헤더 -->
+      <div style="position:absolute;top:54px;left:0;right:0;height:56px;display:flex;align-items:center;padding:0 20px;background:#0C0C18;border-bottom:1px solid #1a1a2a;z-index:5;">
+        <div style="font-size:17px;font-weight:900;color:#fff;letter-spacing:-0.5px;">FREE<span style="color:#9B72FF;">CHAT</span></div>
+      </div>
+
+      <!-- 내 프로필 요약 -->
+      <div style="position:absolute;top:110px;left:0;right:0;padding:20px;">
+        <div style="
+          background:#111120;border:1px solid #1a1a2a;border-radius:18px;
+          padding:18px;display:flex;align-items:center;gap:14px;
+        ">
+          <div style="width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#9B72FF,#7C4DFF);flex-shrink:0;position:relative;">
+            <div style="position:absolute;bottom:1px;right:1px;width:12px;height:12px;background:#00C896;border-radius:50%;border:2px solid #111120;"></div>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:800;color:#fff;margin-bottom:3px;">봄날의감성</div>
+            <div style="font-size:12px;color:#6e6e90;">서울특별시 강남구 · 28세 · ENFP</div>
+          </div>
+          <!-- 프로필 수정 바로가기 -->
+          <div style="
+            background:#161625;border:1px solid #1a1a2a;
+            border-radius:10px;padding:7px 12px;
+            font-size:11px;font-weight:700;color:#9B72FF;cursor:pointer;
+          ">수정</div>
+        </div>
+      </div>
+
+      <!-- 설정 목록 -->
+      <div style="position:absolute;top:226px;left:0;right:0;bottom:60px;overflow-y:auto;">
+
+        <!-- 계정 섹션 -->
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#38384e;padding:16px 20px 8px;">계정</div>
+
+        <div class="setting-row">
+          <div class="setting-icon" style="background:rgba(155,114,255,.15);">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="7" r="4" stroke="#9B72FF" stroke-width="1.8"/><path d="M3 18C3 14.686 6.134 12 10 12C13.866 12 17 14.686 17 18" stroke="#9B72FF" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <div class="setting-label">프로필 수정</div>
+          <svg class="setting-chevron" width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1L6 6L1 11" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-icon" style="background:rgba(0,200,150,.15);">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 2C10 2 4 5 4 11C4 14.314 6.686 17 10 17C13.314 17 16 14.314 16 11C16 5 10 2 10 2Z" stroke="#00C896" stroke-width="1.8"/><path d="M10 8V12M10 14V14.5" stroke="#00C896" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <div class="setting-label">알림 설정</div>
+          <svg class="setting-chevron" width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1L6 6L1 11" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-icon" style="background:rgba(255,109,109,.12);">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#FF6D6D" stroke-width="1.8"/><path d="M7 7L13 13M13 7L7 13" stroke="#FF6D6D" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <div class="setting-label">차단 목록</div>
+          <svg class="setting-chevron" width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1L6 6L1 11" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+
+        <!-- 정보 섹션 -->
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#38384e;padding:20px 20px 8px;">정보</div>
+
+        <div class="setting-row">
+          <div class="setting-icon" style="background:rgba(254,229,0,.1);">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="3" y="2" width="14" height="16" rx="2" stroke="#FEE500" stroke-width="1.8"/><path d="M7 7H13M7 10H13M7 13H10" stroke="#FEE500" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div class="setting-label">공지사항</div>
+          <svg class="setting-chevron" width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1L6 6L1 11" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-icon" style="background:rgba(74,144,226,.15);">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 15C3 10 7 5 12 5C15 5 17 7 17 9C17 12 15 14 12 14H8L3 17V15Z" stroke="#4A90E2" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="setting-label">고객센터 / 문의하기</div>
+          <svg class="setting-chevron" width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1L6 6L1 11" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-icon" style="background:rgba(155,114,255,.1);">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="3" y="4" width="14" height="12" rx="2" stroke="#9B72FF" stroke-width="1.8"/><path d="M7 9H13M7 12H10" stroke="#9B72FF" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div class="setting-label">개인정보처리방침</div>
+          <svg class="setting-chevron" width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1L6 6L1 11" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-icon" style="background:rgba(155,114,255,.1);">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="3" y="4" width="14" height="12" rx="2" stroke="#9B72FF" stroke-width="1.8"/><path d="M7 9H13M7 12H11" stroke="#9B72FF" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div class="setting-label">서비스 이용약관</div>
+          <svg class="setting-chevron" width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1L6 6L1 11" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+
+        <!-- 탈퇴 -->
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#38384e;padding:20px 20px 8px;">기타</div>
+
+        <div class="setting-row">
+          <div class="setting-icon" style="background:rgba(255,59,48,.12);">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M13 3H17V7M17 3L11 9M8 5H5C3.895 5 3 5.895 3 7V15C3 16.105 3.895 17 5 17H13C14.105 17 15 16.105 15 15V12" stroke="#FF3B30" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="setting-label" style="color:#FF3B30;">회원 탈퇴</div>
+          <svg class="setting-chevron" width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1L6 6L1 11" stroke="#FF3B30" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+
+        <!-- 앱 버전 -->
+        <div style="padding:24px 20px;text-align:center;">
+          <div style="font-size:11px;color:#38384e;">앱 버전 1.0.0</div>
+        </div>
+
+      </div>
+
+      <div class="tabbar">
+        <div class="tab-item"><div class="tab-icon">💬</div><div class="tab-label">매칭</div></div>
+        <div class="tab-item"><div class="tab-icon">🗨️</div><div class="tab-label">채팅</div></div>
+        <div class="tab-item"><div class="tab-icon">❤️</div><div class="tab-label">즐겨찾기</div></div>
+        <div class="tab-item"><div class="tab-icon active">⚙️</div><div class="tab-label active">설정</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 화살표 -->
+  <div class="arrow-wrap">
+    <div class="arrow"><div class="arrow-h"></div><div class="arrow-label">프로필 수정</div></div>
+  </div>
+
+  <!-- ── SCREEN 14: 프로필 수정 ── -->
+  <div class="screen-block">
+    <div class="screen-label">14 · 프로필 수정</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4" y="2" width="3" height="10" rx="1"/><rect x="8" y="0" width="3" height="12" rx="1"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="white"><rect x="0" y="1" width="22" height="10" rx="3" stroke="white" stroke-width="1.5" fill="none" opacity=".5"/><rect x="1.5" y="2.5" width="17" height="7" rx="2" fill="white"/></svg>
+        </div>
+      </div>
+
+      <div class="sub-header">
+        <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none"><path d="M9 1L1 8.5L9 16" stroke="#9B72FF" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div style="flex:1;font-size:16px;font-weight:700;color:#fff;text-align:center;">프로필 수정</div>
+        <!-- 저장 버튼 -->
+        <div style="font-size:14px;font-weight:700;color:#9B72FF;cursor:pointer;padding:4px 8px;">저장</div>
+      </div>
+
+      <div style="position:absolute;top:110px;left:0;right:0;bottom:0;overflow-y:auto;padding:24px 20px 40px;">
+
+        <!-- 프로필 이미지 -->
+        <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:28px;">
+          <div style="position:relative;cursor:pointer;">
+            <div style="width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#9B72FF,#7C4DFF);border:3px solid rgba(155,114,255,.4);"></div>
+            <!-- 편집 아이콘 -->
+            <div style="
+              position:absolute;bottom:2px;right:2px;
+              width:28px;height:28px;border-radius:50%;
+              background:#9B72FF;border:2px solid #0C0C18;
+              display:flex;align-items:center;justify-content:center;
+            ">
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M9 2L12 5L5 12H2V9L9 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div style="font-size:12px;color:#6e6e90;margin-top:10px;">사진 변경</div>
+        </div>
+
+        <!-- 닉네임 -->
+        <div style="margin-bottom:20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <div style="font-size:12px;font-weight:700;color:#9B72FF;">닉네임</div>
+            <div style="font-size:10px;color:#6e6e90;">하루 1회 변경 가능</div>
+          </div>
+          <div style="
+            height:48px;background:#161625;border:1.5px solid #252540;
+            border-radius:12px;display:flex;align-items:center;
+            padding:0 14px;justify-content:space-between;
+          ">
+            <span style="font-size:15px;color:#fff;">봄날의감성</span>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L12 5L5 12H2V9L9 2Z" stroke="#6e6e90" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+
+        <!-- 지역 -->
+        <div style="margin-bottom:20px;">
+          <div style="font-size:12px;font-weight:700;color:#9B72FF;margin-bottom:8px;">지역</div>
+          <div style="
+            height:48px;background:#161625;border:1.5px solid #252540;
+            border-radius:12px;display:flex;align-items:center;
+            padding:0 14px;justify-content:space-between;
+          ">
+            <span style="font-size:15px;color:#fff;">서울특별시 강남구</span>
+            <svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1L6 6L1 11" stroke="#6e6e90" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+
+        <!-- 스타일 태그 -->
+        <div style="margin-bottom:20px;">
+          <div style="font-size:12px;font-weight:700;color:#9B72FF;margin-bottom:8px;">스타일 태그</div>
+          <div style="
+            min-height:48px;background:#161625;border:1.5px solid #252540;
+            border-radius:12px;padding:12px 14px;
+            display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+          ">
+            <div style="background:rgba(155,114,255,.2);border:1px solid rgba(155,114,255,.4);border-radius:20px;padding:5px 12px;font-size:13px;color:#9B72FF;">사랑스러운</div>
+            <div style="background:rgba(155,114,255,.2);border:1px solid rgba(155,114,255,.4);border-radius:20px;padding:5px 12px;font-size:13px;color:#9B72FF;">감성적인</div>
+            <div style="background:#1a1a2e;border:1px dashed #38384e;border-radius:20px;padding:5px 12px;font-size:13px;color:#38384e;">+ 추가</div>
+          </div>
+        </div>
+
+        <!-- MBTI -->
+        <div style="margin-bottom:28px;">
+          <div style="font-size:12px;font-weight:700;color:#9B72FF;margin-bottom:8px;">MBTI</div>
+          <div style="
+            height:48px;background:#161625;border:1.5px solid #252540;
+            border-radius:12px;display:flex;align-items:center;
+            padding:0 14px;justify-content:space-between;
+          ">
+            <span style="font-size:15px;color:#fff;">ENFP</span>
+            <svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1L6 6L1 11" stroke="#6e6e90" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+
+        <!-- 저장 버튼 -->
+        <div style="
+          width:100%;height:52px;
+          background:linear-gradient(135deg,#9B72FF,#7C4DFF);
+          border-radius:14px;display:flex;align-items:center;justify-content:center;
+          font-size:16px;font-weight:700;color:#fff;cursor:pointer;
+          box-shadow:0 4px 20px rgba(155,114,255,.4);
+        ">저장하기</div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ ROW 2: 알림 설정 + 차단 목록 ══ -->
+<div class="row-title">▸ 알림 설정 · 차단 목록</div>
+<div class="row-wrap">
+
+  <!-- ── SCREEN 15: 알림 설정 ── -->
+  <div class="screen-block">
+    <div class="screen-label">15 · 알림 설정</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4" y="2" width="3" height="10" rx="1"/><rect x="8" y="0" width="3" height="12" rx="1"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="white"><rect x="0" y="1" width="22" height="10" rx="3" stroke="white" stroke-width="1.5" fill="none" opacity=".5"/><rect x="1.5" y="2.5" width="17" height="7" rx="2" fill="white"/></svg>
+        </div>
+      </div>
+
+      <div class="sub-header">
+        <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none"><path d="M9 1L1 8.5L9 16" stroke="#9B72FF" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div style="flex:1;font-size:16px;font-weight:700;color:#fff;text-align:center;">알림 설정</div>
+        <div style="width:36px;"></div>
+      </div>
+
+      <div style="position:absolute;top:110px;left:0;right:0;bottom:0;overflow-y:auto;padding:8px 0;">
+
+        <!-- 토글 행 공통 구조 -->
+        <!-- 1. 새 메시지 (ON) -->
+        <div style="display:flex;align-items:center;padding:18px 20px;border-bottom:1px solid #111120;">
+          <div style="flex:1;">
+            <div style="font-size:15px;font-weight:600;color:#fff;margin-bottom:3px;">새 메시지 알림</div>
+            <div style="font-size:12px;color:#6e6e90;">메시지 수신 시 즉시 알림</div>
+          </div>
+          <!-- 토글 ON -->
+          <div style="width:50px;height:28px;background:#9B72FF;border-radius:14px;position:relative;cursor:pointer;flex-shrink:0;">
+            <div style="position:absolute;top:3px;right:3px;width:22px;height:22px;background:#fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.3);"></div>
+          </div>
+        </div>
+
+        <!-- 2. 출석 리마인더 (ON) -->
+        <div style="display:flex;align-items:center;padding:18px 20px;border-bottom:1px solid #111120;">
+          <div style="flex:1;">
+            <div style="font-size:15px;font-weight:600;color:#fff;margin-bottom:3px;">출석 리마인더</div>
+            <div style="font-size:12px;color:#6e6e90;">매일 오후 1시 미접속 시 발송</div>
+          </div>
+          <div style="width:50px;height:28px;background:#9B72FF;border-radius:14px;position:relative;cursor:pointer;flex-shrink:0;">
+            <div style="position:absolute;top:3px;right:3px;width:22px;height:22px;background:#fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.3);"></div>
+          </div>
+        </div>
+
+        <!-- 3. 이벤트 알림 (OFF) -->
+        <div style="display:flex;align-items:center;padding:18px 20px;border-bottom:1px solid #111120;">
+          <div style="flex:1;">
+            <div style="font-size:15px;font-weight:600;color:#fff;margin-bottom:3px;">이벤트 알림</div>
+            <div style="font-size:12px;color:#6e6e90;">공지 및 이벤트 안내</div>
+          </div>
+          <!-- 토글 OFF -->
+          <div style="width:50px;height:28px;background:#252540;border-radius:14px;position:relative;cursor:pointer;flex-shrink:0;">
+            <div style="position:absolute;top:3px;left:3px;width:22px;height:22px;background:#fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.3);opacity:.5;"></div>
+          </div>
+        </div>
+
+        <!-- 4. 스페셜 룰렛 알림 (ON) -->
+        <div style="display:flex;align-items:center;padding:18px 20px;border-bottom:1px solid #111120;">
+          <div style="flex:1;">
+            <div style="font-size:15px;font-weight:600;color:#fff;margin-bottom:3px;">스페셜 룰렛 알림</div>
+            <div style="font-size:12px;color:#6e6e90;">조건 맞는 상대 접속 시 즉시 발송</div>
+          </div>
+          <div style="width:50px;height:28px;background:#9B72FF;border-radius:14px;position:relative;cursor:pointer;flex-shrink:0;">
+            <div style="position:absolute;top:3px;right:3px;width:22px;height:22px;background:#fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.3);"></div>
+          </div>
+        </div>
+
+        <!-- 5. 프로필 이미지 승인/반려 (ON) -->
+        <div style="display:flex;align-items:center;padding:18px 20px;border-bottom:1px solid #111120;">
+          <div style="flex:1;">
+            <div style="font-size:15px;font-weight:600;color:#fff;margin-bottom:3px;">프로필 이미지 승인/반려</div>
+            <div style="font-size:12px;color:#6e6e90;">슈퍼관리자 처리 시 발송</div>
+          </div>
+          <div style="width:50px;height:28px;background:#9B72FF;border-radius:14px;position:relative;cursor:pointer;flex-shrink:0;">
+            <div style="position:absolute;top:3px;right:3px;width:22px;height:22px;background:#fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.3);"></div>
+          </div>
+        </div>
+
+        <!-- 6. 문의 답변 (ON) -->
+        <div style="display:flex;align-items:center;padding:18px 20px;">
+          <div style="flex:1;">
+            <div style="font-size:15px;font-weight:600;color:#fff;margin-bottom:3px;">문의 답변 알림</div>
+            <div style="font-size:12px;color:#6e6e90;">어드민 답변 시 즉시 발송</div>
+          </div>
+          <div style="width:50px;height:28px;background:#9B72FF;border-radius:14px;position:relative;cursor:pointer;flex-shrink:0;">
+            <div style="position:absolute;top:3px;right:3px;width:22px;height:22px;background:#fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.3);"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 화살표 -->
+  <div class="arrow-wrap">
+    <div class="arrow"><div class="arrow-h"></div><div class="arrow-label">차단 목록</div></div>
+  </div>
+
+  <!-- ── SCREEN 16: 차단 목록 ── -->
+  <div class="screen-block">
+    <div class="screen-label">16 · 차단 목록</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4" y="2" width="3" height="10" rx="1"/><rect x="8" y="0" width="3" height="12" rx="1"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="white"><rect x="0" y="1" width="22" height="10" rx="3" stroke="white" stroke-width="1.5" fill="none" opacity=".5"/><rect x="1.5" y="2.5" width="17" height="7" rx="2" fill="white"/></svg>
+        </div>
+      </div>
+
+      <div class="sub-header">
+        <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none"><path d="M9 1L1 8.5L9 16" stroke="#9B72FF" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div style="flex:1;font-size:16px;font-weight:700;color:#fff;text-align:center;">차단 목록</div>
+        <div style="width:36px;"></div>
+      </div>
+
+      <div style="position:absolute;top:110px;left:0;right:0;bottom:0;overflow-y:auto;padding:16px 20px;">
+
+        <!-- 안내 문구 -->
+        <div style="
+          background:#111120;border:1px solid #1a1a2a;border-radius:12px;
+          padding:12px 16px;margin-bottom:20px;
+          font-size:12px;color:#6e6e90;line-height:1.7;
+        ">차단한 상대는 서로 매칭되지 않아요. 차단 해제 시 다시 매칭 가능합니다.</div>
+
+        <!-- 차단 아이템 1 -->
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid #111120;">
+          <div style="width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#FF6D6D,#ff4444);flex-shrink:0;opacity:.5;"></div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:15px;font-weight:600;color:#9a9ab0;margin-bottom:3px;">알 수 없음</div>
+            <div style="font-size:12px;color:#38384e;">차단일: 2026.04.10</div>
+          </div>
+          <div style="
+            background:#161625;border:1px solid #1a1a2a;
+            border-radius:10px;padding:7px 14px;
+            font-size:12px;font-weight:700;color:#6e6e90;
+            cursor:pointer;flex-shrink:0;
+          ">해제</div>
+        </div>
+
+        <!-- 차단 아이템 2 -->
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid #111120;">
+          <div style="width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#9B72FF,#7C4DFF);flex-shrink:0;opacity:.5;"></div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:15px;font-weight:600;color:#9a9ab0;margin-bottom:3px;">알 수 없음</div>
+            <div style="font-size:12px;color:#38384e;">차단일: 2026.04.05</div>
+          </div>
+          <div style="
+            background:#161625;border:1px solid #1a1a2a;
+            border-radius:10px;padding:7px 14px;
+            font-size:12px;font-weight:700;color:#6e6e90;
+            cursor:pointer;flex-shrink:0;
+          ">해제</div>
+        </div>
+
+        <!-- 차단 아이템 3 -->
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 0;">
+          <div style="width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#00C896,#009970);flex-shrink:0;opacity:.5;"></div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:15px;font-weight:600;color:#9a9ab0;margin-bottom:3px;">알 수 없음</div>
+            <div style="font-size:12px;color:#38384e;">차단일: 2026.03.28</div>
+          </div>
+          <div style="
+            background:#161625;border:1px solid #1a1a2a;
+            border-radius:10px;padding:7px 14px;
+            font-size:12px;font-weight:700;color:#6e6e90;
+            cursor:pointer;flex-shrink:0;
+          ">해제</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ ROW 3: 문의하기 + 회원 탈퇴 ══ -->
+<div class="row-title">▸ 문의하기 · 회원 탈퇴</div>
+<div class="row-wrap">
+
+  <!-- ── SCREEN 17: 문의하기 ── -->
+  <div class="screen-block">
+    <div class="screen-label">17 · 문의하기</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4" y="2" width="3" height="10" rx="1"/><rect x="8" y="0" width="3" height="12" rx="1"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="white"><rect x="0" y="1" width="22" height="10" rx="3" stroke="white" stroke-width="1.5" fill="none" opacity=".5"/><rect x="1.5" y="2.5" width="17" height="7" rx="2" fill="white"/></svg>
+        </div>
+      </div>
+
+      <div class="sub-header">
+        <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none"><path d="M9 1L1 8.5L9 16" stroke="#9B72FF" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div style="flex:1;font-size:16px;font-weight:700;color:#fff;text-align:center;">고객센터 / 문의하기</div>
+        <div style="width:36px;"></div>
+      </div>
+
+      <div style="position:absolute;top:110px;left:0;right:0;bottom:0;overflow-y:auto;padding:20px;">
+
+        <!-- 문의 유형 선택 -->
+        <div style="font-size:12px;font-weight:700;color:#9B72FF;margin-bottom:10px;">문의 유형</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;">
+          <!-- 선택됨 -->
+          <div style="
+            background:rgba(155,114,255,.2);border:1.5px solid #9B72FF;
+            border-radius:12px;padding:12px;text-align:center;cursor:pointer;
+          ">
+            <div style="font-size:18px;margin-bottom:4px;">🐞</div>
+            <div style="font-size:12px;font-weight:700;color:#9B72FF;">버그 신고</div>
+          </div>
+          <div style="background:#111120;border:1px solid #1a1a2a;border-radius:12px;padding:12px;text-align:center;cursor:pointer;">
+            <div style="font-size:18px;margin-bottom:4px;">💬</div>
+            <div style="font-size:12px;font-weight:600;color:#6e6e90;">일반 문의</div>
+          </div>
+          <div style="background:#111120;border:1px solid #1a1a2a;border-radius:12px;padding:12px;text-align:center;cursor:pointer;">
+            <div style="font-size:18px;margin-bottom:4px;">🔒</div>
+            <div style="font-size:12px;font-weight:600;color:#6e6e90;">계정 문제</div>
+          </div>
+          <div style="background:#111120;border:1px solid #1a1a2a;border-radius:12px;padding:12px;text-align:center;cursor:pointer;">
+            <div style="font-size:18px;margin-bottom:4px;">💡</div>
+            <div style="font-size:12px;font-weight:600;color:#6e6e90;">기능 제안</div>
+          </div>
+        </div>
+
+        <!-- 문의 내용 -->
+        <div style="font-size:12px;font-weight:700;color:#9B72FF;margin-bottom:10px;">문의 내용</div>
+        <div style="
+          background:#161625;border:1.5px solid #252540;border-radius:14px;
+          padding:14px;min-height:140px;margin-bottom:20px;
+          font-size:14px;color:#38384e;line-height:1.6;
+        ">불편하신 점이나 궁금한 점을 자세히 적어주세요...</div>
+
+        <!-- 이메일 (자동 입력) -->
+        <div style="font-size:12px;font-weight:700;color:#9B72FF;margin-bottom:10px;">답변 받을 이메일</div>
+        <div style="
+          height:48px;background:#161625;border:1.5px solid #252540;
+          border-radius:12px;display:flex;align-items:center;
+          padding:0 14px;margin-bottom:28px;
+        ">
+          <span style="font-size:14px;color:#6e6e90;">kakao_****@kakao.com</span>
+        </div>
+
+        <!-- 제출 버튼 -->
+        <div style="
+          width:100%;height:52px;
+          background:linear-gradient(135deg,#9B72FF,#7C4DFF);
+          border-radius:14px;display:flex;align-items:center;justify-content:center;
+          font-size:16px;font-weight:700;color:#fff;cursor:pointer;
+          box-shadow:0 4px 20px rgba(155,114,255,.4);
+        ">문의 접수하기</div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 화살표 -->
+  <div class="arrow-wrap">
+    <div class="arrow"><div class="arrow-h"></div><div class="arrow-label">회원 탈퇴</div></div>
+  </div>
+
+  <!-- ── SCREEN 19: 회원 탈퇴 ── -->
+  <div class="screen-block">
+    <div class="screen-label">19 · 회원 탈퇴</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4" y="2" width="3" height="10" rx="1"/><rect x="8" y="0" width="3" height="12" rx="1"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="white"><rect x="0" y="1" width="22" height="10" rx="3" stroke="white" stroke-width="1.5" fill="none" opacity=".5"/><rect x="1.5" y="2.5" width="17" height="7" rx="2" fill="white"/></svg>
+        </div>
+      </div>
+
+      <div class="sub-header">
+        <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none"><path d="M9 1L1 8.5L9 16" stroke="#9B72FF" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div style="flex:1;font-size:16px;font-weight:700;color:#fff;text-align:center;">회원 탈퇴</div>
+        <div style="width:36px;"></div>
+      </div>
+
+      <div style="position:absolute;top:110px;left:0;right:0;bottom:0;overflow-y:auto;padding:28px 20px 40px;">
+
+        <!-- 경고 아이콘 -->
+        <div style="text-align:center;margin-bottom:24px;">
+          <div style="
+            width:72px;height:72px;border-radius:50%;
+            background:rgba(255,59,48,.12);border:2px solid rgba(255,59,48,.3);
+            display:flex;align-items:center;justify-content:center;
+            margin:0 auto 14px;
+          ">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <path d="M16 4L28 26H4L16 4Z" stroke="#FF3B30" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M16 13V19" stroke="#FF3B30" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="16" cy="22.5" r="1.5" fill="#FF3B30"/>
+            </svg>
+          </div>
+          <div style="font-size:18px;font-weight:800;color:#fff;">정말 탈퇴하시겠어요?</div>
+          <div style="font-size:13px;color:#6e6e90;margin-top:6px;line-height:1.6;">아래 내용을 꼭 확인해 주세요</div>
+        </div>
+
+        <!-- 탈퇴 안내 카드 -->
+        <div style="background:#111120;border:1px solid #1a1a2a;border-radius:16px;padding:20px;margin-bottom:24px;">
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div style="display:flex;gap:10px;align-items:flex-start;">
+              <div style="width:6px;height:6px;border-radius:50%;background:#FF3B30;margin-top:6px;flex-shrink:0;"></div>
+              <div style="font-size:13px;color:#ccc;line-height:1.6;">탈퇴 즉시 처리되며 되돌릴 수 없어요.</div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start;">
+              <div style="width:6px;height:6px;border-radius:50%;background:#FF3B30;margin-top:6px;flex-shrink:0;"></div>
+              <div style="font-size:13px;color:#ccc;line-height:1.6;">채팅 내역·프로필 정보는 <span style="color:#FEE500;font-weight:700;">15일 후 자동 삭제</span>돼요.</div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start;">
+              <div style="width:6px;height:6px;border-radius:50%;background:#FF3B30;margin-top:6px;flex-shrink:0;"></div>
+              <div style="font-size:13px;color:#ccc;line-height:1.6;">이메일·닉네임·연령·성별은 개인정보처리방침에 따라 보관돼요.</div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start;">
+              <div style="width:6px;height:6px;border-radius:50%;background:#FF3B30;margin-top:6px;flex-shrink:0;"></div>
+              <div style="font-size:13px;color:#ccc;line-height:1.6;">보유한 매칭권은 환불되지 않아요.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 버튼 2개 -->
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="
+            width:100%;height:52px;background:#FF3B30;
+            border-radius:14px;display:flex;align-items:center;justify-content:center;
+            font-size:16px;font-weight:700;color:#fff;cursor:pointer;
+          ">탈퇴하기</div>
+          <div style="
+            width:100%;height:52px;background:#161625;border:1px solid #1a1a2a;
+            border-radius:14px;display:flex;align-items:center;justify-content:center;
+            font-size:16px;font-weight:600;color:#6e6e90;cursor:pointer;
+          ">취소</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 플로우 노트 -->
+<div style="margin-top:8px;padding:24px;background:#111120;border:1px solid #1a1a2a;border-radius:16px;max-width:1700px;">
+  <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:#6e6e90;margin-bottom:16px;">FLOW NOTES</div>
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:20px;">
+    <div>
+      <div style="font-size:13px;font-weight:700;color:#9B72FF;margin-bottom:8px;">13 설정 메인</div>
+      <div style="font-size:12px;color:#6e6e90;line-height:1.8;">
+        · 상단 내 프로필 요약 카드<br>
+        · 8개 항목 그룹별 섹션 분리<br>
+        · 탈퇴 항목 빨간색으로 구분<br>
+        · 하단 앱 버전 표시
+      </div>
+    </div>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:#9B72FF;margin-bottom:8px;">14 프로필 수정</div>
+      <div style="font-size:12px;color:#6e6e90;line-height:1.8;">
+        · 이미지 / 닉네임 / 지역 / 스타일태그 / MBTI<br>
+        · 닉네임: 하루 1회 변경 제한 표시<br>
+        · 저장 버튼: 상단 우측 + 하단 버튼 2곳
+      </div>
+    </div>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:#9B72FF;margin-bottom:8px;">15 알림 설정</div>
+      <div style="font-size:12px;color:#6e6e90;line-height:1.8;">
+        · 6종 토글: 새 메시지 / 출석 리마인더 / 이벤트 / 스페셜 룰렛 / 이미지 승인반려 / 문의 답변<br>
+        · ON: 보라색 / OFF: 어두운 회색
+      </div>
+    </div>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:#9B72FF;margin-bottom:8px;">16 차단 목록</div>
+      <div style="font-size:12px;color:#6e6e90;line-height:1.8;">
+        · 차단된 상대 닉네임 "알 수 없음" 표시<br>
+        · 차단일 표시<br>
+        · 해제 버튼 → 차단 해제 시 매칭 재개
+      </div>
+    </div>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:#9B72FF;margin-bottom:8px;">17/19 문의 · 탈퇴</div>
+      <div style="font-size:12px;color:#6e6e90;line-height:1.8;">
+        · 문의: 유형 4종 + 내용 + 이메일 자동입력<br>
+        · 탈퇴: 즉시 처리 / 15일 후 데이터 삭제 / 매칭권 환불 없음 명시
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     ROW 4 — 프로필 수정 하위 화면
+     Screen 14a 지역 선택 / 14b 스타일 태그 / 14c MBTI
+══════════════════════════════════════════════════ -->
+<div style="border-top:1px solid #1a1a2e;margin-bottom:48px;margin-top:8px"></div>
+<div class="row-title">SCREEN 14A · 14B · 14C — 프로필 수정 하위 화면</div>
+<div class="row-wrap">
+
+  <!-- ─── 14A : 지역 선택 ─── -->
+  <div class="screen-block">
+    <div class="screen-label">14A · 지역 선택</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar">
+        <span style="font-size:13px;font-weight:700">9:41</span>
+        <div style="display:flex;gap:5px;align-items:center">
+          <svg width="16" height="11" viewBox="0 0 17 12" fill="white"><path d="M1 9h2v3H1zM5 6h2v6H5zM9 3h2v9H9zM13 0h2v12h-2z"/></svg>
+          <svg width="22" height="11" viewBox="0 0 24 12" fill="none"><rect x="0" y="2" width="20" height="8" rx="2" stroke="white" stroke-width="1.5"/><rect x="20" y="4" width="2" height="4" rx="1" fill="white"/><rect x="1.5" y="3.5" width="14" height="5" rx="1" fill="white"/></svg>
+        </div>
+      </div>
+      <!-- 헤더 -->
+      <div style="position:absolute;top:54px;left:0;right:0;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #1E1E30;">
+        <div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;">
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none"><path d="M9 1L1.5 8.5L9 16" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span style="font-size:17px;font-weight:700">지역 선택</span>
+        <div style="width:32px"></div>
+      </div>
+
+      <!-- 안내 텍스트 -->
+      <div style="position:absolute;top:130px;left:20px;right:20px;font-size:12px;color:#8E8EA0;line-height:1.6">
+        시/도를 먼저 선택하면 구/군을 선택할 수 있어요
+      </div>
+
+      <!-- 시/도 선택 + 구/군 선택 2단 패널 -->
+      <div style="position:absolute;top:158px;left:0;right:0;bottom:0;display:flex;">
+
+        <!-- 왼쪽 시/도 -->
+        <div style="width:130px;background:#13131F;border-right:1px solid #1E1E30;overflow-y:auto;flex-shrink:0;">
+          <!-- 선택됨 -->
+          <div style="padding:14px 16px;background:rgba(155,114,255,.12);border-right:3px solid #9B72FF;">
+            <span style="font-size:13px;font-weight:700;color:#9B72FF">서울특별시</span>
+          </div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">부산광역시</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">대구광역시</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">인천광역시</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">광주광역시</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">대전광역시</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">울산광역시</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">세종시</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">경기도</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">강원도</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">충청북도</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">충청남도</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">전라북도</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">전라남도</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">경상북도</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">경상남도</span></div>
+          <div style="padding:14px 16px"><span style="font-size:13px;color:#8E8EA0">제주도</span></div>
+        </div>
+
+        <!-- 오른쪽 구/군 -->
+        <div style="flex:1;background:#0C0C18;overflow-y:auto;padding-bottom:80px;">
+          <!-- 구 목록 (서울) -->
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">강남구</span></div>
+          <!-- 선택됨 -->
+          <div style="padding:14px 16px;background:rgba(155,114,255,.1);border-bottom:1px solid #1a1a2e;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:13px;font-weight:700;color:#9B72FF">강동구</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="#9B72FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">강북구</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">강서구</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">관악구</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">광진구</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">구로구</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">금천구</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">노원구</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">도봉구</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">동대문구</span></div>
+          <div style="padding:14px 16px;border-bottom:1px solid #1a1a2e"><span style="font-size:13px;color:#8E8EA0">동작구</span></div>
+          <div style="padding:14px 16px"><span style="font-size:13px;color:#8E8EA0">마포구 ...</span></div>
+        </div>
+      </div>
+
+      <!-- 하단 확인 버튼 -->
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:16px 20px 36px;background:linear-gradient(to top,#0C0C18 70%,transparent);">
+        <div style="background:#9B72FF;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;">
+          <span style="font-size:16px;font-weight:700;color:#fff">서울특별시 강동구 선택</span>
+        </div>
+      </div>
+    </div>
+    <div style="background:#13131F;border:1px solid #1E1E30;border-radius:10px;padding:10px 14px;font-size:11px;color:#8E8EA0;line-height:1.7;width:375px;margin-top:4px;">
+      📍 <strong style="color:#9B72FF">지역 선택 로직</strong><br>
+      · 시/도 (왼쪽) → 구/군 (오른쪽) 2단 선택<br>
+      · 횟수 제한 없이 자유롭게 변경 가능<br>
+      · 표기: 시/도 + 구/군 (예: 서울특별시 강동구)
+    </div>
+  </div>
+
+  <!-- ─── 14B : 스타일 태그 선택 ─── -->
+  <div class="screen-block">
+    <div class="screen-label">14B · 스타일 태그 선택</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar">
+        <span style="font-size:13px;font-weight:700">9:41</span>
+        <div style="display:flex;gap:5px;align-items:center">
+          <svg width="16" height="11" viewBox="0 0 17 12" fill="white"><path d="M1 9h2v3H1zM5 6h2v6H5zM9 3h2v9H9zM13 0h2v12h-2z"/></svg>
+          <svg width="22" height="11" viewBox="0 0 24 12" fill="none"><rect x="0" y="2" width="20" height="8" rx="2" stroke="white" stroke-width="1.5"/><rect x="20" y="4" width="2" height="4" rx="1" fill="white"/><rect x="1.5" y="3.5" width="14" height="5" rx="1" fill="white"/></svg>
+        </div>
+      </div>
+      <!-- 헤더 -->
+      <div style="position:absolute;top:54px;left:0;right:0;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #1E1E30;">
+        <div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;">
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none"><path d="M9 1L1.5 8.5L9 16" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span style="font-size:17px;font-weight:700">스타일 태그</span>
+        <div style="width:32px"></div>
+      </div>
+
+      <!-- 본문 -->
+      <div style="position:absolute;top:110px;left:20px;right:20px;bottom:100px;overflow-y:auto;">
+        <!-- 안내 -->
+        <div style="background:rgba(155,114,255,.1);border:1px solid rgba(155,114,255,.2);border-radius:10px;padding:12px 14px;font-size:12px;color:#C4A4FF;line-height:1.6;margin-bottom:24px;">
+          나를 표현하는 태그를 <strong>1개</strong> 선택해요.<br>선택한 태그는 프로필에 노출돼요.
+        </div>
+
+        <!-- 여성 태그 (예시 — 현재 로그인 사용자가 여성인 경우) -->
+        <div style="font-size:11px;font-weight:700;color:#5A5A72;letter-spacing:1px;margin-bottom:12px;">나의 스타일</div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;">
+          <!-- 선택됨 -->
+          <div style="padding:10px 18px;background:#9B72FF;border-radius:24px;font-size:14px;font-weight:700;color:#fff;">사랑스러운 💕</div>
+          <div style="padding:10px 18px;background:#13131F;border:1px solid #2a2a40;border-radius:24px;font-size:14px;color:#8E8EA0;">털털한 😄</div>
+          <div style="padding:10px 18px;background:#13131F;border:1px solid #2a2a40;border-radius:24px;font-size:14px;color:#8E8EA0;">지적인 📚</div>
+          <div style="padding:10px 18px;background:#13131F;border:1px solid #2a2a40;border-radius:24px;font-size:14px;color:#8E8EA0;">발랄한 ✨</div>
+          <div style="padding:10px 18px;background:#13131F;border:1px solid #2a2a40;border-radius:24px;font-size:14px;color:#8E8EA0;">차분한 🍃</div>
+          <div style="padding:10px 18px;background:#13131F;border:1px solid #2a2a40;border-radius:24px;font-size:14px;color:#8E8EA0;">엉뚱한 🎲</div>
+          <div style="padding:10px 18px;background:#13131F;border:1px solid #2a2a40;border-radius:24px;font-size:14px;color:#8E8EA0;">도도한 👑</div>
+          <div style="padding:10px 18px;background:#13131F;border:1px solid #2a2a40;border-radius:24px;font-size:14px;color:#8E8EA0;">다정한 🤗</div>
+        </div>
+
+        <!-- 선택 중 미리보기 -->
+        <div style="margin-top:32px;padding:16px;background:#13131F;border-radius:14px;border:1px solid #1E1E30;">
+          <div style="font-size:11px;color:#5A5A72;margin-bottom:8px;">선택한 태그 미리보기</div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#9B72FF,#7A52E0);"></div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#fff;">닉네임</div>
+              <div style="font-size:11px;color:#9B72FF;margin-top:2px;">✦ 사랑스러운</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 하단 버튼 -->
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:16px 20px 36px;background:linear-gradient(to top,#0C0C18 70%,transparent);">
+        <div style="background:#9B72FF;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;">
+          <span style="font-size:16px;font-weight:700;color:#fff">저장하기</span>
+        </div>
+      </div>
+    </div>
+    <div style="background:#13131F;border:1px solid #1E1E30;border-radius:10px;padding:10px 14px;font-size:11px;color:#8E8EA0;line-height:1.7;width:375px;margin-top:4px;">
+      🏷️ <strong style="color:#9B72FF">스타일 태그 로직</strong><br>
+      · 성별에 맞는 태그 8개 표시<br>
+      · 1개만 선택 가능 (중복 선택 불가)<br>
+      · 선택 태그는 프로필 카드에 노출<br>
+      · 태그 목록은 어드민에서 변경 가능 (v2)
+    </div>
+  </div>
+
+  <!-- ─── 14C : MBTI 선택 ─── -->
+  <div class="screen-block">
+    <div class="screen-label">14C · MBTI 선택</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar">
+        <span style="font-size:13px;font-weight:700">9:41</span>
+        <div style="display:flex;gap:5px;align-items:center">
+          <svg width="16" height="11" viewBox="0 0 17 12" fill="white"><path d="M1 9h2v3H1zM5 6h2v6H5zM9 3h2v9H9zM13 0h2v12h-2z"/></svg>
+          <svg width="22" height="11" viewBox="0 0 24 12" fill="none"><rect x="0" y="2" width="20" height="8" rx="2" stroke="white" stroke-width="1.5"/><rect x="20" y="4" width="2" height="4" rx="1" fill="white"/><rect x="1.5" y="3.5" width="14" height="5" rx="1" fill="white"/></svg>
+        </div>
+      </div>
+      <!-- 헤더 -->
+      <div style="position:absolute;top:54px;left:0;right:0;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #1E1E30;">
+        <div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;">
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none"><path d="M9 1L1.5 8.5L9 16" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span style="font-size:17px;font-weight:700">MBTI 선택</span>
+        <div style="width:32px"></div>
+      </div>
+
+      <!-- 본문 -->
+      <div style="position:absolute;top:110px;left:20px;right:20px;bottom:100px;overflow-y:auto;">
+        <!-- 안내 -->
+        <div style="background:rgba(155,114,255,.1);border:1px solid rgba(155,114,255,.2);border-radius:10px;padding:12px 14px;font-size:12px;color:#C4A4FF;line-height:1.6;margin-bottom:20px;">
+          나의 MBTI를 <strong>1개</strong> 선택해요.<br>프로필 카드에 함께 노출돼요.
+        </div>
+
+        <!-- MBTI 4×4 그리드 -->
+        <!-- 분석가형 -->
+        <div style="font-size:10px;font-weight:700;color:#5A5A72;letter-spacing:1px;margin-bottom:8px;">분석가형 (NT)</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;">
+          <div style="padding:12px 6px;background:#13131F;border:1px solid #2a2a40;border-radius:12px;text-align:center;">
+            <div style="font-size:13px;font-weight:700;color:#8E8EA0;">INTJ</div>
+            <div style="font-size:9px;color:#5A5A72;margin-top:3px;">전략가</div>
+          </div>
+          <div style="padding:12px 6px;background:#13131F;border:1px solid #2a2a40;border-radius:12px;text-align:center;">
+            <div style="font-size:13px;font-weight:700;color:#8E8EA0;">INTP</div>
+            <div style="font-size:9px;color:#5A5A72;margin-top:3px;">논리술사</div>
+          </div>
+          <div style="padding:12px 6px;background:#13131F;border:1px solid #2a2a40;border-radius:12px;text-align:center;">
+            <div style="font-size:13px;font-weight:700;color:#8E8EA0;">ENTJ</div>
+            <div style="font-size:9px;color:#5A5A72;margin-top:3px;">통솔자</div>
+          </div>
+          <div style="padding:12px 6px;background:#13131F;border:1px solid #2a2a40;border-radius:12px;text-align:center;">
+            <div style="font-size:13px;font-weight:700;color:#8E8EA0;">ENTP</div>
+            <div style="font-size:9px;color:#5A5A72;margin-top:3px;">변론가</div>
+          </div>
+        </div>
+
+        <!-- 외교관형 -->
+        <div style="font-size:10px;font-weight:700;color:#5A5A72;letter-spacing:1px;margin-bottom:8px;">외교관형 (NF)</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;">
+          <div style="padding:12px 6px;background:#13131F;border:1px solid #2a2a40;border-radius:12px;text-align:center;">
+            <div style="font-size:13px;font-weight:700;color:#8E8EA0;">INFJ</div>
+            <div style="font-size:9px;color:#5A5A72;margin-top:3px;">옹호자</div>
+          </div>
+          <!-- 선택됨 -->
+          <div style="padding:12px 6px;background:rgba(155,114,255,.15);border:2px solid #9B72FF;border-radius:12px;text-align:center;">
+            <div style="font-size:13px;font-weight:700;color:#9B72FF;">INFP</div>
+            <div style="font-size:9px;color:#9B72FF;margin-top:3px;">중재자</div>
+          </div>
+          <div style="padding:12px 6px;background:#13131F;border:1px solid #2a2a40;border-radius:12px;text-align:center;">
+            <div style="font-size:13px;font-weight:700;color:#8E8EA0;">ENFJ</div>
+            <div style="font-size:9px;color:#5A5A72;margin-top:3px;">선도자</div>
+          </div>
+          <div style="padding:12px 6px;background:#13131F;border:1px solid #2a2a40;border-radius:12px;text-align:center;">
+            <div style="font-size:13px;font-weight:700;color:#8E8EA0;">ENFP</div>
+            <div style="font-size:9px;color:#5A5A72;margin-top:3px;">활동가</div>
+          </div>
+        </div>
+
+        <!-- 관리자형 -->
+        <div style="font-size:10px;font-weight:700;color:#5A5A72;letter-spacing:1px;margin-bottom:8px;">관리자형 (SJ)</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;">
+          <div style="padding:12px 6px;background:#13131F;border:1px solid #2a2a40;border-radius:12px;text-align:center;">
+            <div style="font-size:13px;font-weight:700;color:#8E8EA0;">ISTJ</div>
+            <div style="font-size:9px;color:#5A5A72;margin-top:3px;">현실주의</div>
+          </div>
+          <div style="padding:12px 6px;background:#13131F;border:1px solid #2a2a40;border-radius:12px;text-align:center;">
+            <div style="font-size:13px;font-weight:700;color:#8E8EA0;">ISFJ</div>
+            <div style="font-size:9px;color:#5A5A72;margin-top:3px;">수호자</div>
+          </div>
+          <div style="padding:12px 6px;background:#13131F;border:1px solid #2a2a40;border-radius:12px;text-align:center;">
+            <div style="font-size:13px;font-weight:700;color:#8E8EA0;">ESTJ</div>
+            <div style="font-size:9px;color:#5A5A72;margin-top:3px;">경영자</div>
+          </div>
+          <div style="padding:12px 6px;background:#13131F;border:1px solid #2a2a40;border-radius:12px;text-align:center;">
+            <div style="font-size:13px;font-weight:700;color:#8E8EA0;">ESFJ</div>
+            <div style="font-size:9px;color:#5A5A72;margin-top:3px;">집정관</div>
+          </div>
+        </div>
+
+        <!-- 탐험가형 -->
+        <div style="font-size:10px;font-weight:700;color:#5A5A72;letter-spacing:1px;margin-bottom:8px;">탐험가형 (SP)</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;">
+          <div style="padding:12px 6px;background:#13131F;border:1px solid #2a2a40;border-radius:12px;text-align:center;">
+            <div style="font-size:13px;font-weight:700;color:#8E8EA0;">ISTP</div>
+            <div style="font-size:9px;color:#5A5A72;margin-top:3px;">장인</div>
+          </div>
+          <div style="padding:12px 6px;background:#13131F;border:1px solid #2a2a40;border-radius:12px;text-align:center;">
+            <div style="font-size:13px;font-weight:700;color:#8E8EA0;">ISFP</div>
+            <div style="font-size:9px;color:#5A5A72;margin-top:3px;">모험가</div>
+          </div>
+          <div style="padding:12px 6px;background:#13131F;border:1px solid #2a2a40;border-radius:12px;text-align:center;">
+            <div style="font-size:13px;font-weight:700;color:#8E8EA0;">ESTP</div>
+            <div style="font-size:9px;color:#5A5A72;margin-top:3px;">사업가</div>
+          </div>
+          <div style="padding:12px 6px;background:#13131F;border:1px solid #2a2a40;border-radius:12px;text-align:center;">
+            <div style="font-size:13px;font-weight:700;color:#8E8EA0;">ESFP</div>
+            <div style="font-size:9px;color:#5A5A72;margin-top:3px;">연예인</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 하단 버튼 -->
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:16px 20px 36px;background:linear-gradient(to top,#0C0C18 70%,transparent);">
+        <div style="background:#9B72FF;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;">
+          <span style="font-size:16px;font-weight:700;color:#fff">INFP 선택 완료</span>
+        </div>
+      </div>
+    </div>
+    <div style="background:#13131F;border:1px solid #1E1E30;border-radius:10px;padding:10px 14px;font-size:11px;color:#8E8EA0;line-height:1.7;width:375px;margin-top:4px;">
+      🧠 <strong style="color:#9B72FF">MBTI 선택 로직</strong><br>
+      · 16개 그리드 (4×4), 유형별 4개 그룹 구분<br>
+      · 1개만 선택 가능<br>
+      · 선택 시 보라색 테두리 + 진한 배경 표시<br>
+      · 프로필 카드 및 매칭 필터와 연동
+    </div>
+  </div>
+
+</div><!-- /row4 -->
+
+</body>
+</html>

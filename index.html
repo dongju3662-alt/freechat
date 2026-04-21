@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FREECHAT · 기획 목업 전체보기</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --p1:#9B72FF;--p2:#7C4DFF;--coral:#FF6D6D;
+  --teal:#00C896;--yellow:#FEE500;
+  --bg:#0C0C18;--bg2:#111120;--bg3:#161625;
+  --border:#1a1a2a;--t2:#6e6e90;--t3:#38384e
+}
+body{
+  font-family:-apple-system,'Segoe UI','Noto Sans KR',sans-serif;
+  background:var(--bg);color:#fff;
+  min-height:100vh;
+}
+
+/* 헤더 */
+.header{
+  background:linear-gradient(135deg,rgba(155,114,255,.15),rgba(124,77,255,.05));
+  border-bottom:1px solid var(--border);
+  padding:40px 48px 36px;
+}
+.logo-row{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.logo-icon{
+  width:48px;height:48px;border-radius:14px;
+  background:linear-gradient(135deg,var(--p1),var(--p2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;
+}
+.logo-text{font-size:26px;font-weight:900;letter-spacing:-0.5px}
+.logo-sub{font-size:13px;color:var(--t2);margin-top:2px}
+.header-desc{font-size:13px;color:var(--t2);line-height:1.8;margin-top:16px;max-width:600px}
+.header-meta{
+  display:flex;align-items:center;gap:16px;margin-top:20px;flex-wrap:wrap;
+}
+.meta-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:20px;padding:5px 14px;font-size:12px;color:var(--t2);
+}
+.meta-badge span{color:#fff;font-weight:700}
+
+/* 메인 콘텐츠 */
+.main{padding:40px 48px;max-width:1200px}
+
+/* 섹션 */
+.section{margin-bottom:48px}
+.section-header{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:24px;padding-bottom:14px;
+  border-bottom:1px solid var(--border);
+}
+.section-icon{
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+.icon-v1{background:rgba(155,114,255,.15)}
+.icon-v2{background:rgba(254,229,0,.12)}
+.icon-doc{background:rgba(0,200,150,.12)}
+.section-title{font-size:18px;font-weight:800}
+.section-sub{font-size:12px;color:var(--t2);margin-top:2px}
+.v2-tag{
+  display:inline-block;
+  background:rgba(254,229,0,.12);color:var(--yellow);
+  border:1px solid rgba(254,229,0,.25);
+  font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;
+  margin-left:8px;vertical-align:middle;
+}
+
+/* 카드 그리드 */
+.card-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:14px;
+}
+.card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:16px;padding:20px;
+  text-decoration:none;color:#fff;
+  display:flex;flex-direction:column;gap:10px;
+  transition:all .2s;cursor:pointer;
+  position:relative;overflow:hidden;
+}
+.card:hover{
+  border-color:rgba(155,114,255,.4);
+  background:rgba(155,114,255,.06);
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(155,114,255,.15);
+}
+.card-v2{border-color:rgba(254,229,0,.15)}
+.card-v2:hover{
+  border-color:rgba(254,229,0,.4);
+  background:rgba(254,229,0,.04);
+  box-shadow:0 8px 24px rgba(254,229,0,.1);
+}
+.card-doc{border-color:rgba(0,200,150,.15)}
+.card-doc:hover{
+  border-color:rgba(0,200,150,.4);
+  background:rgba(0,200,150,.04);
+  box-shadow:0 8px 24px rgba(0,200,150,.1);
+}
+
+.card-num{
+  font-size:10px;font-weight:800;letter-spacing:1px;
+  color:var(--t3);margin-bottom:2px;
+}
+.card-title{font-size:15px;font-weight:800;line-height:1.3}
+.card-desc{font-size:12px;color:var(--t2);line-height:1.7}
+.card-screens{
+  display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;
+}
+.screen-tag{
+  font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;
+  background:rgba(255,255,255,.06);color:var(--t2);
+}
+.card-arrow{
+  position:absolute;top:20px;right:20px;
+  font-size:16px;color:var(--t3);
+  transition:color .2s;
+}
+.card:hover .card-arrow{color:var(--p1)}
+.card-v2:hover .card-arrow{color:var(--yellow)}
+.card-doc:hover .card-arrow{color:var(--teal)}
+
+/* 진행 상황 바 */
+.progress-bar{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:14px;padding:20px 24px;margin-bottom:40px;
+  display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+}
+.progress-item{display:flex;align-items:center;gap:8px;font-size:13px}
+.progress-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dot-done{background:var(--teal)}
+.dot-v2{background:var(--yellow)}
+.dot-next{background:var(--t3)}
+
+/* 푸터 */
+.footer{
+  border-top:1px solid var(--border);
+  padding:24px 48px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;
+}
+.footer-text{font-size:11px;color:var(--t3)}
+
+@media(max-width:768px){
+  .header,.main,.footer{padding-left:24px;padding-right:24px}
+  .card-grid{grid-template-columns:1fr}
+  .progress-bar{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- 헤더 -->
+<div class="header">
+  <div class="logo-row">
+    <div class="logo-icon">💬</div>
+    <div>
+      <div class="logo-text">FREECHAT</div>
+      <div class="logo-sub">무료 채팅 앱 · 기획 목업 & 확정 로직</div>
+    </div>
+  </div>
+  <div class="header-desc">
+    성인 남녀를 위한 무료 랜덤 채팅 앱 FREECHAT의 전체 화면 기획안입니다.<br>
+    v1 목업 14개 · v2 목업 1개 · 확정 로직 문서로 구성되어 있습니다.
+  </div>
+  <div class="header-meta">
+    <div class="meta-badge">📱 v1 목업 <span>14개</span></div>
+    <div class="meta-badge">🔮 v2 목업 <span>1개</span></div>
+    <div class="meta-badge">📋 확정 로직 <span>1개</span></div>
+    <div class="meta-badge">📅 최종 업데이트 <span>2026.04</span></div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- 진행 상황 -->
+  <div class="progress-bar">
+    <div class="progress-item"><div class="progress-dot dot-done"></div>v1 목업 14개 완성</div>
+    <div class="progress-item"><div class="progress-dot dot-v2"></div>v2 목업 1개 완성</div>
+    <div class="progress-item"><div class="progress-dot dot-next"></div>개발자 전달 PPT 예정</div>
+    <div class="progress-item"><div class="progress-dot dot-next"></div>로고 · 컬러 팔레트 예정</div>
+    <div class="progress-item"><div class="progress-dot dot-next"></div>사용자 여정 지도 예정</div>
+  </div>
+
+  <!-- 확정 로직 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-doc">📋</div>
+      <div>
+        <div class="section-title">확정 로직 문서</div>
+        <div class="section-sub">기능 정의 · 규칙 · 수치 · 전체 확정 내용</div>
+      </div>
+    </div>
+    <div class="card-grid">
+      <a class="card card-doc" href="FREECHAT_확정_로직.html" target="_blank">
+        <div class="card-arrow">›</div>
+        <div class="card-num">SPEC DOC</div>
+        <div class="card-title">FREECHAT 확정 로직 전체</div>
+        <div class="card-desc">매칭권 · 스페셜 룰렛 · 즐겨찾기 · 에이전시 · 다중계정 · 출석 · 채팅 · 어드민 등 모든 기능 규칙 확정</div>
+        <div class="card-screens">
+          <span class="screen-tag">매칭 시스템</span>
+          <span class="screen-tag">에이전시</span>
+          <span class="screen-tag">다중 계정</span>
+          <span class="screen-tag">어드민</span>
+        </div>
+      </a>
+      <a class="card card-doc" href="FREECHAT_개발자노트_09_에이전시코드입력.html" target="_blank">
+        <div class="card-arrow">›</div>
+        <div class="card-num">DEV NOTE 09</div>
+        <div class="card-title">개발자 노트 · 에이전시 코드</div>
+        <div class="card-desc">에이전시 코드 입력 기능 상세 개발 스펙 — 노출 조건 · 진입 경로 · 유효성 검사 · 변경 규칙</div>
+        <div class="card-screens">
+          <span class="screen-tag">여자회원 전용</span>
+          <span class="screen-tag">개발 스펙</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- v1 목업 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-v1">📱</div>
+      <div>
+        <div class="section-title">v1 목업 · 14개</div>
+        <div class="section-sub">출시 버전 · 전체 화면 기획</div>
+      </div>
+    </div>
+    <div class="card-grid">
+
+      <a class="card" href="FREECHAT_목업_01_진입흐름.html" target="_blank">
+        <div class="card-arrow">›</div>
+        <div class="card-num">v1 · 01</div>
+        <div class="card-title">진입 흐름</div>
+        <div class="card-desc">스플래시 → 카카오 로그인 → 메인 화면 진입 흐름</div>
+        <div class="card-screens">
+          <span class="screen-tag">스플래시</span>
+          <span class="screen-tag">카카오 로그인</span>
+          <span class="screen-tag">메인</span>
+        </div>
+      </a>
+
+      <a class="card" href="FREECHAT_목업_02_매칭탭.html" target="_blank">
+        <div class="card-arrow">›</div>
+        <div class="card-num">v1 · 02</div>
+        <div class="card-title">매칭 탭</div>
+        <div class="card-desc">랜덤 매칭 · 매칭권 부족 Alert · 스페셜 룰렛 진입</div>
+        <div class="card-screens">
+          <span class="screen-tag">랜덤 매칭</span>
+          <span class="screen-tag">매칭권 Alert</span>
+          <span class="screen-tag">룰렛 진입</span>
+        </div>
+      </a>
+
+      <a class="card" href="FREECHAT_목업_03_채팅탭.html" target="_blank">
+        <div class="card-arrow">›</div>
+        <div class="card-num">v1 · 03</div>
+        <div class="card-title">채팅 탭</div>
+        <div class="card-desc">채팅 리스트 · 채팅방 · 읽음 표시 · 즐겨찾기 하트</div>
+        <div class="card-screens">
+          <span class="screen-tag">채팅 리스트</span>
+          <span class="screen-tag">채팅방</span>
+          <span class="screen-tag">읽음 표시</span>
+        </div>
+      </a>
+
+      <a class="card" href="FREECHAT_목업_04_즐겨찾기_사진.html" target="_blank">
+        <div class="card-arrow">›</div>
+        <div class="card-num">v1 · 04</div>
+        <div class="card-title">즐겨찾기 & 사진</div>
+        <div class="card-desc">즐겨찾기 목록 · 단방향/맞팔 하트 구분 · 프로필 사진</div>
+        <div class="card-screens">
+          <span class="screen-tag">즐겨찾기</span>
+          <span class="screen-tag">♡ 단방향</span>
+          <span class="screen-tag">♥ 맞팔</span>
+        </div>
+      </a>
+
+      <a class="card" href="FREECHAT_목업_05_설정탭.html" target="_blank">
+        <div class="card-arrow">›</div>
+        <div class="card-num">v1 · 05</div>
+        <div class="card-title">설정 탭</div>
+        <div class="card-desc">설정 메뉴 구성 · 남자/여자 회원별 메뉴 차이</div>
+        <div class="card-screens">
+          <span class="screen-tag">설정 메뉴</span>
+          <span class="screen-tag">남/여 구분</span>
+        </div>
+      </a>
+
+      <a class="card" href="FREECHAT_목업_06_공지사항_문의내역.html" target="_blank">
+        <div class="card-arrow">›</div>
+        <div class="card-num">v1 · 06</div>
+        <div class="card-title">공지사항 & 문의</div>
+        <div class="card-desc">공지사항 목록/상세 · 문의 작성 · 문의 내역 확인</div>
+        <div class="card-screens">
+          <span class="screen-tag">공지사항</span>
+          <span class="screen-tag">문의 작성</span>
+          <span class="screen-tag">문의 내역</span>
+        </div>
+      </a>
+
+      <a class="card" href="FREECHAT_목업_07_팝업_Alert_신고.html" target="_blank">
+        <div class="card-arrow">›</div>
+        <div class="card-num">v1 · 07</div>
+        <div class="card-title">팝업 & Alert & 신고</div>
+        <div class="card-desc">나가기 확인 · 매칭권 0개 Alert · 신고 바텀시트</div>
+        <div class="card-screens">
+          <span class="screen-tag">나가기 팝업</span>
+          <span class="screen-tag">매칭권 Alert</span>
+          <span class="screen-tag">신고</span>
+        </div>
+      </a>
+
+      <a class="card" href="FREECHAT_목업_08_스페셜룰렛.html" target="_blank">
+        <div class="card-arrow">›</div>
+        <div class="card-num">v1 · 08</div>
+        <div class="card-title">스페셜 룰렛</div>
+        <div class="card-desc">룰렛판 · 조건 확인 · 매칭 중 · 오늘 횟수 소진</div>
+        <div class="card-screens">
+          <span class="screen-tag">룰렛판</span>
+          <span class="screen-tag">매칭 중</span>
+          <span class="screen-tag">횟수 소진</span>
+        </div>
+      </a>
+
+      <a class="card" href="FREECHAT_목업_09_에이전시코드입력.html" target="_blank">
+        <div class="card-arrow">›</div>
+        <div class="card-num">v1 · 09</div>
+        <div class="card-title">에이전시 코드 입력</div>
+        <div class="card-desc">코드 입력 · 오류 · 등록 완료 · 설정 메뉴 (여자회원 전용)</div>
+        <div class="card-screens">
+          <span class="screen-tag">여자회원 전용</span>
+          <span class="screen-tag">코드 입력</span>
+          <span class="screen-tag">등록 완료</span>
+        </div>
+      </a>
+
+      <a class="card" href="FREECHAT_목업_10_출석체크_연속출석.html" target="_blank">
+        <div class="card-arrow">›</div>
+        <div class="card-num">v1 · 10</div>
+        <div class="card-title">출석 체크 & 연속 출석</div>
+        <div class="card-desc">출석 미완료/완료 · 달성 보상 팝업 · 연속 출석 끊김</div>
+        <div class="card-screens">
+          <span class="screen-tag">캘린더</span>
+          <span class="screen-tag">보상 팝업</span>
+          <span class="screen-tag">연속 끊김</span>
+        </div>
+      </a>
+
+      <a class="card" href="FREECHAT_목업_11_프로필설정_온보딩.html" target="_blank">
+        <div class="card-arrow">›</div>
+        <div class="card-num">v1 · 11</div>
+        <div class="card-title">프로필 설정 온보딩</div>
+        <div class="card-desc">닉네임 확인 · 변경 · 금지어 오류 · 홈 Alert</div>
+        <div class="card-screens">
+          <span class="screen-tag">닉네임 확인</span>
+          <span class="screen-tag">금지어 오류</span>
+          <span class="screen-tag">홈 Alert</span>
+        </div>
+      </a>
+
+      <a class="card" href="FREECHAT_목업_12_프로필이미지_승인.html" target="_blank">
+        <div class="card-arrow">›</div>
+        <div class="card-num">v1 · 12</div>
+        <div class="card-title">프로필 이미지 승인</div>
+        <div class="card-desc">이미지 선택 · 심사 중 · 승인 완료 · 반려</div>
+        <div class="card-screens">
+          <span class="screen-tag">심사 중</span>
+          <span class="screen-tag">승인 완료</span>
+          <span class="screen-tag">반려</span>
+        </div>
+      </a>
+
+      <a class="card" href="FREECHAT_목업_13_다중계정.html" target="_blank">
+        <div class="card-arrow">›</div>
+        <div class="card-num">v1 · 13</div>
+        <div class="card-title">다중 계정</div>
+        <div class="card-desc">계정 추가 · 닉네임 확인 · 계정 전환 · 차단 선택 팝업</div>
+        <div class="card-screens">
+          <span class="screen-tag">에이전시 전용</span>
+          <span class="screen-tag">계정 전환</span>
+          <span class="screen-tag">차단 팝업</span>
+        </div>
+      </a>
+
+      <a class="card" href="FREECHAT_목업_14_미성년자차단.html" target="_blank">
+        <div class="card-arrow">›</div>
+        <div class="card-num">v1 · 14</div>
+        <div class="card-title">미성년자 가입 차단</div>
+        <div class="card-desc">카카오 나이 인증 → 만 19세 미만 즉시 차단 · 앱 종료</div>
+        <div class="card-screens">
+          <span class="screen-tag">가입 차단</span>
+          <span class="screen-tag">앱 종료</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- v2 목업 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-v2">🔮</div>
+      <div>
+        <div class="section-title">v2 목업 · 1개 <span class="v2-tag">v2 개발</span></div>
+        <div class="section-sub">v1 출시 이후 추가 개발 예정 기능</div>
+      </div>
+    </div>
+    <div class="card-grid">
+
+      <a class="card card-v2" href="FREECHAT_v2_목업_01_매칭필터바텀시트.html" target="_blank">
+        <div class="card-arrow">›</div>
+        <div class="card-num">v2 · 01</div>
+        <div class="card-title">매칭 필터 바텀시트</div>
+        <div class="card-desc">나이·지역·이상형·MBTI 필터 설정 · OR 방식 · 랜덤 1명 자동 선택 · 매칭 성공/실패/매칭권 부족</div>
+        <div class="card-screens">
+          <span class="screen-tag">남/여 회원별 태그</span>
+          <span class="screen-tag">필터 3개 선택</span>
+          <span class="screen-tag">매칭 성공</span>
+          <span class="screen-tag">매칭 실패</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- 푸터 -->
+<div class="footer">
+  <div class="footer-text">FREECHAT · 기획 목업 문서 · v1 + v2 · 2026.04</div>
+  <div class="footer-text">본 문서는 내부 검토 및 개발자 전달용입니다</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>FREECHAT 목업 09 · 에이전시 코드 입력</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --p1:#9B72FF;--p2:#7C4DFF;--coral:#FF6D6D;
+  --teal:#00C896;--yellow:#FEE500;
+  --bg:#0C0C18;--bg2:#111120;--bg3:#161625;
+  --border:#1a1a2a;--t2:#6e6e90;--t3:#38384e
+}
+body{
+  font-family:-apple-system,'Segoe UI','Noto Sans KR',sans-serif;
+  background:#0a0a14;
+  color:#fff;
+  padding:48px 32px;
+}
+h1{font-size:22px;font-weight:800;margin-bottom:4px}
+.subtitle{font-size:12px;color:var(--t2);margin-bottom:8px}
+.condition-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,109,109,.12);color:var(--coral);
+  border:1px solid rgba(255,109,109,.3);
+  font-size:11px;font-weight:700;letter-spacing:.5px;
+  padding:5px 14px;border-radius:20px;margin-bottom:36px
+}
+
+/* ── 행 레이아웃 ── */
+.row{display:flex;gap:28px;margin-bottom:48px;flex-wrap:wrap}
+.col{display:flex;flex-direction:column;align-items:center;gap:12px}
+.screen-label{
+  font-size:11px;font-weight:700;color:var(--t2);
+  letter-spacing:1px;text-align:center;
+}
+.screen-sub{
+  font-size:10px;color:var(--t3);text-align:center;margin-top:2px
+}
+.row-label{
+  font-size:10px;font-weight:700;letter-spacing:3px;
+  color:var(--t3);margin-bottom:8px;
+}
+
+/* ── 폰 프레임 ── */
+.phone{
+  width:375px;height:812px;
+  background:var(--bg);
+  border-radius:44px;
+  border:2px solid var(--border);
+  overflow:hidden;
+  position:relative;
+  flex-shrink:0;
+  box-shadow:0 20px 60px rgba(0,0,0,.6)
+}
+/* 노치 */
+.phone::before{
+  content:'';
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:120px;height:30px;
+  background:var(--bg);
+  border-radius:0 0 18px 18px;
+  z-index:20;
+}
+.screen{
+  width:100%;height:100%;
+  overflow:hidden;
+  position:relative;
+}
+
+/* ── 공통 상단 상태바 ── */
+.statusbar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 22px 0;
+  font-size:11px;font-weight:600;
+  position:relative;z-index:10;
+}
+.sb-time{font-size:13px;font-weight:700}
+.sb-icons{display:flex;gap:5px;align-items:center;font-size:10px}
+
+/* ── 공통 헤더 ── */
+.nav{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 20px 10px;
+}
+.nav-back{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--bg2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;cursor:pointer;
+}
+.nav-title{font-size:16px;font-weight:700}
+
+/* ── 여성 전용 배지 ── */
+.female-only{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(255,109,109,.12);color:var(--coral);
+  border:1px solid rgba(255,109,109,.3);
+  font-size:10px;font-weight:700;letter-spacing:.5px;
+  padding:4px 12px;border-radius:20px;
+}
+
+/* ── 입력 필드 ── */
+.input-field{
+  width:100%;
+  background:var(--bg2);
+  border:1.5px solid var(--border);
+  border-radius:14px;
+  padding:14px 16px;
+  font-size:15px;color:#fff;
+  font-weight:600;letter-spacing:2px;
+  text-align:center;
+  outline:none;
+}
+.input-field.error{border-color:var(--coral)}
+.input-field.success{border-color:var(--teal)}
+.input-field::placeholder{color:var(--t3);letter-spacing:0;font-weight:400}
+.input-label{font-size:12px;color:var(--t2);margin-bottom:6px}
+.input-error{font-size:11px;color:var(--coral);margin-top:6px;display:flex;align-items:center;gap:4px}
+.input-hint{font-size:11px;color:var(--t2);margin-top:6px;text-align:center}
+
+/* ── 버튼 ── */
+.btn-main{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,var(--p1),var(--p2));
+  border:none;border-radius:14px;
+  color:#fff;font-size:15px;font-weight:700;
+  cursor:pointer;
+}
+.btn-main.disabled{
+  background:var(--bg3);color:var(--t3);
+  border:1px solid var(--border);cursor:not-allowed;
+}
+.btn-main.success-btn{
+  background:linear-gradient(135deg,var(--teal),#00a87a);
+}
+.btn-skip{
+  background:none;border:none;
+  color:var(--t2);font-size:13px;
+  text-decoration:underline;cursor:pointer;
+  padding:8px;
+}
+
+/* ── 진행 단계 표시 ── */
+.step-row{
+  display:flex;align-items:center;justify-content:center;
+  gap:6px;padding:0 20px;
+}
+.step-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--bg3);border:1px solid var(--t3);
+}
+.step-dot.active{background:var(--p1);border-color:var(--p1)}
+.step-dot.done{background:var(--teal);border-color:var(--teal)}
+.step-line{width:24px;height:1px;background:var(--border)}
+.step-line.done{background:var(--teal)}
+
+/* ── 성공 화면 아이콘 ── */
+.success-circle{
+  width:80px;height:80px;border-radius:50%;
+  background:rgba(0,200,150,.12);border:2px solid var(--teal);
+  display:flex;align-items:center;justify-content:center;
+  font-size:36px;
+}
+
+/* ── 에이전시 카드 ── */
+.agency-card{
+  background:var(--bg2);border:1px solid rgba(155,114,255,.3);
+  border-radius:14px;padding:16px 18px;
+  display:flex;align-items:center;gap:12px;
+}
+.agency-icon{
+  width:44px;height:44px;border-radius:12px;
+  background:rgba(155,114,255,.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;flex-shrink:0;
+}
+.agency-info{}
+.agency-name{font-size:14px;font-weight:700}
+.agency-code{font-size:11px;color:var(--t2);margin-top:2px}
+
+/* ── 적립 안내 칩 ── */
+.earn-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(254,229,0,.08);
+  border:1px solid rgba(254,229,0,.2);
+  border-radius:20px;padding:6px 14px;
+  font-size:12px;color:var(--yellow);font-weight:600;
+}
+
+/* ── 설정 화면 ── */
+.settings-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px;border-bottom:1px solid var(--border);
+}
+.settings-label{font-size:14px;font-weight:600}
+.settings-value{font-size:12px;color:var(--t2)}
+.settings-section-label{
+  font-size:10px;font-weight:700;letter-spacing:2px;
+  color:var(--t3);padding:14px 20px 6px;
+}
+
+/* ── 잠금 배너 (설정 화면 상단) ── */
+.lock-banner{
+  background:rgba(255,109,109,.08);
+  border-bottom:1px solid rgba(255,109,109,.15);
+  padding:8px 20px;
+  display:flex;align-items:center;gap:8px;
+  font-size:11px;color:var(--coral);
+}
+
+/* ── 조건 없음 배너 (남자 진입 차단) ── */
+.block-overlay{
+  position:absolute;inset:0;
+  background:rgba(12,12,24,.85);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;z-index:50;
+}
+.block-icon{font-size:48px}
+.block-title{font-size:16px;font-weight:700;color:var(--coral)}
+.block-desc{font-size:12px;color:var(--t2);text-align:center;line-height:1.7}
+
+</style>
+</head>
+<body>
+
+<h1>📋 FREECHAT 목업 09 · 에이전시 코드 입력</h1>
+<div class="subtitle">여자회원 전용 · 가입 직후 또는 설정에서 코드 입력</div>
+<div class="condition-badge">🔒 노출 조건: 성별값 = 여자(female) 일 때만 화면 진입 가능</div>
+
+<!-- ══════════════════════════════════════
+     ROW 1 : 코드 입력 (기본) + 코드 오류
+════════════════════════════════════════ -->
+<div class="row-label">ROW 1 · 코드 입력 기본 / 오류 상태</div>
+<div class="row">
+
+  <!-- Screen 1 : 코드 입력 (코드 미입력, 확인 버튼 비활성) -->
+  <div class="col">
+    <div class="screen-label">Screen 1 · 코드 입력 (초기)</div>
+    <div class="screen-sub">가입 직후 자동 진입 / 코드 미입력 → 버튼 비활성</div>
+    <div class="phone">
+      <div class="screen" style="background:var(--bg)">
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <div class="sb-icons">
+            <span>▲▲▲</span><span>WiFi</span><span>🔋</span>
+          </div>
+        </div>
+
+        <!-- 진행 단계 -->
+        <div style="padding:10px 20px 0">
+          <div class="step-row">
+            <div class="step-dot done"></div>
+            <div class="step-line done"></div>
+            <div class="step-dot done"></div>
+            <div class="step-line done"></div>
+            <div class="step-dot active"></div>
+            <div class="step-line"></div>
+            <div class="step-dot"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--t3);margin-top:4px;padding:0 2px">
+            <span>카카오 로그인</span><span>프로필 설정</span><span style="color:var(--p1)">에이전시 코드</span><span>완료</span>
+          </div>
+        </div>
+
+        <div style="padding:30px 24px 0">
+          <!-- 여성 전용 배지 -->
+          <div style="margin-bottom:20px">
+            <span class="female-only">👩 여자회원 전용</span>
+          </div>
+
+          <div style="font-size:22px;font-weight:800;line-height:1.3;margin-bottom:10px">
+            에이전시 코드를<br>입력해주세요
+          </div>
+          <div style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:28px">
+            소속 에이전시의 코드를 입력하면<br>
+            채팅 적립금이 쌓이기 시작해요 💰
+          </div>
+
+          <!-- 입력 필드 -->
+          <div style="margin-bottom:6px">
+            <div class="input-label">에이전시 코드</div>
+            <div style="position:relative">
+              <input class="input-field" placeholder="예: ABC-1234" readonly style="pointer-events:none;background:#13132a" />
+            </div>
+            <div class="input-hint">영문·숫자 조합 6~8자리</div>
+          </div>
+
+          <!-- 버튼 (비활성) -->
+          <button class="btn-main disabled">확인</button>
+          <div style="text-align:center;margin-top:14px">
+            <button class="btn-skip">코드 없이 시작하기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 2 : 코드 입력 중 + 오류 -->
+  <div class="col">
+    <div class="screen-label">Screen 2 · 잘못된 코드 (오류)</div>
+    <div class="screen-sub">코드 입력 후 [확인] → 유효하지 않은 코드일 때</div>
+    <div class="phone">
+      <div class="screen" style="background:var(--bg)">
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <div class="sb-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+
+        <!-- 진행 단계 -->
+        <div style="padding:10px 20px 0">
+          <div class="step-row">
+            <div class="step-dot done"></div>
+            <div class="step-line done"></div>
+            <div class="step-dot done"></div>
+            <div class="step-line done"></div>
+            <div class="step-dot active"></div>
+            <div class="step-line"></div>
+            <div class="step-dot"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--t3);margin-top:4px;padding:0 2px">
+            <span>카카오 로그인</span><span>프로필 설정</span><span style="color:var(--p1)">에이전시 코드</span><span>완료</span>
+          </div>
+        </div>
+
+        <div style="padding:30px 24px 0">
+          <div style="margin-bottom:20px">
+            <span class="female-only">👩 여자회원 전용</span>
+          </div>
+          <div style="font-size:22px;font-weight:800;line-height:1.3;margin-bottom:10px">
+            에이전시 코드를<br>입력해주세요
+          </div>
+          <div style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:28px">
+            소속 에이전시의 코드를 입력하면<br>
+            채팅 적립금이 쌓이기 시작해요 💰
+          </div>
+
+          <!-- 입력 필드 (오류 상태) -->
+          <div style="margin-bottom:6px">
+            <div class="input-label" style="color:var(--coral)">에이전시 코드</div>
+            <div style="position:relative">
+              <div class="input-field error" style="background:#13132a;padding:14px 16px;border-radius:14px;text-align:center;letter-spacing:2px;font-weight:600">
+                ZZZ-9999
+              </div>
+            </div>
+            <div class="input-error">
+              <span>❌</span>
+              <span>유효하지 않은 코드예요. 다시 확인해주세요.</span>
+            </div>
+          </div>
+
+          <!-- 흔들리는 오류 힌트 -->
+          <div style="background:rgba(255,109,109,.08);border:1px solid rgba(255,109,109,.2);border-radius:12px;padding:12px 14px;margin-top:16px;margin-bottom:28px">
+            <div style="font-size:11px;color:var(--coral);line-height:1.8">
+              ⚠️ 코드가 맞지 않아요.<br>
+              에이전시 관리자에게 코드를 다시 확인해주세요.
+            </div>
+          </div>
+
+          <!-- 버튼 (활성, 다시 시도) -->
+          <button class="btn-main">다시 확인하기</button>
+          <div style="text-align:center;margin-top:14px">
+            <button class="btn-skip">코드 없이 시작하기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ══════════════════════════════════════
+     ROW 2 : 등록 성공 + 설정에서 코드 확인
+════════════════════════════════════════ -->
+<div class="row-label" style="margin-top:8px">ROW 2 · 등록 성공 / 설정에서 코드 확인</div>
+<div class="row">
+
+  <!-- Screen 3 : 코드 등록 성공 -->
+  <div class="col">
+    <div class="screen-label">Screen 3 · 코드 등록 성공</div>
+    <div class="screen-sub">유효한 코드 입력 → 등록 완료 화면</div>
+    <div class="phone">
+      <div class="screen" style="background:var(--bg)">
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <div class="sb-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+
+        <!-- 진행 단계 (완료) -->
+        <div style="padding:10px 20px 0">
+          <div class="step-row">
+            <div class="step-dot done"></div>
+            <div class="step-line done"></div>
+            <div class="step-dot done"></div>
+            <div class="step-line done"></div>
+            <div class="step-dot done"></div>
+            <div class="step-line done"></div>
+            <div class="step-dot active" style="background:var(--teal);border-color:var(--teal)"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--t3);margin-top:4px;padding:0 2px">
+            <span>카카오 로그인</span><span>프로필 설정</span><span>에이전시 코드</span><span style="color:var(--teal)">완료</span>
+          </div>
+        </div>
+
+        <div style="padding:40px 24px 0;display:flex;flex-direction:column;align-items:center;text-align:center">
+
+          <!-- 성공 아이콘 -->
+          <div class="success-circle" style="margin-bottom:20px">
+            ✅
+          </div>
+
+          <div style="font-size:22px;font-weight:800;margin-bottom:8px">
+            코드 등록 완료!
+          </div>
+          <div style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:28px">
+            지금부터 채팅 적립금이 쌓이기 시작해요 🎉
+          </div>
+
+          <!-- 등록된 에이전시 카드 -->
+          <div class="agency-card" style="width:100%;margin-bottom:20px">
+            <div class="agency-icon">💼</div>
+            <div class="agency-info">
+              <div class="agency-name">프리미엄 에이전시</div>
+              <div class="agency-code">코드: ABC-1234 · 방금 등록됨</div>
+            </div>
+          </div>
+
+          <button class="btn-main success-btn" style="margin-top:12px">앱 시작하기 →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 4 : 설정에서 코드 확인 (이미 등록된 상태) -->
+  <div class="col">
+    <div class="screen-label">Screen 4 · 설정 → 에이전시 코드 확인</div>
+    <div class="screen-sub">이미 코드가 등록된 여자회원 · 변경 불가 상태</div>
+    <div class="phone">
+      <div class="screen" style="background:var(--bg)">
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <div class="sb-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+
+        <!-- 네비 -->
+        <div class="nav" style="border-bottom:1px solid var(--border)">
+          <div class="nav-back">←</div>
+          <div class="nav-title">에이전시 코드</div>
+        </div>
+
+        <!-- 여성 전용 잠금 배너 -->
+        <div class="lock-banner">
+          <span>🔒</span>
+          <span>여자회원 전용 항목 · 성별값 = female 일 때만 노출</span>
+        </div>
+
+        <div style="padding:24px">
+
+          <!-- 현재 등록된 에이전시 -->
+          <div style="font-size:11px;font-weight:700;color:var(--t2);letter-spacing:1px;margin-bottom:10px">현재 등록된 에이전시</div>
+          <div class="agency-card" style="margin-bottom:6px">
+            <div class="agency-icon">💼</div>
+            <div class="agency-info">
+              <div class="agency-name">프리미엄 에이전시</div>
+              <div class="agency-code">코드: ABC-1234</div>
+            </div>
+            <div style="margin-left:auto">
+              <span style="background:rgba(0,200,150,.12);color:var(--teal);font-size:10px;font-weight:700;padding:4px 10px;border-radius:10px;border:1px solid rgba(0,200,150,.2)">등록됨 ✓</span>
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--t3);margin-bottom:28px">2025년 3월 1일 등록</div>
+
+          <!-- 변경 불가 안내 -->
+          <div style="background:rgba(155,114,255,.07);border:1px solid rgba(155,114,255,.15);border-radius:12px;padding:14px 16px;margin-bottom:24px">
+            <div style="font-size:12px;font-weight:700;color:var(--p1);margin-bottom:6px">⚠️ 코드 변경 안내</div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.8">
+              에이전시 코드는 <span style="color:#fff;font-weight:700">본인이 직접 변경할 수 없어요.</span><br>
+              변경이 필요한 경우 에이전시 관리자 또는<br>
+              고객센터에 문의해주세요.
+            </div>
+          </div>
+
+          <!-- 적립 현황 -->
+          <div style="font-size:11px;font-weight:700;color:var(--t2);letter-spacing:1px;margin-bottom:10px">이번 달 적립 현황</div>
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)">
+              <div>
+                <div style="font-size:11px;color:var(--t2)">채팅 라인 적립</div>
+                <div style="font-size:18px;font-weight:800;color:var(--yellow)">18,450원</div>
+              </div>
+              <div style="text-align:right">
+                <div style="font-size:11px;color:var(--t2)">출석 체크 적립</div>
+                <div style="font-size:18px;font-weight:800;color:var(--yellow)">1,200원</div>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-size:13px;font-weight:700">이번 달 합계</div>
+              <div style="font-size:20px;font-weight:800;color:var(--teal)">19,650원</div>
+            </div>
+            <div style="font-size:10px;color:var(--t3);margin-top:8px;text-align:center">※ 환급 최소 금액 2만원 · 에이전시 관리자 통해 신청</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ══════════════════════════════════════
+     ROW 3 : 코드 없이 시작한 상태 + 남자 진입 차단
+════════════════════════════════════════ -->
+<div class="row-label" style="margin-top:8px">ROW 3 · 코드 미등록 상태 / 남자 진입 차단</div>
+<div class="row">
+
+  <!-- Screen 5 : 코드 미등록 상태 (나중에 설정에서 접근) -->
+  <div class="col">
+    <div class="screen-label">Screen 5 · 코드 미등록 (설정 접근)</div>
+    <div class="screen-sub">"코드 없이 시작" 선택 후 설정에서 재진입</div>
+    <div class="phone">
+      <div class="screen" style="background:var(--bg)">
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <div class="sb-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+
+        <div class="nav" style="border-bottom:1px solid var(--border)">
+          <div class="nav-back">←</div>
+          <div class="nav-title">에이전시 코드</div>
+        </div>
+
+        <div style="padding:28px 24px 0">
+
+          <!-- 미등록 상태 안내 -->
+          <div style="background:rgba(255,109,109,.08);border:1px dashed rgba(255,109,109,.3);border-radius:14px;padding:18px;text-align:center;margin-bottom:24px">
+            <div style="font-size:28px;margin-bottom:8px">💸</div>
+            <div style="font-size:14px;font-weight:700;margin-bottom:6px">코드가 아직 없어요</div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.7">
+              현재 적립금이 쌓이지 않고 있어요.<br>
+              에이전시 코드를 입력하면 지금 바로 시작돼요!
+            </div>
+          </div>
+
+          <div style="margin-bottom:6px">
+            <div class="input-label">에이전시 코드 입력</div>
+            <div class="input-field" style="background:#13132a;color:var(--t3);font-size:14px;font-weight:400;letter-spacing:0;text-align:center;padding:14px 16px;border-radius:14px;border:1.5px dashed var(--border)">
+              코드를 입력해주세요
+            </div>
+            <div class="input-hint">영문·숫자 조합 6~8자리</div>
+          </div>
+
+          <div style="margin-top:28px">
+            <button class="btn-main disabled" style="margin-bottom:0">확인</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 6 : 여자회원 설정 화면 (에이전시 코드 메뉴 진입 경로) -->
+  <div class="col">
+    <div class="screen-label">Screen 6 · 여자회원 설정 화면</div>
+    <div class="screen-sub">설정 → 에이전시 코드 탭 → 코드 입력 화면 진입</div>
+    <div class="phone">
+      <div class="screen" style="background:var(--bg)">
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <div class="sb-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+
+        <!-- 설정 탭 제목 -->
+        <div style="padding:14px 20px 10px;border-bottom:1px solid var(--border)">
+          <div style="font-size:18px;font-weight:800">설정</div>
+        </div>
+
+        <!-- 내 정보 섹션 -->
+        <div class="settings-section-label">내 정보</div>
+        <div class="settings-row">
+          <span class="settings-label">프로필 수정</span>
+          <span style="color:var(--t2);font-size:14px">›</span>
+        </div>
+        <div class="settings-row">
+          <span class="settings-label">알림 설정</span>
+          <span style="color:var(--t2);font-size:14px">›</span>
+        </div>
+        <div class="settings-row">
+          <span class="settings-label">차단 목록</span>
+          <span style="color:var(--t2);font-size:14px">›</span>
+        </div>
+
+        <!-- 에이전시 코드 항목 (여자회원에게만 노출) -->
+        <div class="settings-row" style="background:rgba(155,114,255,.06);border-left:3px solid var(--p1);padding-left:17px">
+          <div>
+            <div class="settings-label" style="color:var(--p1)">에이전시 코드</div>
+            <div style="font-size:10px;color:var(--t2);margin-top:2px">코드 미등록 상태</div>
+          </div>
+          <span style="color:var(--p1);font-size:14px">›</span>
+        </div>
+
+        <!-- 고객지원 섹션 -->
+        <div class="settings-section-label">고객지원</div>
+        <div class="settings-row">
+          <span class="settings-label">공지사항</span>
+          <span style="color:var(--t2);font-size:14px">›</span>
+        </div>
+        <div class="settings-row">
+          <span class="settings-label">문의하기</span>
+          <span style="color:var(--t2);font-size:14px">›</span>
+        </div>
+
+        <!-- 약관 섹션 -->
+        <div class="settings-section-label">약관 및 정책</div>
+        <div class="settings-row">
+          <span class="settings-label">개인정보처리방침</span>
+          <span style="color:var(--t2);font-size:14px">›</span>
+        </div>
+        <div class="settings-row">
+          <span class="settings-label">서비스 이용약관</span>
+          <span style="color:var(--t2);font-size:14px">›</span>
+        </div>
+
+        <!-- 계정 섹션 -->
+        <div class="settings-section-label" style="color:var(--coral)">계정</div>
+        <div class="settings-row">
+          <span class="settings-label" style="color:var(--coral)">회원 탈퇴</span>
+          <span style="color:var(--t2);font-size:14px">›</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+</body>
+</html>
